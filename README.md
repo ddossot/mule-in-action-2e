@@ -1,5 +1,5 @@
-Examples for Mule in Action, second edtion
-------------------------------------------
+Examples for Mule in Action, second edition
+-------------------------------------------
 
 Requirements:
 - JDK 1.6
