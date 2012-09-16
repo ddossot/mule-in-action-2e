@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:json="http://www.mulesoft.org/schema/mule/json"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+
+    <flow name="auto-transformer-flow">
+        <vm:inbound-endpoint path="jsonpath.in" exchange-pattern="request-response" />
+
+<!--<start id="lis_04_jsonpath"/>-->
+<json:json-to-object-transformer
+     returnClass="java.util.HashMap" />
+<set-property propertyName="requestType"
+     value="#[message.payload.requestType]"/><!--<co id="lis04_JsonPath-config-1_item" />-->
+<set-property propertyName="productId"
+     value="#[message.payload.products[0].productId]"/><!--<co id="lis04_JsonPath-config-2_array" />-->
+<!--<end id="lis_04_jsonpath"/>-->
+
+    </flow>
+
+</mule>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+
+<!--<start id="lis_06_patterns-validator-inheritance"/>-->
+<pattern:validator name="abstract-parent-validator"
+	abstract="true" 
+	ackExpression="#['Message accepted.']"
+	nackExpression="#['Message rejected.']" />
+	
+<pattern:validator name="integer-service-validator" 
+    parent="abstract-parent-validator"
+	inboundAddress="vm://integer-service.in"
+	outboundAddress="vm://real-integer-service.in">
+	<payload-type-filter expectedType="java.lang.Integer" />
+</pattern:validator>
+	
+<pattern:validator name="string-service-validator" 
+    parent="abstract-parent-validator"
+	inboundAddress="vm://string-service.in"
+	outboundAddress="vm://real-string-service.in">
+	<payload-type-filter expectedType="java.lang.String" />
+</pattern:validator>
+<!--<end id="lis_06_patterns-validator-inheritance"/>-->
+	
+</mule>

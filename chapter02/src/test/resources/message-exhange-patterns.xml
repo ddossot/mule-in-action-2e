@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xsi:schemaLocation="
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+            ">
+
+    <flow name="message-exchange-patterns">
+        <!--<start id="lis_02_meps"/>-->
+        <http:inbound-endpoint host="localhost"
+                               port="8080"
+                               path="payment-processor"
+                               exchange-pattern="request-response" />
+        <http:outbound-endpoint host="localhost"
+                                port="8081"
+                                path="notifier"
+                                exchange-pattern="one-way" />
+        <!--<end id="lis_02_meps"/>-->
+        <logger />
+    </flow>
+</mule>

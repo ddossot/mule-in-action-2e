@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:client="http://www.mulesoft.org/schema/mule/client" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xsi:schemaLocation="
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/client http://www.mulesoft.org/schema/mule/client/current/mule-client.xsd
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            ">
+
+    <!--<start id="lis_12_remote-dispatch-1"/>-->
+    <client:remote-dispatcher-agent>
+        <client:remote-endpoint
+                address="tcp://localhost:5555"
+                exchange-pattern="request-response" />
+    </client:remote-dispatcher-agent>
+    <!--<end id="lis_12_remote-dispatch-1"/>-->
+
+    <vm:endpoint name="clientServiceChannel" path="client.service"
+        exchange-pattern="request-response" />
+
+    <flow name="clientFlow">
+        <inbound-endpoint ref="clientServiceChannel" />
+        <expression-transformer expression="#['fake_client_data']" />
+    </flow>
+</mule>

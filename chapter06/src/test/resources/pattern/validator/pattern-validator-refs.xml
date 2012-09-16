@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+
+<!--<start id="lis_06_patterns-validator-refs"/>-->
+<vm:endpoint name="integer-service"
+	path="integer-service.in"
+	exchange-pattern="request-response" />
+    
+<vm:endpoint name="real-integer-service"
+	path="real-integer-service.in"
+	exchange-pattern="request-response" />
+              
+<payload-type-filter name="integer-filter"
+	expectedType="java.lang.Integer" />
+                                          
+<pattern:validator name="integer-service-validator" 
+    ackExpression="#['Message accepted.']"
+	nackExpression="#['Message rejected.']"
+	inboundEndpoint-ref="integer-service"
+	outboundEndpoint-ref="real-integer-service"
+	validationFilter-ref="integer-filter">
+</pattern:validator>
+<!--<end id="lis_06_patterns-validator-refs"/>-->
+	
+</mule>

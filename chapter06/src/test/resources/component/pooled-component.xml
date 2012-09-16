@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+
+<!--<start id="lis_06_pooled-file-hasher-connector"/>-->
+<file:connector name="NonDeletingFileConnector" autoDelete="false" />
+<!--<end id="lis_06_pooled-file-hasher-connector"/>-->
+
+<!--<start id="lis_06_pooled-file-hasher"/>-->
+<flow name="pooled-random-integer">
+  <inbound-endpoint 
+    address="vm://pooled-md5-service.in" 
+	exchange-pattern="request-response" />
+	
+  <pooled-component><!--<co id="lis_06_pooled-file-hasher_1" />-->
+    <prototype-object 
+      class="com.prancingdonkey.component.Md5FileHasher">
+      <property key="fileConnector" 
+        value-ref="NonDeletingFileConnector" />
+      <property key="sourceFolder" 
+        value="${java.io.tmpdir}" />
+    </prototype-object>
+    
+    <pooling-profile 
+      initialisationPolicy="INITIALISE_ONE"
+      maxActive="5"
+      exhaustedAction="WHEN_EXHAUSTED_WAIT"
+      maxWait="15000" /><!--<co id="lis_06_pooled-file-hasher_2" />--> 
+  </pooled-component>
+</flow> 	
+<!--<end id="lis_06_pooled-file-hasher"/>-->
+
+
+<flow name="pooled-random-integer-fail-pool">
+  <inbound-endpoint 
+    address="vm://pooled-md5-service-fail-pool.in" 
+	exchange-pattern="request-response" />
+	
+  <pooled-component><!--<co id="lis_06_pooled-file-hasher_1" />-->
+    <prototype-object 
+      class="com.prancingdonkey.component.Md5FileHasher">
+      <property key="fileConnector" 
+        value-ref="NonDeletingFileConnector" />
+      <property key="sourceFolder" 
+        value="${java.io.tmpdir}" />
+    </prototype-object>
+
+<!--<start id="lis_06_pooled-file-hasher-fail-pool"/>-->    
+<pooling-profile
+    maxActive="10" exhaustedAction="WHEN_EXHAUSTED_FAIL"/>
+<!--<end id="lis_06_pooled-file-hasher-fail-pool"/>-->
+            
+  </pooled-component>
+</flow>
+
+</mule>

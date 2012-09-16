@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      version="EE-3.3.0" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http
+http://www.mulesoft.org/schema/mule/http/3.3/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms
+http://www.mulesoft.org/schema/mule/jms/3.3/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/vm
+http://www.mulesoft.org/schema/mule/vm/3.3/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/core
+http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
+
+    <jms:activemq-connector name="Active_MQ"
+          specification="1.1"
+          brokerURL="vm://localhost"/>
+
+<!--<start id="ch05_logExpenseReports_lis"/>-->
+    <flow name="logExpenseReports" doc:name="logExpenseReports">
+        <jms:inbound-endpoint topic="expenses.status"
+        connector-ref="Active_MQ" doc:name="JMS"/>
+        <choice doc:name="Choice"><!-- <co id="ch05_logExpenseReports-1-cor"/> -->
+            <when
+        expression="xpath('/expense/status/text() = \'PROCESSED\'')">
+                <processor-chain>
+                    <logger
+message=
+"#[xpath('/expense/id').text] processed]"
+    level="INFO" doc:name="Logger"/>
+                </processor-chain>
+            </when>
+            <when expression=
+"xpath('/expense/status/text()') =='FAILED'">
+                <processor-chain>
+                    <logger message=
+"Error processing expense report:#[xpath('/expense/id/text()]"
+level="ERROR" doc:name="Logger"/>
+                </processor-chain>
+            </when>
+        </choice>
+    </flow>
+    <!--<end id="ch05_logExpenseReports_lis"/>-->
+
+</mule>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd">
+
+<!--<start id="lis_06_patterns-validator"/>-->
+<pattern:validator name="integer-validator"
+	inboundAddress="vm://service.in" 
+	ackExpression="#['Message accepted.']"
+	nackExpression="#['Message rejected.']" 
+	outboundAddress="vm://real-service.in">
+	<payload-type-filter expectedType="java.lang.Integer" />
+</pattern:validator>
+<!--<end id="lis_06_patterns-validator"/>-->
+
+
+</mule>

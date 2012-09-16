@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+    xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+    xmlns:spring="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+            http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+            ">
+            
+    <flow name="string-expression">
+        <vm:inbound-endpoint path="string-expression.in"
+                             exchange-pattern="request-response" />
+        <!--<start id="lis_02_expressions-1"/>-->
+        <mulexml:xslt-transformer xsl-file="to_payment_processor_call.xsl">
+            <mulexml:context-property key="transactionId"
+                       value="#[java.util.UUID.randomUUID().toString()]" />
+        </mulexml:xslt-transformer>
+        <!--<end id="lis_02_expressions-1"/>-->
+    </flow>
+    
+    <flow name="logger">
+        <vm:inbound-endpoint path="logger.in"
+                             exchange-pattern="request-response" />
+        <!--<start id="lis_02_expressions-2"/>-->
+        <logger message="#[xpath('/invoice/@id').value]"
+                category="com.prancingdonkey.service.Invoice.id" 
+                level="INFO" />
+        <!--<end id="lis_02_expressions-2"/>-->
+    </flow>
+    
+    <!--<start id="lis_02_expressions-3"/>-->
+    <pattern:validator name="ensureAttached"
+                       inboundAddress="vm://ensure.attached"
+                       outboundAddress="vm://valid.request.handler"
+                       ackExpression="#['OK']"
+                       nackExpression="#['ERROR: no attachment!']">
+        <expression-filter
+                    expression="#[!(message.inboundAttachments.empty)]" />
+    </pattern:validator>
+    <!--<end id="lis_02_expressions-3"/>-->
+    
+    <!--
+        NOTE the real path should be: finance/historical?q=#[payload:java.lang.String]&amp;output=csv
+             but it is too long and can't be inserted in the manuscript :(
+     -->
+    <!--<start id="lis_02_expressions-4"/>-->
+    <flow name="tickerFetcher">
+     <vm:inbound-endpoint path="ticker.fetcher"
+                          exchange-pattern="request-response" />
+     <http:outbound-endpoint
+       exchange-pattern="request-response"
+       host="www.google.com"
+       port="80"
+       path="finance/historical?q=#[message.payloadAs(java.lang.String)]" />
+    </flow>
+    <!--<end id="lis_02_expressions-4"/>-->
+</mule>

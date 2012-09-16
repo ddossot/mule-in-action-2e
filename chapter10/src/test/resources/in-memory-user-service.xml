@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/current/mule-spring-security.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!--<start id="lis_10_in-memory-user-service"/>-->
+	<spring:beans><!--<co id="lis_10_in-memory-user-service_1" />-->
+		<ss:authentication-manager 
+			alias="authenticationManager"><!--<co id="lis_10_in-memory-user-service_2" />-->
+			<ss:authentication-provider><!--<co id="lis_10_in-memory-user-service_3" />-->
+				<ss:user-service id="userService"><!--<co id="lis_10_in-memory-user-service_4" />-->
+					<ss:user name="john" 
+						password="password" 
+						authorities="ROLE_ADMIN" /><!--<co id="lis_10_in-memory-user-service_5" />-->
+					<ss:user name="david" 
+						password="password" 
+						authorities="ROLE_ADMIN" />
+					<ss:user name="victor" 
+						password="password" 
+						authorities="ROLE_ADMIN" />
+				</ss:user-service>
+			</ss:authentication-provider>
+		</ss:authentication-manager>
+	</spring:beans>
+
+	<mule-ss:security-manager><!--<co id="lis_10_in-memory-user-service_6" />-->
+		<mule-ss:delegate-security-provider
+			name="memory-dao" 
+			delegate-ref="authenticationManager" /><!--<co id="lis_10_in-memory-user-service_7" />-->
+	</mule-ss:security-manager>
+	<!--<end id="lis_10_in-memory-user-service"/>-->
+
+</mule>

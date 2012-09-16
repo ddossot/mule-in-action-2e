@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+
+<!--<start id="lis_04_jaxb-context-declaration"/>-->    		
+<mulexml:jaxb-context name="myJaxbContext" 
+    packageNames="com.prancingdonkey.model.jaxb" /><!--<co id="lis_04_jaxb-context-declaration_1" />-->
+<!--<end id="lis_04_jaxb-context-declaration"/>-->
+    	
+ 	<flow name="jaxb-simple-flow">
+        <vm:inbound-endpoint path="jaxb-simple.in" exchange-pattern="request-response" />
+
+<!--<start id="lis_04_jaxb-object-to-xml"/>-->
+<mulexml:jaxb-object-to-xml-transformer 
+    jaxbContext-ref="myJaxbContext" /><!--<co id="lis_04_jaxb-object-to-xml_1" />-->
+<!--<end id="lis_04_jaxb-object-to-xml"/>-->
+    	
+    	<byte-array-to-string-transformer/>
+    	
+<!--<start id="lis_04_jaxb-xml-to-object"/>-->
+<mulexml:jaxb-xml-to-object-transformer 
+    jaxbContext-ref="myJaxbContext" />
+<!--<end id="lis_04_jaxb-xml-to-object"/>-->
+        
+    </flow>
+
+</mule>

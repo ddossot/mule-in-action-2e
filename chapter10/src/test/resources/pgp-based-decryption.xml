@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:pgp="http://www.mulesoft.org/schema/mule/pgp"
+	
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+        http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/current/mule-spring-security.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/pgp http://www.mulesoft.org/schema/mule/pgp/current/mule-pgp.xsd">
+
+	<jms:activemq-connector name="JmsTestConnector"
+		specification="1.1" maxRedelivery="3" />
+
+	<!--<start id="lis_10_pgp-based-decryption"/>-->
+	<spring:bean id="pgpKeyManager" 
+		class="org.mule.module.pgp.PGPKeyRingImpl"
+		init-method="initialise"><!--<co id="lis_10_pgp-based-decryption_1" />-->
+		<spring:property name="publicKeyRingFileName" 
+			value="public.key.gpg" /><!--<co id="lis_10_pgp-based-decryption_2" />-->
+		<spring:property name="secretKeyRingFileName" 
+			value="secret.key.gpg" /><!--<co id="lis_10_pgp-based-decryption_3" />-->
+		<spring:property name="secretAliasId" 
+			value="9071504784255173009" /><!--<co id="lis_10_pgp-based-decryption_4" />-->
+		<spring:property name="secretPassphrase" 
+			value="mule" /><!--<co id="lis_10_pgp-based-decryption_5" />-->
+	</spring:bean>
+
+	<spring:bean id="credentialAccessor" 
+		class="org.mule.security.MuleHeaderCredentialsAccessor" /><!--<co id="lis_10_pgp-based-decryption_6" />-->
+
+	<pgp:security-manager><!--<co id="lis_10_pgp-based-decryption_7" />-->
+		<pgp:security-provider name="pgpSecurityProvider"
+			keyManager-ref="pgpKeyManager" />
+		<pgp:keybased-encryption-strategy
+			name="keyBasedEncryptionStrategy" 
+			keyManager-ref="pgpKeyManager" 
+			credentialsAccessor-ref="credentialAccessor" />
+	</pgp:security-manager>
+
+	<flow name="password-based-decryption">
+		<jms:inbound-endpoint queue="messages.in" />
+			
+		<decrypt-transformer name="pgpDecrypt"
+			strategy-ref="keyBasedEncryptionStrategy" /><!--<co id="lis_10_pgp-based-decryption_8" />-->
+		
+		<object-to-string-transformer />
+		
+		<jms:outbound-endpoint queue="messages.out" />
+	</flow>
+	<!--<end id="lis_10_pgp-based-decryption"/>-->
+
+</mule>

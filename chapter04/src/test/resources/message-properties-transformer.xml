@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:spring="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <flow name="message-properties-transformer-delete-simple-flow">
+        <vm:inbound-endpoint path="expression-transformer-delete-simple.in" exchange-pattern="request-response" />
+
+<set-property propertyName="temp.productId" value="a value" />
+<set-property propertyName="temp.customerId" value="another value" />
+<set-property propertyName="prancing.totalValue" value="prancing value" />
+<set-property propertyName="iwillsurvive" value="oh yes" />
+        
+<!--<start id="lis_04_message-properties-transformer-delete-simple"/>-->
+<remove-property propertyName="temp.productId" />
+<remove-property propertyName="temp.customerId" />
+<remove-property propertyName="prancing.totalValue" />
+<!--<end id="lis_04_message-properties-transformer-delete-simple"/>-->
+        
+    </flow>
+    
+    <flow name="message-properties-transformer-delete-expr">
+        <vm:inbound-endpoint path="expression-transformer-delete-expr.in" exchange-pattern="request-response" />
+        
+<set-property propertyName="temp.productId" value="a value" />
+<set-property propertyName="temp.customerId" value="another value" />
+<set-property propertyName="prancing.totalValue" value="prancing value" />
+<set-property propertyName="iwillsurvive" value="oh yes" />
+                
+<!--<start id="lis_04_message-properties-transformer-delete-expr"/>-->
+<remove-property propertyName="temp.*" /><!--<co id="lis_04_message-properties-transformer-add-not-present_1" />-->
+<remove-property propertyName="prancing.*" /><!--<co id="lis_04_message-properties-transformer-add-not-present_2" />-->
+<!--<end id="lis_04_message-properties-transformer-delete-expr"/>-->
+        
+    </flow>
+
+   
+    <flow name="message-properties-transformer-add-multiple">
+        <vm:inbound-endpoint path="expression-transformer-add-multiple.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_message-properties-transformer-add-multiple"/>-->
+<set-property propertyName="Content-Type" 
+  value="application/vnd.ms-excel" />
+<set-property propertyName="Content-Disposition" 
+  value="attachment; filename=stats.csv" />
+<!--<end id="lis_04_message-properties-transformer-add-multiple"/>-->
+        
+    </flow>
+
+
+    <flow name="message-properties-transformer-rename">
+        <vm:inbound-endpoint path="expression-transformer-rename.in" exchange-pattern="request-response" />
+        
+        <set-property propertyName="prancing.productid" value="123" />
+        
+<!--<start id="lis_04_message-properties-transformer-rename"/>-->
+<set-property propertyName="prancing.isbn" 
+  value="#[message.outboundProperties['prancing.productid']]" />
+<remove-property propertyName="prancing.productid" />
+<!--<end id="lis_04_message-properties-transformer-rename"/>-->
+        
+    </flow>
+
+    <flow name="message-properties-transformer-copy">
+        <vm:inbound-endpoint path="expression-transformer-copy.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_message-properties-transformer-copy"/>-->
+<copy-properties propertyName="PrancingDonkeyRequestId" />
+<!--<end id="lis_04_message-properties-transformer-copy"/>-->
+        
+    </flow>
+    
+	<flow name="expression-transformer-variable-set">
+        <vm:inbound-endpoint path="expression-transformer-variable-set.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_expression-transformer-variable-set"/>-->
+<set-variable variableName="prancingVariable" 
+  value="Value or expression" />
+<!--<end id="lis_04_expression-transformer-variable-set"/>-->
+        
+        <set-property propertyName="prancingVariable" value="#[flowVars['prancingVariable']]" />
+    </flow>
+
+</mule>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:core="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+      xmlns:test="http://www.mulesoft.org/schema/mule/test"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+          http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+          http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+          http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+          http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+          http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+
+    <jms:activemq-connector name="amqConnector" />
+
+    <flow name="main-flow">
+        <composite-source>
+            <vm:inbound-endpoint path="main-flow.one-way"
+                exchange-pattern="one-way" />
+            <vm:inbound-endpoint path="main-flow.request-response"
+                exchange-pattern="request-response" />
+        </composite-source>
+
+        <expression-transformer expression="#[message.payload + '.main1@' + java.lang.Thread.currentThread().getName()]" />
+
+        <choice>
+            <when expression="message.payload.startsWith('spf')">
+                <flow-ref name="sync-private-flow" />
+            </when>
+            <when expression="message.payload.startsWith('apf')">
+                <async>
+                    <flow-ref name="async-private-flow" />
+                </async>
+            </when>
+            <when expression="message.payload.startsWith('soapf')">
+                <flow-ref name="sync-or-async-private-flow" />
+            </when>
+        </choice>
+
+        <expression-transformer expression="#[message.payload + '.main2@' + java.lang.Thread.currentThread().getName()]" />
+    </flow>
+
+    <flow name="sync-private-flow" processingStrategy="synchronous">
+        <expression-transformer expression="#[message.payload + '.sync-private-flow@' + java.lang.Thread.currentThread().getName()]" />
+        <test:component />
+    </flow>
+
+    <flow name="async-private-flow" processingStrategy="asynchronous">
+        <expression-transformer expression="#[message.payload + '.async-private-flow@' + java.lang.Thread.currentThread().getName()]" />
+        <test:component />
+    </flow>
+
+    <flow name="sync-or-async-private-flow">
+        <expression-transformer expression="#[message.payload + '.sync-or-async-private-flow@' + java.lang.Thread.currentThread().getName()]" />
+        <test:component />
+    </flow>
+
+    <!--<start id="lis_02_priv-flow-1"/>-->
+    <flow name="legacyAdapterPrivateFlow" processingStrategy="synchronous">
+        <mulexml:xslt-transformer xsl-file="v1_to_v2.xsl" />
+        <mulexml:xml-to-object-transformer />
+        <catch-exception-strategy>
+            <jms:outbound-endpoint queue="legacyAdapter.failures" />
+        </catch-exception-strategy>
+    </flow>
+    <!--<end id="lis_02_priv-flow-1"/>-->
+</mule>

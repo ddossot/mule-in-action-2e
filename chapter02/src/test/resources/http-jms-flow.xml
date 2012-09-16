@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"      
+      xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/3.2/mule-jms.xsd">
+
+    <jms:activemq-connector name="jmsConnector"/>
+
+    <!--<start id="lis_02_http-jms-flow"/>-->
+    <flow name="product-registration">
+        <http:inbound-endpoint
+            address="http://api.prancingdonkey.com/products"
+            method="POST" />
+        <byte-array-to-string-transformer />
+        <logger level="INFO" category="products.registration" />
+        <jms:outbound-endpoint queue="products" />
+    </flow>
+    <!--<end id="lis_02_http-jms-flow"/>-->
+</mule>

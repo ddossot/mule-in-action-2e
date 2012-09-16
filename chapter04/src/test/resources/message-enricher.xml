@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xsi:schemaLocation="
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            ">
+
+    <!--<start id="lis_02_message-enricher-1"/>-->
+    <flow name="invoice-processor">
+        <vm:inbound-endpoint path="invoice-processor"
+                             exchange-pattern="request-response" />
+        <enricher source="#[map-payload:currencyCode]"
+                  target="#[header:INBOUND:currencyCode]">
+            <vm:outbound-endpoint path="client.service"
+                                  exchange-pattern="request-response" />
+        </enricher>
+        <component class="com.prancingdonkey.service.InvoiceProcessor" />
+    </flow>
+    <!--<end id="lis_02_message-enricher-1"/>-->
+    
+    <flow name="message-enricher-2">
+        <vm:inbound-endpoint path="message-enricher-2"
+                             exchange-pattern="request-response" />
+        <!--<start id="lis_02_message-enricher-2"/>-->
+        <enricher>
+            <vm:outbound-endpoint path="client.service"
+                                  exchange-pattern="request-response" />
+            <enrich source="#[map-payload:currencyCode]"
+                    target="#[header:INBOUND:currencyCode]" />
+            <enrich source="#[map-payload:promoCode]"
+                    target="#[header:INBOUND:promoCode]" />
+        </enricher>
+        <!--<end id="lis_02_message-enricher-2"/>-->
+        <response>
+            <expression-transformer>
+                <return-argument expression="INBOUND:currencyCode"
+                                 evaluator="header" />
+                <return-argument expression="INBOUND:promoCode"
+                                 evaluator="header" />
+            </expression-transformer>
+        </response>
+    </flow>
+    
+    
+    <flow name="fakeClientService">
+        <vm:inbound-endpoint path="client.service"
+                             exchange-pattern="request-response" />
+        <expression-transformer>
+            <return-argument expression="[id:123,name:'John Doe',currencyCode:'USD',promoCode:'ABC123']"
+                             evaluator="groovy"/>
+        </expression-transformer>                            
+    </flow>
+</mule>

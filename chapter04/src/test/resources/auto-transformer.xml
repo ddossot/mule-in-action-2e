@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+
+ 	<!-- this will be used by the auto transformer -->
+    <custom-transformer class="com.prancingdonkey.transformers.StringToActivityReport"/>
+    	
+    <flow name="auto-transformer-flow">
+        <vm:inbound-endpoint path="auto-transformer.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_auto-transformer"/>-->
+<auto-transformer 
+    returnClass="com.prancingdonkey.statistics.ActivityReport" />
+<!--<end id="lis_04_auto-transformer"/>-->
+        
+    </flow>
+
+</mule>

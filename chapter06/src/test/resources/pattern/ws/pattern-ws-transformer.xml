@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:script="http://www.mulesoft.org/schema/mule/scripting" 
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+        http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+
+	<pattern:simple-service name="brewWS"
+    	address="http://localhost:8090/soap"
+    	component-class="com.prancingdonkey.service.BrewServiceImpl"
+    	type="jax-ws" />
+
+	<script:transformer name="add-credentials-transformer">
+		<script:script engine="groovy">
+			<script:text>return payload</script:text>
+		</script:script>
+	</script:transformer>
+	
+	<script:transformer name="amount-to-words-transformer">
+		<script:script engine="groovy">
+			<script:text>return payload</script:text>
+		</script:script>
+	</script:transformer>
+    
+<!--<start id="lis_06_patterns-ws-proxy-transformer"/>-->
+<pattern:web-service-proxy name="weather-forecast-ws-proxy"
+    inboundAddress="http://localhost:8080/prancingServices"
+	outboundAddress="http://localhost:8090/soap" 
+	transformer-refs="add-credentials-transformer"
+	responseTransformer-refs="amount-to-words-transformer"
+	wsdlFile="localWsdl.xml" />
+<!--<end id="lis_06_patterns-ws-proxy-transformer"/>-->
+
+</mule>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+        http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/current/mule-spring-security.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<!--<start id="lis_10_ldap-delegate"/>-->
+	<spring:beans>
+		<ss:ldap-server 
+			root="dc=prancingdonkey,dc=com" 
+			url="ldap://ldap.prancingdonkey.com:389" /><!--<co id="lis_10_ldap-delegate_1" />-->
+		<ss:authentication-manager 
+			alias="authenticationManager"><!--<co id="lis_10_ldap-delegate_2" />-->
+			<ss:ldap-authentication-provider
+				user-dn-pattern="uid={0},ou=people" 
+				group-search-base="ou=groups" /><!--<co id="lis_10_ldap-delegate_3" />-->
+		</ss:authentication-manager>
+	</spring:beans>
+
+	<mule-ss:security-manager>
+		<mule-ss:delegate-security-provider
+			name="memory-dao" 
+			delegate-ref="authenticationManager" /><!--<co id="lis_10_ldap-delegate_4" />-->
+	</mule-ss:security-manager>
+	<!--<end id="lis_10_ldap-delegate"/>-->
+
+</mule>

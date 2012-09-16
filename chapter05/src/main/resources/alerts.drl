@@ -1,0 +1,49 @@
+package com.prancingdonkey.domain;
+
+import org.mule.MessageExchangePattern;
+import java.util.Map;
+import java.util.HashMap;
+
+global org.mule.module.bpm.MessageService mule; [1]
+
+rule "weekdays are high priority"[2]
+   calendars "weekday"
+when
+   $alert : Alert()
+then
+   $a.setSeverity"HIGH")
+end
+
+rule "weekends are low priority"[3]
+   calendars "weekday"
+when
+   $alert : Alert()
+then
+   $a.setSeverity("LOW")
+end
+
+rule "Salesforce Alert"[4]
+when
+   $alert : Alert( application == "salesforce" )
+then
+   mule.generateMessage("vm://alerts.salesforce",
+                        $alert, null, MessageExchangePattern.ONE_WAY);
+end
+
+rule "Twilio Alert"[5]
+when
+   $alert : Alert( application == "twilio" )
+then
+   mule.generateMessage("vm://alerts.twilio",
+                        $alert, null, MessageExchangePattern.ONE_WAY);
+end
+
+rule "Mule Management Console Alert"[6]
+when
+   $alert : Alert( application == "mmc", severity == "HIGH" )
+then
+   mule.generateMessage("vm://alerts.mmc", $alert, null,
+                        MessageExchangePattern.ONE_WAY);
+end
+
+ 

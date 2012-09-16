@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      version="EE-3.3.0" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http 
+http://www.mulesoft.org/schema/mule/http/3.3/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms 
+http://www.mulesoft.org/schema/mule/jms/3.3/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/core 
+http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
+
+
+<!--<start id="ch05_splitLineItems_lis"/>-->
+    <flow name="splitLineItems" doc:name="splitLineItems">
+        <jms:inbound-endpoint queue="order.submission" 
+            connector-ref="Active_MQ" doc:name="JMS"/>
+        <set-property
+                propertyName="ORDER_ID"
+                value="#[payload.id]"/> <!-- <co id="ch05-splitter-1-cor"/> -->
+        <splitter
+            expression="xpath(/order/lineItems)"
+            doc:name="Splitter"/><!-- <co id="ch05-splitter-2-cor"/> -->
+        <set-property
+          propertyName="MULE_CORRELATION_ID"
+          value="#[flowVars('PD_ORDER_ID')]"/> <!-- <co id="ch05-splitter-3-cor"/> -->
+        <jms:outbound-endpoint queue="lineitem.processing" 
+            connector-ref="Active_MQ" doc:name="JMS"/><!-- <co id="ch05-splitter-4-cor"/> -->
+    </flow>
+    <!--<end id="ch05_splitLineItems_lis"/>-->
+
+  </mule>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+     
+<flow name="dummyService">
+	<inbound-endpoint address="vm://my-local-service.in" exchange-pattern="request-response" />
+	<set-payload value="done!" />
+</flow>    
+       
+<!--<start id="lis_06_patterns-bridge"/>-->
+<pattern:bridge name="a-simple-bridge"
+	inboundAddress="http://localhost:8888"
+	outboundAddress="vm://my-local-service.in" />
+<!--<end id="lis_06_patterns-bridge"/>-->
+
+</mule>

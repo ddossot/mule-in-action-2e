@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:file="http://www.mulesoft.org/schema/mule/file"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      version="EE-3.3.0" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http 
+http://www.mulesoft.org/schema/mule/http/3.3/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file 
+http://www.mulesoft.org/schema/mule/file/3.3/mule-file.xsd
+http://www.mulesoft.org/schema/mule/core 
+http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
+
+ <!--<start id="ch05_expenseReportCallback_lis"/>-->
+    <flow name="expenseReportCallback"
+            doc:name="expenseReportCallback">
+        <http:inbound-endpoint exchange-pattern="request-response" 
+                host="localhost" port="8081" path="expenses"
+                doc:name="HTTP"/>
+        <choice doc:name="Choice">
+            <when 
+            expression=
+"message.inboundProperties['mimeType'] ==
+'application/vnd.ms-excel'"><!-- <co id="ch05_expenseReportCallback-1-cor"/> -->
+                <processor-chain>
+                    <file:outbound-endpoint 
+        path="/opt/expenses/rejected" 
+outputPattern=
+"#[java.util.UUID.randomUUID()]-
+#[java.lang.System.currentTimeMillis()].xls"
+                doc:name="File"/>
+                </processor-chain>
+            </when>
+            <otherwise>
+                <processor-chain>
+                    <file:outbound-endpoint 
+path="/opt/expenses/status" 
+outputPattern=
+"#[java.util.UUID.randomUUID()]-
+#[java.lang.System.currentTimeMillis()].xls"
+                doc:name="File"/>
+                </processor-chain>
+            </otherwise>
+        </choice>
+    </flow>
+    <!--<end id="ch05_expenseReportCallback_lis"/>-->
+
+</mule>

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions name="BrewService" targetNamespace="http://service.prancingdonkey.com/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://service.prancingdonkey.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xs:schema elementFormDefault="unqualified" targetNamespace="http://service.prancingdonkey.com/" version="1.0" xmlns:tns="http://service.prancingdonkey.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="getBrews" type="tns:getBrews"/>
+<xs:element name="getBrewsResponse" type="tns:getBrewsResponse"/>
+<xs:complexType name="getBrews">
+    <xs:sequence/>
+  </xs:complexType>
+<xs:complexType name="getBrewsResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:brew"/>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="brew">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="description" type="xs:string"/>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getBrewsResponse">
+    <wsdl:part element="tns:getBrewsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBrews">
+    <wsdl:part element="tns:getBrews" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="BrewService">
+    <wsdl:operation name="getBrews">
+      <wsdl:input message="tns:getBrews" name="getBrews">
+    </wsdl:input>
+      <wsdl:output message="tns:getBrewsResponse" name="getBrewsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BrewServiceSoapBinding" type="tns:BrewService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getBrews">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getBrews">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getBrewsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BrewService">
+    <wsdl:port binding="tns:BrewServiceSoapBinding" name="BrewServiceImplPort">
+      <soap:address location="http://iMac-de-victor.local:8080/prancingServices"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

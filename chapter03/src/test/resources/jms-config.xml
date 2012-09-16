@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+      xmlns:ajax="http://www.mulesoft.org/schema/mule/ajax"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+      xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.2/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/ajax http://www.mulesoft.org/schema/mule/ajax/3.2/mule-ajax.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/3.2/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.2/mule-cxf.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.2/mule-xml.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+      ">
+
+
+    <!--<start id="ch03_jms-outbound_lis"/>-->
+    <jms:activemq-connector name="jmsConnector"
+                            specification="1.1"
+                            brokerURL="tcp://mq.prancingdonkey.com:61616"/>
+    <!-- <co id="ch03_jms-outbound_1-cor"/> -->
+
+    <flow name="dispatchExpenseReports">
+        <http:inbound-endpoint exchange-pattern="one-way"
+                               host="api.prancingdonkey.com"
+                               path="/expenses/status" method="POST"
+                               port="80"/>
+        <jms:outbound-endpoint topic="expenses.status"/>
+        <!-- <co id="ch03_jms-outbound_2-cor"/> -->
+    </flow>
+    <!--<end id="ch03_jms-outbound_lis"/>-->
+
+    <!--<start id="ch03_jms-inbound_lis"/>-->
+    <flow name="logExpenseReports">
+        <jms:inbound-endpoint topic="expenses.status"
+                              exchange-pattern="one-way"/>
+        <!-- <co id="ch03_jms-inbound-1_cor"/> -->
+        <logger level="INFO"
+                message="Expense Report Processed:
+    #[org.mule.util.DateUtils.getTimeStamp('dd-MM-yy_HH-mm-ss.SSS')]"/>
+    </flow>
+    <!--<end id="ch03_jms-inbound_lis"/>-->
+
+    <!--<start id="ch03_jms-sync_lis"/>-->
+       <flow name="brewJmsService">
+          <jms:inbound-endpoint queue="brews.list"
+                                exchange-pattern="request-response">
+              <!-- <co id="ch03_jms-sync-1_cor"/> -->
+               <cxf:simple-service
+               serviceClass="com.prancingdonkey.service.BrewService"/>
+           </jms:inbound-endpoint>
+           <component class="com.pracingdonkey.service.BrewServiceImpl"/>
+
+       </flow>
+    <!--<end id="ch03_jms-sync_lis"/>-->
+    
+     <!--<start id="ch03_jms-ajax_lis"/>-->
+    <ajax:connector name="ajaxConnector"
+                    serverUrl="http://api.prancingdonkey.com/ajax"/>
+    <!-- <co id="ch03_jms-ajax-1_cor"/> -->
+
+    <flow name="ajaxExpenseReports">
+        <jms:inbound-endpoint topic="expenses.status"
+                              exchange-pattern="one-way"/>
+
+        <ajax:outbound-endpoint channel="/expense/reports"/>
+    </flow>
+    <!--<end id="ch03_jms-ajax_lis"/>-->
+
+
+</mule>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc"
+      xmlns:file="http://www.mulesoft.org/schema/mule/file"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+      xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/3.2/mule-ftp.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.2/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/3.2/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/jdbc http://www.mulesoft.org/schema/mule/jdbc/3.2/mule-jdbc.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.2/mule-xml.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+      ">
+
+    <spring:bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <spring:property name="driverClassName"
+                         value="com.mysql.jdbc.Driver"/>
+        <spring:property name="url"
+                         value="jdbc:mysql://db.prancingdonkey.com/store"/>
+        <spring:property name="username" value="mule"/>
+        <spring:property name="password"
+                         value="password"/>
+    </spring:bean>
+
+    <!--<start id="ch03_jdbc-outbound_lis"/>-->
+
+    <jdbc:connector name="jdbcConnector" dataSource-ref="dataSource">
+        <jdbc:query key="productInsert"
+                    value="INSERT INTO products VALUES
+    (0,#[message.payload.NAME],#[message.payload.DESCRIPTION])"/>
+        <!-- <co id="ch03_jdbc-outbound-1_cor"/> -->
+    </jdbc:connector>
+
+    <flow name="ftpProductsFromDatabase">
+        <file:inbound-endpoint path="/data/"/>
+        <all>   <!-- <co id="ch03_jdbc-outbound-2_cor"/> -->
+            <jdbc:outbound-endpoint queryKey="productInsert">
+                <custom-transformer ref="productToMapTransformer"/>
+                <!-- <co id="ch03_jdbc-outbound-3_cor"/> -->
+            </jdbc:outbound-endpoint>
+            <ftp:outbound-endpoint user="admin"
+                                   password="123456"
+                                   host="ftp.stodgyretailer.com"
+                                   port="123"
+                                   path="/data/prancingdonkey/catalog"/>
+        </all>
+    </flow>
+    <!--<end id="ch03_jdbc-outbound_lis"/>-->
+
+
+</mule>

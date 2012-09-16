@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+       
+	<json:json-to-object-transformer name="jsonToObjectTransformer" returnClass="com.prancingdonkey.reciclingplant.RecicledCountRequest"/>
+	
+	<json:object-to-json-transformer name="objectToJsonTransformer"  />
+	
+	<mulexml:xml-to-object-transformer name="xmlToObjectTransformer" />
+	
+	<mulexml:object-to-xml-transformer name="objectToXmlTransformer" />
+	
+	<pattern:simple-service name="recicledBottlesService"
+                address="http://127.0.0.1:9999/rest/recicledCount"
+                component-class="com.prancingdonkey.reciclingplant.RecicledCountComponent" />
+
+<!--<start id="lis_06_patterns-bridge-transformer"/>-->   
+<pattern:bridge name="a-simple-bridge"
+	inboundAddress="http://localhost:8888"
+	outboundAddress="vm://my-local-service.in"
+	transformer-refs=
+		"jsonToObjectTransformer objectToXmlTransformer" 
+	responseTransformer-refs=
+		"xmlToObjectTransformer objectToJsonTransformer" />
+<!--<end id="lis_06_patterns-bridge-transformer"/>-->
+
+</mule>

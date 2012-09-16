@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+          http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+          http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+          http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+          http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+    <!--<start id="lis_02_response-phase-1"/>-->
+    <flow name="accountService">
+        <http:inbound-endpoint exchange-pattern="request-response"
+                               host="localhost"
+                               port="8080"
+                               path="services" />
+        <jersey:resources>
+            <component class="com.prancingdonkey.resource.Accounts" />
+        </jersey:resources>
+    </flow>
+    <!--<end id="lis_02_response-phase-1"/>-->
+    
+    <!--<start id="lis_02_response-phase-2"/>-->
+    <flow name="explicitResponse">
+        <vm:inbound-endpoint path="input"
+                             exchange-pattern="request-response">
+            <response>
+                <append-string-transformer message=" web" />
+            </response>
+        </vm:inbound-endpoint>
+        <response>
+            <append-string-transformer message=" wide" />
+        </response>
+        <append-string-transformer message=" world" />
+    </flow>
+    <!--<end id="lis_02_response-phase-2"/>-->
+    
+    <!--<start id="lis_02_response-phase-3"/>-->
+    <flow name="responseHeader">
+        <http:inbound-endpoint exchange-pattern="request-response"
+                               host="localhost"
+                               port="8080"
+                               path="json/data" />
+        <component class="com.prancingdonkey.data.JsonDataFetcher" />
+        <response>
+            <set-property propertyName="Content-Type"
+                          value="application/json" />
+        </response>
+    </flow>
+    <!--<end id="lis_02_response-phase-3"/>-->
+    
+    <global-property name="internalApiBaseUri" value="localhost:8080" />
+    <!--<start id="lis_02_response-phase-4"/>-->
+    <flow name="flowVarPersistence">
+        <vm:inbound-endpoint path="user.fetch"
+                             exchange-pattern="request-response" />
+
+        <response>
+            <set-property propertyName="X-User-ID"
+                          value="#[userId]" />
+        </response>
+
+        <set-variable variableName="userId"
+                      value="#[xpath('/user/@id').value]" />
+
+        <http:outbound-endpoint
+            address="http://${internalApiBaseUri}/api/users/#[userId]"
+            method="GET"
+            exchange-pattern="request-response" />
+    </flow>
+    <!--<end id="lis_02_response-phase-4"/>-->
+
+    <flow name="stubServer">
+        <http:inbound-endpoint address="http://localhost:8080/api/users/"
+            exchange-pattern="request-response" />
+        <response>
+            <expression-component>
+                payload='some_user@'+message.inboundProperties['http.request.path']
+            </expression-component>
+        </response>
+    </flow>
+</mule>

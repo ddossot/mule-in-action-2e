@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+    xsi:schemaLocation="
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+            http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+            ">
+
+    <jms:activemq-connector name="amqConnector" />
+
+    <flow name="message-sources-1">
+        <!--<start id="lis_02_message-sources-1"/>-->
+        <vm:inbound-endpoint path="payment-processor" />
+        <!--<end id="lis_02_message-sources-1"/>-->
+        <logger />
+    </flow>
+
+    <flow name="message-sources-2">
+        <!--<start id="lis_02_message-sources-2"/>-->
+        <composite-source>
+            <jms:inbound-endpoint queue="payment-processor" />
+            <http:inbound-endpoint host="localhost"
+                                   port="8080"
+                                   path="payment-processor" />
+        </composite-source>
+        <!--<end id="lis_02_message-sources-2"/>-->
+        <logger />
+    </flow>
+</mule>

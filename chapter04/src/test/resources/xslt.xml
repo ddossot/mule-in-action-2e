@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+
+ 	<flow name="xsl-simple-flow">
+        <vm:inbound-endpoint path="xsl-simple.in" exchange-pattern="request-response" />
+
+<!--<start id="lis_04_xsl-simple"/>-->
+<mulexml:xslt-transformer  
+    xsl-file="xsl/prancing-to-gondor-bm.xsl" />
+<!--<end id="lis_04_xsl-simple"/>-->
+
+    </flow>
+
+ 	<flow name="xsl-param-flow">
+        <vm:inbound-endpoint path="xsl-param.in" exchange-pattern="request-response" />
+
+<!--<start id="lis_04_xsl-param"/>-->
+<mulexml:xslt-transformer 
+    xsl-file="xsl/prancing-to-gondor-bm.xsl">
+    <mulexml:context-property 
+        key="discount" value="10" />
+    </mulexml:xslt-transformer>
+<!--<end id="lis_04_xsl-param"/>-->
+
+    </flow>
+    
+ 	<flow name="xsl-param-expr-flow">
+        <vm:inbound-endpoint path="xsl-param-expr.in" exchange-pattern="request-response" />
+
+<!--<start id="lis_04_xsl-param-expr"/>-->
+<mulexml:xslt-transformer 
+    xsl-file="xsl/prancing-to-gondor-bm.xsl">  
+    <mulexml:context-property key="discount" 
+        value="#[message.inboundProperties.discount]" />
+</mulexml:xslt-transformer>
+<!--<end id="lis_04_xsl-param-expr"/>-->
+
+    </flow>
+
+ 	<flow name="xsl-idle-flow">
+        <vm:inbound-endpoint path="xsl-idle.in" exchange-pattern="request-response" />
+
+<!--<start id="lis_04_xsl-idle"/>-->
+<mulexml:xslt-transformer maxActiveTransformers="5"
+    maxIdleTransformers="5"
+    xsl-file="xsl/prancing-to-gondor-bm.xsl" />
+<!--<end id="lis_04_xsl-idle"/>-->
+
+    </flow>
+
+</mule>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+
+
+<endpoint name="ErrorProcessorChannel" address="vm://calculateShippingCostErrorChannel.in" />
+	
+<!--<start id="lis_06_random-integer-service"/>-->
+<flow name="shippingCost">
+  <inbound-endpoint address="vm://random-integer-service.in" 
+	exchange-pattern="request-response" />
+  <component>
+	<no-arguments-entry-point-resolver>
+	  <include-entry-point method="nextInt" /><!--<co id="lis_06_random-integer-service_1" />-->
+	</no-arguments-entry-point-resolver>
+		
+    <singleton-object 
+	  class="java.util.Random" /><!--<co id="lis_06_random-integer-service_2" />-->
+  </component>
+</flow> 	
+<!--<end id="lis_06_random-integer-service"/>-->
+
+</mule>

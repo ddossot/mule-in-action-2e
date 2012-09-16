@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:test="http://www.mulesoft.org/schema/mule/test"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns:spring="http://www.springframework.org/schema/beans"
+    xmlns:spring-jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+       http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--<start id="lis_12_functional-test-stubs"/>-->
+    <!-- functional-test-stubs.xml -->
+    <spring:beans>
+        <spring-jdbc:embedded-database id="jdbcDataSource" type="HSQL">
+            <spring-jdbc:script location="classpath:test-ddl.sql" />
+        </spring-jdbc:embedded-database>
+    </spring:beans>
+
+    <http:endpoint name="acmeApiEndpoint"
+                   address="http://localhost:${port}/api"
+                   exchange-pattern="request-response" />
+
+    <flow name="acmeApiStub">
+        <inbound-endpoint ref="acmeApiEndpoint" />
+        <object-to-string-transformer />
+        <test:component>
+          <test:return-data>{"result":"success"}</test:return-data>
+        </test:component>
+    </flow>
+    <!--<end id="lis_12_functional-test-stubs"/>-->
+</mule>

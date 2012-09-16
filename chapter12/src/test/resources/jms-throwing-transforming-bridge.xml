@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+    xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+    xmlns:test="http://www.mulesoft.org/schema/mule/test"
+    xmlns:spring="http://www.springframework.org/schema/beans"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+       http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+       http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--<start id="lis_12_ftc_throw-1"/>-->
+    <flow name="jmsXmlV1V2Bridge">
+        <jms:inbound-endpoint queue="messages.v1" />
+        <test:component throwException="true"
+                        exceptionToThrow="java.lang.RuntimeException" /><!--<co id="lis_12_ftc_throw-1-1"/>-->
+        <mule-xml:xslt-transformer xsl-file="v1tov2.xsl" />
+        <jms:outbound-endpoint queue="messages.v2" />
+        <catch-exception-strategy>
+          <jms:outbound-endpoint queue="errors.v1v2bridge" />
+        </catch-exception-strategy>
+    </flow>
+    <!--<end id="lis_12_ftc_throw-1"/>-->
+</mule>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+	
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+
+<endpoint name="recicledCountServiceEndpoint" 
+	address="vm://recicledCount.in" />   
+
+<endpoint name="wastedCountServiceEndpoint" 
+	address="vm://wastedCount.in" />      
+
+<mulexml:xml-to-dom-transformer 
+	name="xmlToDom"
+	returnClass="org.w3c.dom.Document" /> 
+ 
+<mulexml:xpath-extractor-transformer 
+	name="countExtractor"
+	expression="//count" />
+	
+<!--<start id="lis_06_patterns-service-inheritance"/>-->      
+<pattern:simple-service 
+	abstract="true"
+	name="service-parent" 
+	responseTransformer-refs="xmlToDom countExtractor"/>
+	
+<pattern:simple-service 
+	parent="service-parent"
+	name="recicling-service" 
+	endpoint-ref="recicledCountServiceEndpoint"
+	component-class=
+	  "com.prancingdonkey.reciclingplant.RecicledCountComponent"/>
+
+<pattern:simple-service 
+	parent="service-parent"
+	name="waste-service" 
+	endpoint-ref="wastedCountServiceEndpoint"
+	component-class=
+	  "com.prancingdonkey.reciclingplant.WastedCountComponent"/>
+<!--<end id="lis_06_patterns-service-inheritance"/>-->
+
+</mule>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:json="http://www.mulesoft.org/schema/mule/json"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+
+    <flow name="json-marshalling-flow">
+        <vm:inbound-endpoint path="json-marshalling.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_object-to-json-transformer"/>-->        
+<json:object-to-json-transformer />
+<!--<end id="lis_04_object-to-json-transformer"/>-->
+        
+<!--<start id="lis_04_json-to-object-transformer"/>-->
+<json:json-to-object-transformer 
+    returnClass="com.prancingdonkey.model.json.Provider" />
+<!--<end id="lis_04_json-to-object-transformer"/>-->
+        
+    </flow>
+    
+<!--<start id="lis_04_json-mixin-declaration"/>-->
+<json:mapper name="myMixinMap">
+    <json:mixin 
+        mixinClass="com.prancingdonkey.model.json.ExternalItemMixin"
+        targetClass="org.external.ExternalItem"/>
+</json:mapper>
+<!--<end id="lis_04_json-mixin-declaration"/>-->
+		
+    <flow name="json-marshalling-mixin-flow">
+        <vm:inbound-endpoint path="json-marshalling-mixin.in" exchange-pattern="request-response" />
+        
+        <json:object-to-json-transformer />
+        
+<!--<start id="lis_04_json-mixin-ref"/>-->
+<json:json-to-object-transformer
+    name="jsonToExternalItem" 
+    returnClass="org.external.ExternalItem"
+    mapper-ref="myMixinMap" />
+<!--<end id="lis_04_json-mixin-ref"/>-->
+        
+    </flow>
+    
+</mule>

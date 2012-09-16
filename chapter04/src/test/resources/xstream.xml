@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+
+    <flow name="xstream_xml-to-object-regular-flow">
+        <vm:inbound-endpoint path="xstream_xml-to-object-regular.in" exchange-pattern="request-response" />
+
+<!--<start id="lis_04_xstream_object-to-xml-regular"/>-->
+<mulexml:object-to-xml-transformer />
+<!--<end id="lis_04_xstream_object-to-xml-regular"/>-->
+
+<!--<start id="lis_04_xstream_xml-to-object-regular"/>-->
+<mulexml:xml-to-object-transformer />
+<!--<end id="lis_04_xstream_xml-to-object-regular"/>-->
+
+    </flow>
+
+ 	<flow name="xstream_xml-to-object-alias-flow">
+        <vm:inbound-endpoint path="xstream_xml-to-object-alias.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_xstream_xml-to-object-alias"/>-->
+<mulexml:object-to-xml-transformer>
+    <mulexml:alias 
+        class="org.mule.DefaultMuleMessage" 
+        name="MuleMessage" />
+</mulexml:object-to-xml-transformer>
+<!--<end id="lis_04_xstream_xml-to-object-alias"/>-->
+        
+        <mulexml:xml-to-object-transformer/>
+    </flow>
+    
+    <flow name="xstream_xml-to-object-mule-message-flow">
+        <vm:inbound-endpoint path="xstream_xml-to-object-mule-message.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_xstream_xml-to-object-mule-message"/>-->
+<mulexml:object-to-xml-transformer acceptMuleMessage="true"/>
+<!--<end id="lis_04_xstream_xml-to-object-mule-message"/>-->
+    </flow>
+
+</mule>

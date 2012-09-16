@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+
+	<jms:activemq-connector name="dataJmsConnector"	specification="1.1" />
+    
+    <flow name="compress-flow">
+        <vm:inbound-endpoint path="compress.in" exchange-pattern="one-way" />
+        
+<!--<start id="lis_04_compress"/>-->
+<string-to-byte-array-transformer />
+<gzip-compress-transformer />
+<jms:outbound-endpoint 
+    queue="compressedDataQueue" 
+    connector-ref="dataJmsConnector"/>
+<!--<end id="lis_04_compress"/>-->
+        
+    </flow>
+
+    <flow name="uncompress-flow">
+
+<!--<start id="lis_04_uncompress"/>-->
+<jms:inbound-endpoint 
+    queue="compressedDataQueue"
+    connector-ref="dataJmsConnector"/>
+    <gzip-uncompress-transformer />
+    <byte-array-to-string-transformer />
+<!--<end id="lis_04_uncompress"/>-->
+        
+        <jms:outbound-endpoint 
+            queue="uncompressedDataQueue" 
+            connector-ref="dataJmsConnector"/>
+    </flow>
+
+</mule>

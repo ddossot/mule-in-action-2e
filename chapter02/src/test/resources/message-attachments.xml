@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:script="http://www.mulesoft.org/schema/mule/scripting"
+    xmlns:test="http://www.mulesoft.org/schema/mule/test"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+
+    <flow name="add-attachments">
+        <vm:inbound-endpoint path="add-attachments.in" exchange-pattern="request-response" />
+        <script:transformer>
+            <script:script engine="groovy">
+                def filePath = message.getInboundProperty('pdfFilePath')
+                def file = new File(filePath)
+                message.addOutboundAttachment(file.name,
+                                              file,
+                                              'application/pdf')
+            </script:script>
+        </script:transformer>
+    </flow>
+
+    <vm:endpoint name="email-orders" path="email.orders.in" exchange-pattern="one-way" />
+    <vm:endpoint name="pdf-orders" path="pdf-order-handler.in" exchange-pattern="one-way" />
+
+    <!--<start id="lis_02_eval_attach"/>-->
+    <flow name="email-order-processor">
+        <inbound-endpoint ref="email-orders" /><!--<co id="lis_02_eval_attach_1"/>-->
+        <expression-transformer
+                    expression="#[message.inboundAttachments.values()]" /><!--<co id="lis_02_eval_attach_2"/>-->
+        <collection-splitter /><!--<co id="lis_02_eval_attach_3"/>-->
+        <outbound-endpoint ref="pdf-orders" /><!--<co id="lis_02_eval_attach_4"/>-->
+    </flow>
+    <!--<end id="lis_02_eval_attach"/>-->
+    
+    <flow name="pdf-order-handler">
+        <inbound-endpoint ref="pdf-orders" />
+        <test:component />
+    </flow>
+</mule>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+
+    <flow name="expression-transformer-flow">
+        <vm:inbound-endpoint path="expression-transformer.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_expression-transformer"/>-->
+<expression-transformer>
+    <return-argument
+        expression="#[message.payload.hostAddress]" />
+    <return-argument 
+        expression="#[message.payload.multicastAddress]" />
+</expression-transformer>
+<!--<end id="lis_04_expression-transformer"/>-->
+
+    </flow>
+
+    <flow name="expression-transformer-single-flow">
+        <vm:inbound-endpoint path="expression-transformer-single.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_expression-transformer-single"/>-->
+<expression-transformer>
+    <return-argument
+        expression="#[message.payload.hostAddress]" />
+</expression-transformer>
+<!--<end id="lis_04_expression-transformer-single"/>-->
+        
+    </flow>
+
+
+</mule>

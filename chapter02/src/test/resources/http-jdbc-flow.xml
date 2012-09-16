@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:management="http://www.mulesoft.org/schema/mule/management"
+      xmlns:script="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+      xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+      xsi:schemaLocation="
+            http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/current/mule-management.xsd
+            http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+            http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+            http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+            http://www.mulesoft.org/schema/mule/jdbc http://www.mulesoft.org/schema/mule/jdbc/current/mule-jdbc.xsd
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            ">
+
+    <spring:bean id="jdbcDataSource" class="org.hsqldb.jdbc.JDBCDataSource">
+        <spring:property name="url" value="jdbc:hsqldb:mem:test-db" />
+    </spring:bean>
+
+    <jdbc:connector name="jdbcConnector" dataSource-ref="jdbcDataSource">
+        <jdbc:query key="storeData" value="INSERT INTO test(data) VALUES(#[message.payload])" />
+    </jdbc:connector>
+
+    <!--<start id="lis_02_http-jdbc-flow"/>-->
+    <flow name="acmeApiBridge">
+        <vm:inbound-endpoint path="invokeAcmeAmi" />
+        <jdbc:outbound-endpoint queryKey="storeData" />
+        <http:outbound-endpoint address="http://acme.com/api" />
+    </flow>
+    <!--<end id="lis_02_http-jdbc-flow"/>-->
+</mule>

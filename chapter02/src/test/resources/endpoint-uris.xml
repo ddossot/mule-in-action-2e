@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns:tcp="http://www.mulesoft.org/schema/mule/tcp"
+    xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+    xsi:schemaLocation="
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+            http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd
+            http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+            ">
+
+    <jms:activemq-connector name="amqConnector" />
+    
+    <tcp:polling-connector name="pollingTcpConnector" timeout="10000" />
+
+    <flow name="message-sources-1">
+        <composite-source>
+            <!--<start id="lis_02_endpoint-uris"/>-->
+            <http:inbound-endpoint host="localhost"
+                                   port="8080"
+                                   path="products" />
+            <jms:inbound-endpoint topic="news" />
+            <tcp:inbound-endpoint host="localhost"
+                                  port="51000"
+                                  connector-ref="pollingTcpConnector" />
+            <!--<end id="lis_02_endpoint-uris"/>-->
+        </composite-source>
+        <logger />
+    </flow>
+</mule>

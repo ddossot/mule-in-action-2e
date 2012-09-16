@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:spring="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+
+
+<global-property name="seed" value="123" />
+
+<!--<start id="lis_06_spring-fixed-seed-random-integer"/>-->
+
+<spring:bean id="Random" class="java.util.Random"><!--<co id="lis_06_spring-fixed-seed-random-integer_1" />-->
+  <spring:constructor-arg value="${seed}" />
+</spring:bean>
+
+<flow name="spring-fixed-seed-random-integer">
+  <inbound-endpoint 
+    address="vm://spring-fixed-seed-random-integer-service.in" 
+	exchange-pattern="request-response" />
+  <component>
+	<no-arguments-entry-point-resolver>
+	  <include-entry-point method="nextInt" />
+	</no-arguments-entry-point-resolver>
+		
+    <spring-object bean="Random" /><!--<co id="lis_06_spring-fixed-seed-random-integer_2" />-->
+  </component>
+</flow> 	
+<!--<end id="lis_06_spring-fixed-seed-random-integer"/>-->
+
+</mule>

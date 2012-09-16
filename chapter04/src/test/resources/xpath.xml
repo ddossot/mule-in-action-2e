@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+
+    <flow name="xpath-expression-flow">
+        <vm:inbound-endpoint path="xpath-expression.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_xpath-expression"/>-->
+<message-properties-transformer scope="outbound">
+    <add-message-property key="productId" 
+        value="#[xpath('/products/product[1]/id')]" /><!--<co id="lis_04_expression_add_prop_1" />-->
+</message-properties-transformer>
+<!--<end id="lis_04_xpath-expression"/>-->
+        
+    </flow>
+    
+    <flow name="xpath-extractor-flow">
+        <vm:inbound-endpoint path="xpath-extractor.in" exchange-pattern="request-response" />
+        
+<!--<start id="lis_04_xpath-extractor"/>-->
+<mulexml:xpath-extractor-transformer 
+    expression="/products/product[1]" 
+    resultType="NODESET" />
+<!--<end id="lis_04_xpath-extractor"/>-->
+        
+    </flow>
+
+</mule>

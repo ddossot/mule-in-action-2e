@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+      xmlns:file="http://www.mulesoft.org/schema/mule/file"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+      xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/3.2/mule-ftp.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.2/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/3.2/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/3.2/mule-mongo.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.2/mule-xml.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+      ">
+
+
+    <!--<start id="ch03_mongo_save_lis"/>-->
+
+    <mongo:config name="mongoDB" database="prancingdonkey"
+                  host="mongodb.prancingdonkey.com"/>
+    <!-- <co id="ch03_mongo_save_1-cor -->
+    ￼
+    <flow name="saveCoolingAlerts">
+        <jms:inbound-endpoint topic="cooling.alerts"
+                              exchange-pattern="one-way"/>
+        <mongo:insert-object config-ref="mongoDB"
+                             collection="cooling_alerts"/>
+        <!-- <co id="ch03_mongo_save_w-cor -->
+    </flow>
+
+    <!--<end id="ch03_mongo_save_lis"/>-->
+
+
+    <!--<start id="ch03_mongo_query_lis"/>-->
+    <flow name="queryCoolingAlerts">
+        <http:inbound-endpoint host="api.internal.prancingdonkey.com"
+                               port="80" path="alerts/cooling"/>
+        <!-- <co id="ch03_mongo_query-1_cor" /> -->
+        <mongo:find-objects config-ref="mongoDB"
+                            collection="cooling_alerts"/>
+        <!-- <co id="ch03_mongo_query-2_cor" /> -->
+    </flow>
+    <!--end id="ch03_mongo_query_lis"/>-->
+
+
+
+</mule>

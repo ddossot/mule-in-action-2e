@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd">
+
+<!--<start id="lis_06_patterns-validator-error"/>-->	
+<pattern:validator name="integer-validator"
+	inboundAddress="vm://service.in" 
+	ackExpression="#['Message accepted.']"
+	nackExpression="#['Message rejected.']" 
+	errorExpression="#['Error delivering.']"
+	outboundAddress="vm://real-service.in">
+	<payload-type-filter expectedType="java.lang.Integer" />
+</pattern:validator>
+<!--<end id="lis_06_patterns-validator-error"/>-->
+
+	<pattern:simple-service name="functional-test-component" address="vm://real-service.in">
+  		<test:component throwException="true" />
+	</pattern:simple-service>
+</mule>

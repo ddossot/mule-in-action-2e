@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+    xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+<!--<start id="lis_04_transformer-refs"/>-->
+<object-to-byte-array-transformer name="objectToByteArray" />
+	
+<object-to-string-transformer name="objectToString" />
+	    
+<mulexml:xslt-transformer name="prancingToBM" 
+    xsl-file="xsl/prancing-to-gondor-bm.xsl" />
+
+<flow name="transformerRefsFlow">
+    <http:inbound-endpoint 
+        host="localhost" port="8080" 
+        transformer-refs=
+            "objectToByteArray prancingToBM objectToString" /><!--<co id="lis_04_transformer-refs-1" />-->
+    <logger message="Message received!" />	
+</flow>
+
+<flow name="transformerFlow">
+    <http:inbound-endpoint 
+        host="localhost" port="8081" />
+
+    <transformer ref="objectToByteArray" /><!--<co id="lis_04_transformer-refs-2" />-->
+    <transformer ref="prancingToBM" />
+    <transformer ref="objectToString" />
+    <logger message="Message received!" />
+</flow>
+<!--<end id="lis_04_transformer-refs"/>-->
+	
+</mule>

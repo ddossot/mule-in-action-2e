@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:imap="http://www.mulesoft.org/schema/mule/imap" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:bpm="http://www.mulesoft.org/schema/mule/bpm" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="EE-3.3.0" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd 
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/2.0/mule-mongo.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd 
+http://www.mulesoft.org/schema/mule/imap http://www.mulesoft.org/schema/mule/imap/current/mule-imap.xsd 
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd 
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/bpm http://www.mulesoft.org/schema/mule/bpm/current/mule-bpm.xsd 
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd ">
+    <jms:activemq-connector name="Active_MQ" brokerURL="tcp://localhost:61616" validateConnections="true" doc:name="Active MQ"/>
+    <bpm:drools></bpm:drools>
+    <spring:beans>
+        <spring:bean name="NoFactsBean" class="java.util.ArrayList"/>
+        <spring:bean class="org.mule.util.store.SimpleMemoryObjectStore"/>
+    </spring:beans>
+    <mongo:config name="Mongo_DB" doc:name="Mongo DB"/>
+
+    <!--<start id="ch05_dispatchCoolingAlerts_lis"/>-->
+    <flow name="dispatchCoolingAlerts" doc:name="dispatchCoolingAlerts">
+        <imap:inbound-endpoint host="mail.prancingdonkey.com" port="143" user="cooling" password="password" responseTimeout="10000" doc:name="IMAP"/>
+        <email:email-to-string-transformer doc:name="Email to String"/>
+        <choice doc:name="Choice"><!-- <co id="ch05_dispatchCoolingAlerts-1.cor"/> -->
+            <when expression="payload.contains('SEVERE')">
+                <processor-chain>
+                    <jms:outbound-endpoint topic="cooling.alerts" connector-ref="Active_MQ" doc:name="JMS"/>
+                </processor-chain>
+            </when>
+            <when expression="">
+                <processor-chain>
+                    <file:outbound-endpoint path="/data/cooling/reports" responseTimeout="10000" doc:name="File"/>
+                </processor-chain>
+            </when>
+        </choice>
+    </flow>
+    <!--<end id="ch05_dispatchCoolingAlerts_lis"/>-->
+
+
+    <!--<start id="ch05_expenseReportCallback_lis"/>-->
+    <flow name="expenseReportCallback" doc:name="expenseReportCallback">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
+        <choice doc:name="Choice">
+            <when expression="message.mimeType == 'application/vnd.ms-excel'"><!-- <co id="ch05_expenseReportCallback-1.cor"/> -->
+                <processor-chain>
+                    <file:outbound-endpoint path="/opt/expenses/rejected" outputPattern="#[java.util.UUID.randomUUID()]-#[currentTimeMillis()].xls" doc:name="File"/>
+                </processor-chain>
+            </when>
+            <otherwise>
+                <processor-chain>
+                    <file:outbound-endpoint path="/opt/expenses/status" outputPattern="#[java.util.UUID.randomUUID()]-#[currentTimeMillis()].xls" doc:name="File"/>
+                </processor-chain>
+            </otherwise>
+        </choice>
+    </flow>
+    <!--<end id="ch05_expenseReportCallback_lis"/>-->
+
+    <!--<start id="ch05_expenseReportCallbackWithDLQ_lis"/>-->
+    <flow name="expenseReportCallbackWithDLQ" doc:name="expenseReportCallback">
+        <vm:inbound-endpoint path="orders" doc:name="VM"/>
+        <choice doc:name="Choice"><!-- <co id="ch05_expenseReportCallbackWithDLQ-1.cor"/> -->
+            <when expression="payload.class == 'com.prancingdonkey.domain.Brew">
+                <processor-chain>
+                    <jms:outbound-endpoint queue="brews.definitions" connector-ref="Active_MQ" doc:name="JMS"/>
+                </processor-chain>
+            </when>
+            <when expression="payload.class == 'com.prancingdonkey.domain.Order">
+                <processor-chain>
+                    <jms:outbound-endpoint queue="brews.orders" connector-ref="Active_MQ" doc:name="JMS"/>
+                </processor-chain>
+            </when>
+            <otherwise>
+                <processor-chain>
+                    <jms:outbound-endpoint queue="DLQ" connector-ref="Active_MQ" doc:name="JMS"/>
+                </processor-chain>
+            </otherwise>
+        </choice>
+    </flow>
+    <!--<end id="ch05_expenseReportCallbackWithDLQ_lis"/>-->
+
+    <!--<start id="ch05_logExpenseReports_lis"/>-->
+    <flow name="logExpenseReports" doc:name="logExpenseReports">
+        <jms:inbound-endpoint topic="expenses.status" connector-ref="Active_MQ" doc:name="JMS"/>
+        <choice doc:name="Choice"><!-- <co id="ch05_logExpenseReports-1.cor"/> -->
+            <when expression="xpath('/expense/status/text()') =='PROCCESSED'">
+                <processor-chain>
+                    <logger message="Expense Report #[xpath('/expense/id/text()')] processed on #[currentTimeMillis()]" level="INFO" doc:name="Logger"/>
+                </processor-chain>
+            </when>
+            <when expression="xpath('/expense/status/text()') =='FAILED'">
+                <processor-chain>
+                    <logger message="Error processing expense report:#[xpath('/expense/id/text()]" level="ERROR" doc:name="Logger"/>
+                </processor-chain>
+            </when>
+        </choice>
+    </flow>
+    <!--<end id="ch05_logExpenseReports_lis"/>-->
+
+    <flow name="routeAlerts" doc:name="routeAlerts">
+        <jms:inbound-endpoint queue="alerts" connector-ref="Active_MQ" doc:name="JMS"/>
+        <bpm:rules rulesDefinition="alerts.drl" initialFacts-ref="NoFactsBean"></bpm:rules>
+    </flow>
+
+    <!--<start id="ch05_acceptBrewDefinitions_lis"/>-->
+    <flow name="acceptBrewDefinitions" doc:name="acceptBrewDefinitions">
+        <jms:inbound-endpoint queue="brews.definitions" connector-ref="Active_MQ" doc:name="JMS"/>
+        <payload-type-filter expectedType="com.prancingdonkey.domain.Brew" doc:name="Payload"/><!-- <co id="ch05_acceptBrewDefinitions-1.cor"/> -->
+        <component class="com.prancingdonkey.service.BrewProcessingService" doc:name="Java"/>
+    </flow>
+    <!--<end id="ch05_acceptBrewDefinitions_lis"/>-->
+
+
+    <!--<start id="ch05_acceptBrewOrders_lis"/>-->
+    <flow name="acceptBrewOrders" doc:name="acceptBrewOrders">
+        <jms:inbound-endpoint queue="brews.orders" connector-ref="Active_MQ" doc:name="JMS"/>
+        <payload-type-filter expectedType="com.prancingdonkey.domain.Order" doc:name="Payload"/>
+        <component class="com.prancingdonkey.service.OrderProcessingService" doc:name="Java"/>
+    </flow>
+    <!--<end id="ch05_acceptBrewOrders_lis"/>-->
+
+    <!--<start id="ch05_processOrders_lis"/>-->
+    <flow name="processOrders" doc:name="processOrders">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="orders" doc:name="HTTP"/>
+        <component class="com.prancingdonkey.service.OrderPreProcessingService" doc:name="Java"/>
+        <message-property-filter pattern="PD_PRIORITY='HIGH'" caseSensitive="true" scope="inbound" doc:name="Message Property"/>
+        <jms:outbound-endpoint queue="orders.critical" connector-ref="Active_MQ" doc:name="JMS"/>
+    </flow>
+    <!--<end id="ch05_processOrders_lis"/>-->
+
+    <!--<start id="ch05_dispatchCoolingAlerts_lis"/>-->
+    <flow name="dispatchCoolingAlerts" doc:name="dispatchCoolingAlerts">
+        <imap:inbound-endpoint host="mail.prancingdonkey.com" port="143" user="cooling" password="password" responseTimeout="10000" doc:name="IMAP"/>
+        <email:email-to-string-transformer doc:name="Email to String"/>
+        <file:outbound-endpoint path="/data/cooling/reports" doc:name="File"/>
+        <wildcard-filter pattern="*SEVERE*" doc:name="Wildcard"/>
+        <jms:outbound-endpoint topic="cooling.alerts" connector-ref="Active_MQ" doc:name="JMS"/>
+    </flow>
+    <!--<end id="ch05_dispatchCoolingAlerts_lis"/>-->
+
+
+    <!--<start id="ch05_dispatchCoolingAlertsWithRegex_lis"/>-->
+    <flow name="dispatchCoolingAlertsWithRegex" doc:name="dispatchCoolingAlerts">
+        <imap:inbound-endpoint host="mail.prancingdonkey.com" port="143" user="cooling" password="password" responseTimeout="10000" doc:name="IMAP"/>
+        <email:email-to-string-transformer doc:name="Email to String"/>
+        <file:outbound-endpoint path="/data/cooling/reports" doc:name="File"/>
+        <regex-filter pattern="^LEVEL: SEVERE$" doc:name="Regex"/>
+        <jms:outbound-endpoint topic="cooling.alerts" connector-ref="Active_MQ" doc:name="JMS"/>
+    </flow>
+    <!--<end id="ch05_dispatchCoolingAlertsWithRegex_lis"/>-->
+
+    <!--<start id="ch05_validateAndDispatchCoolingAlerts_lis"/>-->
+    <flow name="validateAndDispatchCoolingAlerts" doc:name="validateAndDispatchCoolingAlerts">
+        <http:inbound-endpoint exchange-pattern="one-way" host="localhost" port="8081" path="orders" doc:name="HTTP"/>
+        <mulexml:schema-validation-filter schemaLocations="schemas/order.xsd" returnResult="true" doc:name="Schema Validation"/>
+        <jms:outbound-endpoint topic="cooling.alerts" connector-ref="Active_MQ" doc:name="JMS"/>
+    </flow>
+    <!--<end id="ch05_validateAndDispatchCoolingAlerts_lis"/>-->
+
+
+    <!--<start id="ch05_routeHighPriorityOrdersWithXpath_lis"/>-->
+    <flow name="routeHighPriorityOrdersWithXpath" doc:name="routeHighPriorityOrdersWithXpath">
+        <jms:inbound-endpoint topic="orders" connector-ref="Active_MQ" doc:name="JMS"/>
+        <expression-filter expression="xpath('/order/priority/text()') == 'HIGH'" doc:name="Expression"/>
+        <component class="com.prancingdonkey.service.HighPriorityOrderProcessingService" doc:name="Java"/>
+    </flow>
+    <!--<end id="ch05_routeHighPriorityOrdersWithXpath_lis"/>-->
+
+
+    <!--<start id="ch05_routeHighPriorityOrdersWithProperties_lis"/>-->
+    <flow name="routeHighPriorityOrdersWithProperties" doc:name="routeHighPriorityOrdersWithProperties">
+        <jms:inbound-endpoint topic="orders" connector-ref="Active_MQ" doc:name="JMS"/>
+        <expression-filter expression="payload.priority == 'HIGH'" doc:name="Expression"/>
+        <component class="com.prancingdonkey.service.HighPriorityOrderProcessingService" doc:name="Java"/>
+    </flow>
+    <!--<end id="ch05_routeHighPriorityOrdersWithProperties_lis"/>-->
+
+
+    <!--<start id="ch05_routeHighPriorityOrdersOfTheCorrectType_lis"/>-->
+    <flow name="routeHighPriorityOrdersOfTheCorrectType" doc:name="routeHighPriorityOrdersOfTheCorrectType">
+        <jms:inbound-endpoint topic="orders" connector-ref="Active_MQ" doc:name="JMS"/>
+        <and-filter doc:name="And">
+            <expression-filter expression="payload.priority == 'HIGH'"/>
+            <payload-type-filter expectedType="com.prancingdonkey.domain.Order"/>
+        </and-filter>
+        <component class="com.prancingdonkey.service.HighPriorityOrderProcessingService" doc:name="Java"/>
+    </flow>
+    <!--<end id="ch05_routeHighPriorityOrdersOfTheCorrectType_lis"/>-->
+
+    <flow name="routeHighPriorityOrdersWithLogicalCondition" doc:name="routeHighPriorityOrdersWithLogicalCondition">
+        <jms:inbound-endpoint topic="orders" connector-ref="Active_MQ" doc:name="JMS"/>
+        <and-filter doc:name="And">
+            <or-filter>
+                <expression-filter expression="payload.priority == 'HIGH'"/>
+                <message-property-filter pattern="PD_PRIORITY='HIGH'" caseSensitive="true" scope="inbound"/>
+            </or-filter>
+            <payload-type-filter expectedType="com.prancingdonkey.domain.Order"/>
+        </and-filter>
+        <component class="com.prancingdonkey.service.HighPriorityOrderProcessingService" doc:name="Java"/>
+    </flow>
+
+    <!--<start id="ch05_idempotentOrderRouter_lis"/>-->
+    <flow name="idempotentOrderRouter" doc:name="idempotentOrderRouter">
+        <jms:inbound-endpoint topic="orders" connector-ref="Active_MQ" doc:name="JMS"/>
+        <and-filter doc:name="And">
+            <or-filter>
+                <expression-filter evaluator="jxpath" expression="/order/priority/text()='HIGH'"/>
+                <message-property-filter pattern="PD_PRIORITY='HIGH'" caseSensitive="true" scope="inbound"/>
+            </or-filter>
+            <payload-type-filter expectedType="com.prancingdonkey.domain.Order"/>
+        </and-filter>
+        <idempotent-message-filter idExpression="xpath('/order/id/text()')" doc:name="Idempotent Message"/><!-- <co id="ch05.idempotent-receiver-1.cod"/> -->
+
+        <component class="com.prancingdonkey.service.HighPriorityOrderProcessingService" doc:name="Java"/>
+    </flow>
+    <!--<end id="ch05_idempotentOrderRouter_lis"/>-->
+
+
+    <!--<start id="ch05_routeToDLQ_lis "/>-->
+    <flow name="routeToDLQ" doc:name="routeToDLQ">
+        <jms:inbound-endpoint topic="orders" connector-ref="Active_MQ" doc:name="JMS"/>
+        <message-filter onUnaccepted="jms://DLQ" doc:name="Message">
+            <and-filter><!-- <co id="ch05_routeToDLQ-1.cod"/> -->
+                <or-filter>
+                    <expression-filter evaluator="jxpath" expression="/order/priority/text()='HIGH'"/>
+                    <message-property-filter pattern="PD_PRIORITY='HIGH'" caseSensitive="true" scope="inbound"/>
+                </or-filter>
+                <payload-type-filter expectedType="java.lang.String"/>
+            </and-filter>
+        </message-filter>
+        <component class="com.prancingdonkey.service.HighPriorityOrderProcessingService" doc:name="Java"/>
+    </flow>
+    <!--<end id="ch05_routeToDLQ_lis "/>-->
+
+    <!--<start id="ch05_processSalesForceAlert_lis"/>-->
+    <flow name="processSalesForceAlert" doc:name="processSalesForceAlert">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="alerts.salesforce" doc:name="VM"/>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/><!-- <co id="ch05_processSalesForceAlert-1.cod"/> -->
+
+        <all doc:name="All"><!-- <co id="ch05_processSalesForceAlert-2.cod"/> -->
+            <processor-chain>
+                <smtp:outbound-endpoint host="localhost" port="25" responseTimeout="10000" doc:name="SMTP"/><!-- <co id="h05_processSalesForceAlert-3.cod"/> -->
+            </processor-chain>
+            <processor-chain>
+                <mongo:insert-object config-ref="Mongo_DB" collection="alerts" doc:name="Mongo DB"/><!-- <co id="h05_processSalesForceAlert-4.cod"/> -->
+            </processor-chain>
+        </all>
+    </flow>
+    <!--<end id="ch05_processSalesForceAlert_lis "/>-->
+
+    <!--<start id="ch05_aggregateResponses_lis"/>-->
+    <flow name="aggregateResponses" doc:name="aggregateResponses">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="order.netprice" doc:name="VM"/> <!-- <co id="ch05_aggregateResponses-1.cod"/> -->
+        <response>
+            <expression-transformer expression="payload[0].toBigDecimal() + payload[1].toBigDecimal()" doc:name="Expression"/><!-- <co id="ch05_aggregateResponses-3.cod"/> -->
+        </response>
+        <all doc:name="All"><!-- <co id="ch05_aggregateResponses-2.cod"/> -->
+
+            <http:outbound-endpoint exchange-pattern="request-response" host="api.internal.prancingdonkey.com" port="9091" path="shipping" doc:name="HTTP"/>
+            <http:outbound-endpoint exchange-pattern="request-response" host="api.internal.prancingdonkey.com" port="9091" path="tax" doc:name="HTTP"/>
+        </all>
+    </flow>
+    <!--<end id="ch05_aggregateResponses_lis"/>-->
+
+    <!--<start id="ch05_asyncRequestReply_lis/>-->
+    <flow name="asyncRequestReply" doc:name="asyncRequestReply">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="order.submission" doc:name="VM"/>
+        <request-reply>  
+            <jms:outbound-endpoint queue="db.order.insert" connector-ref="Active_MQ"></jms:outbound-endpoint>  <!-- <co id="ch05.request-reply-1.cor"/> -->
+            <jms:inbound-endpoint topic="db.order.insert.status">  <!-- <co id="ch05.request-reply-2.cor"/> -->
+                <jms:selector expression="PD_ORDER_ID=#[inboundProperties('PD_ORDER_ID')]"/> 
+            </jms:inbound-endpoint> 
+        </request-reply>
+        <logger message="Order insert status for #[inboundProperties('PD_ORDER_ID')]: #[payload]" level="INFO" doc:name="Logger"/><!-- <co id="ch05.request-reply-3.cor"/> -->
+    </flow>
+    <!--<end id="ch05_asyncRequestReply_lis/>-->
+    <!--<start id="ch05_splitLineItems_lis/>-->
+    <flow name="splitLineItems" doc:name="splitLineItems">
+        <jms:inbound-endpoint queue="order.submission" connector-ref="Active_MQ" doc:name="JMS"/>
+        <message-properties-transformer doc:name="Message Properties">
+            <add-message-property key="ORDER_ID" value="#[payload.id]"/><!-- <co id="ch05.splitter-1.cor"/> -->
+        </message-properties-transformer>
+        <splitter evaluator="jxpath" expression="/order/lineItems" doc:name="Splitter"/><!-- <co id="ch05.splitter-2.cor"/> -->
+        <message-properties-transformer doc:name="Message Properties">
+            <add-message-property key="MULE_CORRELATION_ID" value="#[flowVars('PD_ORDER_ID')]"/><!-- <co id="ch05.splitter-3.cor"/> -->
+        </message-properties-transformer>
+        <jms:outbound-endpoint queue="lineitem.processing" connector-ref="Active_MQ" doc:name="JMS"/><!-- <co id="ch05.splitter-4.cor"/> -->
+    </flow>
+    <!--<end id="ch05_splitLineItems_lis/>-->
+
+
+    <!--<start id="ch05_aggregateLineItems_lis/>-->
+    <flow name="aggregateLineItems" doc:name="aggregateLineItems">
+        <jms:inbound-endpoint queue="lineitem.complete" connector-ref="Active_MQ" doc:name="JMS"/>
+        <collection-aggregator timeout="60000" failOnTimeout="true" doc:name="Collection Aggregator"/><!-- <co id="ch05.aggregator-1.cor"/> -->
+        <custom-transformer class="com.prancingdonkey.transformer.LineItemsToOrderTransformer" doc:name="Java"/><!-- <co id="ch05.aggregator-1.cor"/> -->
+        <component class="com.prancingdonkey.service.OrderService" doc:name="Java"/><!-- <co id="ch05.aggregator-3.cor"/> -->
+
+    </flow>
+    <!--<end id="ch05_aggregateLineItems_lis/>-->
+    <!--<start id="ch05_storeDocument_lis/>-->
+    <flow name="storeDocument" doc:name="storeDocument">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="ws.in" doc:name="VM"/>
+        <until-successful objectStore-ref="documentREquestObjectStore" maxRetries="12" secondsBetweenRetries="300" deadLetterQueue-ref="vm://DLQ" doc:name="Until Successful">
+            <outbound-endpoint address="http://localhost:9091/documents" doc:name="Generic"/>
+        </until-successful>
+    </flow>
+    <!--<end id="ch05_storeDocument_lis/>-->
+    <flow name="storeDocumentWithFailureExpression" doc:name="storeDocumentWithFailureExpression">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="ws" doc:name="VM"/>
+        <until-successful objectStore-ref="documentRequestObjectStore" maxRetries="12" secondsBetweenRetries="300" failureExpression="exception-type:java.net.SocketTimeoutException" deadLetterQueue-ref="vm://DLQ" doc:name="Until Successful">
+            <outbound-endpoint address="http://localhost:9091/documents" doc:name="Generic"/>
+        </until-successful>
+    </flow>
+</mule>

@@ -1,0 +1,15 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://jaxb.model.prancingdonkey.com"
+            xmlns="http://jaxb.model.prancingdonkey.com"
+            elementFormDefault="qualified">
+
+    <xsd:element name="friend">
+	    <xsd:complexType>
+	        <xsd:sequence>
+    	        <xsd:element name="name" type="xsd:string"/>
+	            <xsd:element name="surname" type="xsd:string"/>
+        	</xsd:sequence>
+    	</xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
