@@ -20,7 +20,8 @@ public class RawTransportTestCase
             "wsdl-cxf:http://www.webservicex.net/CurrencyConvertor.asmx?WSDL"
             +"&method=ConversionRate",
             new String[]{"CAD", "USD"},
-            null);//<co id="lis_12_raw-cxf_2"/>
+            null,
+            15000);//<co id="lis_12_raw-cxf_2"/>
         Double cadToUsd = (Double)result.getPayload();//<co id="lis_12_raw-cxf_3"/>
         muleClient.dispose();//<co id="lis_12_raw-cxf_4"/>
         //<end id="lis_12_raw-cxf"/>

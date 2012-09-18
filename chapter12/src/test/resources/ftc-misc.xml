@@ -27,4 +27,21 @@
         </test:component>
         <!--<end id="lis_12_ftc_misc-2"/>-->
     </flow>
-</mule>
+
+    <flow name="ftcWaitTime">
+        <vm:inbound-endpoint path="ftc.waitTime" exchange-pattern="request-response" />
+        <!--<start id="lis_12_ftc_misc-3"/>-->
+        <test:component waitTime="15000">
+          <test:return-data>{"result":"success"}</test:return-data>
+        </test:component>
+        <!--<end id="lis_12_ftc_misc-3"/>-->
+    </flow>
+
+    <flow name="ftcThrowing">
+        <vm:inbound-endpoint path="ftc.throwing" exchange-pattern="request-response" />
+        <!--<start id="lis_12_ftc_misc-4"/>-->
+        <test:component throwException="true"
+                        exceptionToThrow="java.lang.RuntimeException" />
+        <!--<end id="lis_12_ftc_misc-4"/>-->
+    </flow>
+ </mule>

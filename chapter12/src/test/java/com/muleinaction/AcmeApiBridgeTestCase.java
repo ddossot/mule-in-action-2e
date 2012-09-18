@@ -30,7 +30,7 @@ public class AcmeApiBridgeTestCase extends FunctionalTestCase
     }
 
     @Test
-    public void testSuccessFullJdbcAndHttpDispatches() throws Exception
+    public void testSuccessfulJdbcAndHttpDispatches() throws Exception
     {
         MuleClient muleClient = muleContext.getClient();//<co id="lis_12_acme_api_bridge_test-2"/>
 
@@ -38,7 +38,7 @@ public class AcmeApiBridgeTestCase extends FunctionalTestCase
                             ACME_TEST_MESSAGE,
                             null);
 
-        waitForMessageDispatchedToAcme();
+        Thread.sleep(5000L);//<co id="lis_12_acme_api_bridge_test-4"/>
 
         MuleMessage dbResponse =
                     muleClient.request("jdbc://retrieveData",
@@ -51,7 +51,7 @@ public class AcmeApiBridgeTestCase extends FunctionalTestCase
                    is(ACME_TEST_MESSAGE));
 
         FunctionalTestComponent ftc =
-                        getFunctionalTestComponent("acmeApiStub"); //<co id="lis_12_acme_api_bridge_test-7"/>
+                        getFunctionalTestComponent("acmeApiStub");//<co id="lis_12_acme_api_bridge_test-7"/>
 
         assertThat(ftc.getReceivedMessagesCount(),//<co id="lis_12_acme_api_bridge_test-8"/>
                    is(1));
@@ -61,12 +61,6 @@ public class AcmeApiBridgeTestCase extends FunctionalTestCase
 
         assertThat(lastReceivedMessage,//<co id="lis_12_acme_api_bridge_test-10"/>
                    is(ACME_TEST_MESSAGE));
-    }
-
-    private void waitForMessageDispatchedToAcme()
-                    throws InterruptedException
-    {
-        Thread.sleep(5000L); //<co id="lis_12_acme_api_bridge_test-4"/>
     }
 }
 //<end id="lis_12_acme_api_bridge_test"/>
