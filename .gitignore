@@ -15,4 +15,4 @@ bin/
 .idea
 Ddo*
 .mule
-
+activemq-data/
