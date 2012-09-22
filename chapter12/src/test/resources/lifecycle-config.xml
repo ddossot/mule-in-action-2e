@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:spring="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="
+       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <spring:bean id="SpringBeanLifecycleTracker" class="com.muleinaction.lifecycle.LifecycleTrackerComponent"
+        init-method="springInitialize" destroy-method="springDestroy" scope="singleton">
+        <spring:property name="property" value="sblt" />
+    </spring:bean>
+
+    <spring:bean id="SpringBeanLifecycleTrackerComponent" class="com.muleinaction.lifecycle.LifecycleTrackerComponent"
+        init-method="springInitialize" destroy-method="springDestroy" scope="singleton">
+        <spring:property name="property" value="sbltc" />
+    </spring:bean>
+
+    <custom-filter name="LifecycleTrackerFilter" class="com.muleinaction.lifecycle.LifecycleTrackerFilter">
+        <spring:property name="property" value="ltf" />
+    </custom-filter>
+
+    <custom-transformer name="LifecycleTrackerTransformer"
+        class="com.muleinaction.lifecycle.LifecycleTrackerTransformer">
+        <spring:property name="property" value="ltt" />
+    </custom-transformer>
+
+    <flow name="SpringBeanFlow">
+        <vm:inbound-endpoint path="SpringBeanFlow.In" exchange-pattern="request-response" />
+        <component>
+            <spring-object bean="SpringBeanLifecycleTrackerComponent" />
+        </component>
+    </flow>
+
+    <flow name="MulePrototypeFlow">
+        <vm:inbound-endpoint path="MulePrototypeFlow.In" exchange-pattern="request-response" />
+        <component>
+            <prototype-object class="com.muleinaction.lifecycle.LifecycleTrackerComponent">
+                <property key="property" value="mps" />
+            </prototype-object>
+        </component>
+    </flow>
+
+    <flow name="MulePooledPrototypeFlow">
+        <vm:inbound-endpoint path="MulePooledPrototypeFlow.In" exchange-pattern="request-response" />
+        <pooled-component>
+            <prototype-object class="com.muleinaction.lifecycle.LifecycleTrackerComponent">
+                <property key="property" value="mpps" />
+            </prototype-object>
+            <pooling-profile maxActive="3" initialisationPolicy="INITIALISE_ALL" />
+        </pooled-component>
+    </flow>
+
+    <flow name="MuleSingletonFlow">
+        <vm:inbound-endpoint path="MuleSingletonFlow.In" exchange-pattern="request-response" />
+        <component>
+            <singleton-object class="com.muleinaction.lifecycle.LifecycleTrackerComponent">
+                <property key="property" value="mss" />
+            </singleton-object>
+        </component>
+    </flow>
+
+    <flow name="FilteredFlow">
+        <vm:inbound-endpoint path="FilteredFlow.In" exchange-pattern="request-response">
+            <filter ref="LifecycleTrackerFilter" />
+        </vm:inbound-endpoint>
+        <echo-component />
+    </flow>
+
+    <flow name="EchoFlow">
+        <vm:inbound-endpoint path="EchoFlow.In" exchange-pattern="request-response" transformer-refs="LifecycleTrackerTransformer" />
+        <echo-component />
+    </flow>
+</mule>

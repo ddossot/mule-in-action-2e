@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+    xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+    xmlns:spring="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="
+       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+       http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <spring:bean name="activeMQConnectionFactory"
+        class="org.apache.activemq.ActiveMQConnectionFactory">
+        <spring:property name="brokerURL"
+            value="tcp://mq.staging.prancingdonkey.com:61616" />
+    </spring:bean>
+
+    <jms:activemq-connector name="jmsConnector"
+        connectionFactory-ref="activeMQConnectionFactory"
+        specification="1.1" persistentDelivery="true">
+    </jms:activemq-connector>
+
+    <flow name="jmsXmlV1V2Bridge">
+        <jms:inbound-endpoint queue="messages.v1" />
+        <mule-xml:xslt-transformer xsl-file="v1tov2.xsl" />
+        <jms:outbound-endpoint queue="messages.v2" />
+    </flow>
+</mule>
