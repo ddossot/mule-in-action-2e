@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:https="http://www.mulesoft.org/schema/mule/https" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/3.2/mule-https.xsd
+        http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/3.2/mule-jersey.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.2/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.2/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        ">
+
+<!--<start id="lis_10_server_keystore"/>-->
+<https:connector name="httpsServerConnector">
+	<https:tls-key-store path="keystore.jks" 
+	  keyPassword="password" storePassword="password" /><!--<co id="lis_10_server_keystore_1" />-->
+</https:connector>
+<!--<end id="lis_10_server_keystore"/>-->
+
+<!--<start id="lis_10_https_server"/>-->
+<flow name="expenseReportSecureCallback">
+
+  <https:inbound-endpoint host="127.0.0.1"
+	port="8443" path="expenseReportCallback" method="POST"
+	exchange-pattern="one-way" connector-ref="httpsServerConnector" />
+
+  <file:outbound-endpoint path="/tmp"
+	outputPattern="#[java.util.UUID.randomUUID().toString()].xml" />
+
+</flow>
+<!--<end id="lis_10_https_server"/>-->
+
+
+
+</mule>
+        
+        

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/current/mule-spring-security.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+<!--<start id="lis_10_security-filter"/>-->
+<spring:beans><!--<co id="lis_10_security-filter_1" />-->
+	<ss:authentication-manager alias="authenticationManager">
+		<ss:authentication-provider>
+			<ss:user-service id="userService">
+				<ss:user name="victor" password="password" 
+				    authorities="ROLE_ADMIN" />
+			</ss:user-service>
+		</ss:authentication-provider>
+	</ss:authentication-manager>
+</spring:beans>
+
+<mule-ss:security-manager><!--<co id="lis_10_security-filter_2" />-->
+	<mule-ss:delegate-security-provider	name="memory-dao" 
+	    delegate-ref="authenticationManager" />
+</mule-ss:security-manager>
+
+<flow name="authenticatedHttp">
+	<inbound-endpoint address="http://localhost:8081/secure">
+   		<mule-ss:http-security-filter realm="mule"/><!--<co id="lis_10_security-filter_3" />-->
+	</inbound-endpoint>
+	<logger message="User logged in" level="INFO" />
+</flow>
+<!--<end id="lis_10_security-filter"/>-->
+
+</mule>

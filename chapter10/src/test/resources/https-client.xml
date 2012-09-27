@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:https="http://www.mulesoft.org/schema/mule/https" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/3.2/mule-https.xsd
+        http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/3.2/mule-jersey.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.2/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.2/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        ">
+<!--<start id="lis_10_client_keystore"/>-->
+<https:connector name="httpsClientConnector">
+  <https:tls-client path="clientkeystore.jks"
+    storePassword="password"/>
+</https:connector>
+<!--<end id="lis_10_client_keystore"/>-->
+
+<!--<start id="lis_10_https_client"/>-->
+ <flow name="securePostExpenseReports">
+  <file:inbound-endpoint path="/data/expenses/in"
+    pollingFrequency="60000">
+    <file:filename-regex-filter pattern=".*xls" 
+      caseSensitive="false"/>
+  </file:inbound-endpoint>
+  
+  <https:outbound-endpoint host="api.accounting.com"
+    port="443" path="expenseReports"
+    method="POST" exchange-pattern="one-way" 
+    connector-ref="httpsClientConnector"/>
+</flow>
+<!--<end id="lis_10_https_client"/>-->
+
+<!--<start id="lis_10_https_client_google"/>-->
+<flow name="getGoogle">
+  <vm:inbound-endpoint address="vm://getGoogle.in" 
+    exchange-pattern="request-response" />
+  
+  <https:outbound-endpoint host="www.google.com"
+    port="443" path="/"
+    method="GET" />
+    
+  <object-to-string-transformer />
+</flow>
+<!--<end id="lis_10_https_client_google"/>-->
+
+</mule>
+        
+        
