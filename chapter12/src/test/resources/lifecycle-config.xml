@@ -26,6 +26,16 @@
         <spring:property name="property" value="ltt" />
     </custom-transformer>
 
+    <custom-processor name="LifecycleTrackerMessageProcessor"
+        class="com.muleinaction.lifecycle.LifecycleTrackerMessageProcessor">
+        <spring:property name="property" value="ltmp" />
+    </custom-processor>
+
+    <flow name="MessageProcessorFlow">
+        <vm:inbound-endpoint path="MessageProcessorFlow.In" exchange-pattern="request-response" />
+        <processor ref="LifecycleTrackerMessageProcessor" />
+    </flow>
+
     <flow name="SpringBeanFlow">
         <vm:inbound-endpoint path="SpringBeanFlow.In" exchange-pattern="request-response" />
         <component>

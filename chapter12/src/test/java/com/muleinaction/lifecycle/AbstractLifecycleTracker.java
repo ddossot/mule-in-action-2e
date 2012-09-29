@@ -33,7 +33,7 @@ public abstract class AbstractLifecycleTracker implements Lifecycle, MuleContext
 
     public void setFlowConstruct(FlowConstruct flowConstruct)
     {
-        tracker.add("setFlow");
+        tracker.add("setFlowConstruct");
     }
 
     public void initialise() throws InitialisationException

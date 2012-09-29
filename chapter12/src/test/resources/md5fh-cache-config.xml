@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:spring="http://www.springframework.org/schema/beans" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+       http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+
+    <spring:bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+        p:cacheName="Md5FileHasher" />
+
+    <!--<start id="lis_12_interceptor_cache_stack"/>-->
+    <interceptor-stack name="PayloadCacheInterceptors">
+      <timer-interceptor />
+      <custom-interceptor
+        class="com.prancingdonkey.interceptor.PayloadCacheInterceptor">
+         <spring:property name="cache" ref="ehCache" />
+      </custom-interceptor>
+    </interceptor-stack>
+    <!--<end id="lis_12_interceptor_cache_stack"/>-->
+
+    <file:connector name="NonDeletingFileConnector" autoDelete="false" />
+
+    <flow name="Md5FileHasher">
+        <vm:inbound-endpoint path="Md5FileHasher.In" exchange-pattern="request-response" />
+        <!--<start id="lis_12_interceptor_cache_usage"/>-->
+        <pooled-component>
+            <interceptor-stack ref="PayloadCacheInterceptors" />
+            <singleton-object
+                class="com.prancingdonkey.component.Md5FileHasher">
+        <!--<end id="lis_12_interceptor_cache_usage"/>-->
+                <property key="fileConnector" value-ref="NonDeletingFileConnector" />
+                <property key="sourceFolder" value="${java.io.tmpdir}" />
+            </singleton-object>
+            <pooling-profile initialisationPolicy="INITIALISE_ONE" maxActive="5" />
+        </pooled-component>
+    </flow>
+</mule>

@@ -26,28 +26,28 @@ public class LifecycleTrackerComponentTestCase
     public void trackSpringBeanFlowLifecycle() throws Exception
     {
         trackComponentLifecycle("SpringBeanFlow",
-            "[setProperty, setMuleContext, springInitialize, setFlow, start, stop, springDestroy]");
+            "[setProperty, setMuleContext, springInitialize, setFlowConstruct, start, stop, springDestroy]");
     }
 
     @Test
     public void trackMuleSingletonFlowLifecycle() throws Exception
     {
         trackComponentLifecycle("MuleSingletonFlow",
-            "[setProperty, setFlow, setMuleContext, initialise, start, stop, dispose]");
+            "[setProperty, setFlowConstruct, setMuleContext, initialise, start, stop, dispose]");
     }
 
     @Test
     public void trackMulePrototypeFlowLifecycle() throws Exception
     {
         trackComponentLifecycle("MulePrototypeFlow",
-            "[setProperty, setFlow, setMuleContext, initialise, start, stop, dispose]");
+            "[setProperty, setFlowConstruct, setMuleContext, initialise, start, stop, dispose]");
     }
 
     @Test
     public void trackMulePooledPrototypeFlowLifecycle() throws Exception
     {
         trackComponentLifecycle("MulePooledPrototypeFlow",
-            "[setProperty, setFlow, setMuleContext, initialise, start, stop, dispose]");
+            "[setProperty, setFlowConstruct, setMuleContext, initialise, start, stop, dispose]");
     }
 
     private void trackComponentLifecycle(final String flowName, final String expectedLifeCycle)
