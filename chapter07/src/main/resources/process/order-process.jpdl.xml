@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!--<start id="order_jbpm_process_lis"/>-->
+
+<process name="submitOrder"
+         xmlns="http://jbpm.org/4.3/jpdl">   <!-- <co id="order_jbpm_process-1-co"/> -->
+
+    <start name="start">
+        <transition to="fork"/>
+    </start>
+
+    <fork name="fork">
+        <transition to="sendOrderToSalesForce"/>
+        <transition to="sendOrderToNetSuite"/>
+    </fork>
+
+    <mule-send name="sendOrderToSalesForce"
+               endpoint="jms://crm.customer.create"
+               payload="incoming"
+               exchange-pattern="request-response">
+        <transition to="join"/>
+    </mule-send>   <!-- <co id="order_jbpm_process-2-co"/> -->
+
+    <mule-send name="sendOrderToNetSuite"
+               endpoint="jms://erp.order.record"
+               payload="incoming"
+               exchange-pattern="request-response">
+        <transition to="join"/>
+    </mule-send>  <!-- <co id="order_jbpm_process-3-co"/> -->
+
+    <join name="join">  <!-- <co id="order_jbpm_process-4-co"/> -->
+        <transition to="dispatchOrderCompletedEvent"/>
+    </join>
+
+    <mule-send name="dispatchOrderCompletedEvent"
+               endpoint="jms://topic:events.orders.completed"
+               payload="incoming" exchange-pattern="one-way">  <!-- <co id="order_jbpm_process-5-co"/> -->
+        <transition to="end"/>
+    </mule-send>
+
+    <end name="end"/>
+
+</process>
+
+<!--<end id="order_jbpm_process_lis"/>-->
+

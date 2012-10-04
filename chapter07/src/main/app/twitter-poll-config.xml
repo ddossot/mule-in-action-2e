@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+      xmlns:twitter="http://www.mulesoft.org/schema/mule/twitter"
+      xmlns:esper="http://www.mulesoft.org/schema/mule/esper"
+      xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/3.2/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.2/mule-xml.xsd
+                http://www.mulesoft.org/schema/mule/twitter http://www.mulesoft.org/schema/mule/twitter/2.3/mule-twitter.xsd
+        http://www.mulesoft.org/schema/mule/esper http://www.mulesoft.org/schema/mule/esper/1.0/mule-esper.xsd">
+
+    <esper:config configuration="esper-config.xml"/>
+
+    <twitter:config consumerKey="****************"
+                    consumerSecret="***************"/>
+
+    <!--<start id="poll_config_lis"/>-->
+    <flow name="main">
+        <poll frequency="300000"> <!-- <co id="poll_config-1-co"/> -->
+            <twitter:get-public-timeline/>
+        </poll>
+        <collection-splitter/>
+        <esper:send eventPayload-ref="#[payload:]"/>
+    </flow>
+    <!--<end id="poll_config_lis"/>-->
+
+
+</mule>

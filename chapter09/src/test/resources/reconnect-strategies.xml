@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:https="http://www.mulesoft.org/schema/mule/http" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/3.2/mule-jersey.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.2/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.2/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        ">
+        
+<!--<start id="lis_09_reconnect-strategies-reconnect"/>-->
+<http:connector name="httpClientConnector">
+    <reconnect count="5" frequency="1000"/>
+</http:connector>
+<!--<end id="lis_09_reconnect-strategies-reconnect"/>-->
+
+<!--<start id="lis_09_reconnect-strategies-reconnect-forever"/>-->
+<jms:activemq-connector name="jmsInboundConnector">
+    <reconnect-forever  frequency="1000"/>
+</jms:activemq-connector>
+<jms:activemq-connector name="jmsOutboundConnector">
+    <reconnect count="5" frequency="1000"/>
+</jms:activemq-connector>
+<!--<end id="lis_09_reconnect-strategies-reconnect-forever"/>-->
+
+<!--<start id="lis_09_reconnect-strategies-custom"/>-->
+<jms:activemq-connector name="jmsWithCustomReconnect">
+    <reconnect-custom-strategy 
+      class="org.mule.retry.test.TestRetryPolicyTemplate">
+        <spring:property name="fooBar" value="true"/>
+        <spring:property name="revolutions" value="500"/>
+    </reconnect-custom-strategy>
+</jms:activemq-connector>
+<!--<end id="lis_09_reconnect-strategies-custom"/>-->
+
+<!--<start id="lis_09_reconnect-strategies-non-blocking"/>-->
+<configuration>
+    <reconnect-forever blocking="false" frequency="5000"/>
+</configuration>
+<!--<end id="lis_09_reconnect-strategies-non-blocking"/>-->
+</mule>

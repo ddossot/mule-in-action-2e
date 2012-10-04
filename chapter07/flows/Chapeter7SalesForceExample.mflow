@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="Chapeter7SalesForceExample">
+    <global-element type="http://www.mulesoft.org/schema/mule/sfdc/config" name="Salesforce" entity-id="Salesforce#1">
+        <properties>
+            <property value="sfconfig" name="name"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="john.demic@gmail.com" name="username"/>
+            <property value="muleintegration123" name="password"/>
+            <property value="Mi9ckwlosmoeqVlWiwiYjjFn" name="securityToken"/>
+            <property name="url"/>
+            <property name="proxyHost"/>
+            <property name="proxyPort"/>
+            <property name="proxyUsername"/>
+            <property name="proxyPassword"/>
+            <property value="1" name="auxiliary;index"/>
+            <property name="timeObjectStore-ref"/>
+            <property name="clientId"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+        </properties>
+        <description>Global configuration for Salesforce operations</description>
+    </global-element>
+    <flow SubFlow="false" name="Chapeter7SalesForceExampleFlow1" entity-id="67c8c482-1505-4690-8113-e53fa09e240a">
+        <properties>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property value="2" name="auxiliary;index"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property value="2" name="auxiliary;index"/>
+            <property value="2" name="auxiliary;index"/>
+            <property value="2" name="auxiliary;index"/>
+        </properties>
+        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#1">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM" entity-id="VM#1">
+                <properties>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property value="crm.create" name="path"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property name="address"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property name="connector-ref"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property value="3" name="auxiliary;index"/>
+                    <property value="3" name="auxiliary;index"/>
+                </properties>
+            </endpoint>
+            <pattern type="http://www.mulesoft.org/schema/mule/sfdc/sfdc-connector" name="Salesforce Contact" entity-id="Salesforce#2">
+                <properties>
+                    <property value="sfconfig" name="config-ref"/>
+                    <property value="http://www.mulesoft.org/schema/mule/sfdc/create-single" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property value="sfconfig" name="config-ref"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="Contact" name="type"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property name=""/>
+                    <property name="username"/>
+                    <property name="password"/>
+                    <property name="securityToken"/>
+                    <property name="url"/>
+                    <property name="proxyHost"/>
+                    <property name="proxyPort"/>
+                    <property name="proxyUsername"/>
+                    <property name="proxyPassword"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property value="4" name="auxiliary;index"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/sfdc/create-single-objects;0">
+                        <property value="5" name="auxiliary;wrapIn"/>
+                        <property value="5" name="auxiliary;index"/>
+                        <property-collection name="@http://www.mulesoft.org/schema/mule/sfdc/create-single-object;1">
+                            <property value="#[payload.firstName]" name="value"/>
+                            <property value="6" name="auxiliary;wrapIn"/>
+                            <property value="6" name="auxiliary;index"/>
+                            <property value="FirstName" name="key"/>
+                        </property-collection>
+                        <property-collection name="@http://www.mulesoft.org/schema/mule/sfdc/create-single-object;2">
+                            <property value="#[payload.lastName]" name="value"/>
+                            <property value="7" name="auxiliary;wrapIn"/>
+                            <property value="7" name="auxiliary;index"/>
+                            <property value="LastName" name="key"/>
+                        </property-collection>
+                    </property-collection>
+                </properties>
+                <description>Creates a Salesforce contact for the person placing the order.</description>
+            </pattern>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="Chapeter7SalesForceExampleFlow2" entity-id="7d1e42e1-690b-46ab-8b9b-bb4d74b66923">
+        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="571789bc-34e3-4d9b-a455-2ed3797b4150">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM" entity-id="7a782103-36ed-474b-9fc6-e5beba84d3d5">
+                <properties>
+                    <property value="true" name="auxiliary;erased;mimeType"/>
+                    <property value="" name="businessEventsLabel"/>
+                    <property value="false" name="disableTransportTransformer"/>
+                    <property value="request-response" name="exchange-pattern"/>
+                    <property value="false" name="tracking:enable-default-events"/>
+                    <property value="" name="ref"/>
+                    <property value="" name="transformer-refs"/>
+                    <property value="" name="address"/>
+                    <property value="true" name="auxiliary;erased;encoding"/>
+                    <property value="crm.query" name="path"/>
+                    <property value="" name="encoding"/>
+                    <property value="" name="responseTransformer-refs"/>
+                    <property value="" name="responseTimeout"/>
+                    <property value="" name="mimeType"/>
+                    <property value="" name="connector-ref"/>
+                    <property name="updated"/>
+                </properties>
+                <description></description>
+            </endpoint>
+            <pattern type="http://www.mulesoft.org/schema/mule/sfdc/sfdc-connector" name="Salesforce" entity-id="eedef6dd-c982-4aaf-abb5-47bb8904c89f">
+                <properties>
+                    <property value="" name=""/>
+                    <property value="" name="proxyUsername"/>
+                    <property value="" name="username"/>
+                    <property value="" name="proxyHost"/>
+                    <property value="" name="securityToken"/>
+                    <property value="c" name="query"/>
+                    <property value="http://www.mulesoft.org/schema/mule/sfdc/query-single" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property value="80" name="proxyPort"/>
+                    <property value="" name="password"/>
+                    <property value="sfconfig" name="config-ref"/>
+                    <property value="" name="proxyPassword"/>
+                    <property value="https://login.salesforce.com/services/Soap/u/23.0" name="url"/>
+                    <property name="updated"/>
+                </properties>
+                <description></description>
+            </pattern>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/expression-transformer" name="Expression" entity-id="eabf947d-ea1b-427c-a015-3c9327c9c901">
+                <properties>
+                    <property value="true" name="auxiliary;erased;mimeType"/>
+                    <property value="#[new Customer(firstName: payload.firstName, lastName: payload.lastName]]" name="expression"/>
+                    <property value="" name="returnClass"/>
+                    <property value="false" name="ignoreBadInput"/>
+                    <property value="false" name="returnSourceIfNull"/>
+                    <property value="true" name="auxiliary;erased;encoding"/>
+                    <property value="" name="encoding"/>
+                    <property value="" name="mimeType"/>
+                    <property name="updated"/>
+                </properties>
+                <description></description>
+            </pattern>
+        </lane>
+    </flow>
+    <description></description>
+</mule-configuration>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.3.1"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
+
+    <sfdc:config name="sfconfig" username="john.demic@gmail.com" password="muleintegration123"
+                 securityToken="Mi9ckwlosmoeqVlWiwiYjjFn"
+                 doc:name="Salesforce" doc:description="Global configuration for Salesforce operations"/>
+
+    <custom-transformer name="salesforceResultToCustomerTransformer"
+                        class="com.prancingdonkey.transformer.SalesforceQueryResultToCustomerTransformer"/>
+
+
+    <!--<start id="crm_salesforce_lis"/>-->
+    <flow name="createContact">
+        <vm:inbound-endpoint exchange-pattern="one-way"
+                             path="crm.contact.create"/>
+        <sfdc:create-single config-ref="sfconfig" type="Contact">
+            <sfdc:object><!-- <co id="crm_salesforce-1-co"/> -->
+                <sfdc:object key="FirstName">
+                    #[payload.firstName]
+                </sfdc:object>
+                <sfdc:object key="LastName">
+                    #[payload.lastName]
+                </sfdc:object>
+            </sfdc:object>
+        </sfdc:create-single>
+    </flow>
+    <flow name="getContact" >
+        <vm:inbound-endpoint exchange-pattern="request-response"
+                             path="crm.contact.get"/>
+        <sfdc:query-single config-ref="sfconfig"
+            query="SELECT Name from Contact where Name = '#[payload]'"
+                          />
+        <transformer ref="salesforceResultToCustomerTransformer"/>
+    </flow>
+    <!--<end id="crm_salesforce_lis"/>-->
+
+</mule>
