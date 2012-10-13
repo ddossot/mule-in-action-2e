@@ -1,26 +1,30 @@
 
 package com.prancingdonkey.interceptor;
 
-import org.mule.api.MuleContext;
 import org.mule.api.MuleEvent;
 import org.mule.api.MuleException;
 import org.mule.api.context.notification.MuleContextNotificationListener;
+import org.mule.api.interceptor.Interceptor;
+import org.mule.api.lifecycle.Initialisable;
+import org.mule.api.lifecycle.InitialisationException;
 import org.mule.context.notification.MuleContextNotification;
 import org.mule.context.notification.NotificationException;
 import org.mule.processor.AbstractInterceptingMessageProcessor;
 
 // <start id="lis_12_interceptor_broker_not_ready"/>
-public final class BrokerNotReadyInterceptor extends AbstractInterceptingMessageProcessor
-    implements MuleContextNotificationListener<MuleContextNotification>
+public final class BrokerNotReadyInterceptor
+  extends AbstractInterceptingMessageProcessor
+  implements Interceptor,
+              MuleContextNotificationListener<MuleContextNotification>,
+              Initialisable
 {
     private volatile boolean brokerReady = false;
 
-    @Override
-    public void setMuleContext(final MuleContext context)
+    public void initialise() throws InitialisationException
     {
         try
         {
-            context.registerListener(this);
+            muleContext.registerListener(this);//<co id="lis_12_interceptor_broker_not_ready-1"/>
         }
         catch (final NotificationException ne)
         {
@@ -28,26 +32,28 @@ public final class BrokerNotReadyInterceptor extends AbstractInterceptingMessage
         }
     }
 
-    public void onNotification(final MuleContextNotification notification)
+    public void onNotification(MuleContextNotification notification)
     {
         int action = notification.getAction();
 
         if (action == MuleContextNotification.CONTEXT_STARTED)
         {
-            brokerReady = true;
+            brokerReady = true;//<co id="lis_12_interceptor_broker_not_ready-2"/>
         }
         else if (action == MuleContextNotification.CONTEXT_STOPPED)
         {
-            brokerReady = false;
+            brokerReady = false;//<co id="lis_12_interceptor_broker_not_ready-3"/>
         }
     }
 
     public MuleEvent process(MuleEvent event) throws MuleException
     {
-        if (!brokerReady)
+        if (!brokerReady)//<co id="lis_12_interceptor_broker_not_ready-4"/>
         {
-            throw new IllegalStateException("Invocation of service " + event.getFlowConstruct().getName()
-                                            + " impossible at this time!");
+            throw new IllegalStateException(
+                "Invocation of service "
+              + event.getFlowConstruct().getName()
+              + " impossible at this time!");
         }
 
         return next.process(event);

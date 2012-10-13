@@ -18,12 +18,12 @@ public class PayloadCacheInterceptor implements Interceptor//<co id="lis_12_inte
     private MessageProcessor next;
     private Ehcache cache;
 
-    public void setListener(MessageProcessor listener)
+    public void setListener(MessageProcessor listener)//<co id="lis_12_interceptor_cache-5"/>
     {
         next = listener;
     }
 
-    public void setCache(final Ehcache cache)
+    public void setCache(final Ehcache cache)//<co id="lis_12_interceptor_cache-6"/>
     {
         this.cache = cache;
     }

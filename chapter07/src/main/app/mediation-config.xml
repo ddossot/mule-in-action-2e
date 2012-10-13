@@ -31,12 +31,25 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
     </mule-ss:security-manager>
 
 
-    <flow name="ServiceMediationFlow" doc:name="ServiceMediationFlow">
-        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
-        <mule-ss:http-security-filter realm="mule-realm"/>
-        <mulexml:schema-validation-filter schemaLocations="schema/order.xsd" returnResult="true"
-                                          doc:name="Schema Validation"/>
+    <!--<start id="mediation_lis"/>-->
+
+    <flow name="ServiceMediationFlow">
+        <http:inbound-endpoint
+                exchange-pattern="request-response"
+                host="api.prancingdonkey.com"
+                port="80"/><!-- <co id="mediation-1-co"/> -->
+        <mule-ss:http-security-filter realm="mule-realm"/> <!-- <co id="mediation-2-co"/> -->
+        <mulexml:schema-validation-filter
+                schemaLocations="schema/order.xsd"
+                returnResult="true"/> <!-- <co id="mediation-3-co"/> -->
+        <component
+   class="com.prancingdonkey.service.RegistryLookupService"/> <!-- <co id="mediation-4-co"/> -->
+        <http:outbound-endpoint
+                exchange-pattern="request-response"
+                address="#[flowVars['resolvedEndpoint']"/> <!-- <co id="mediation-5-co"/> -->
 
     </flow>
+    <!--<end id="mediation_lis"/>-->
+
 
 </mule>

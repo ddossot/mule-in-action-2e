@@ -40,9 +40,9 @@ public class WorkingHoursAwareRetryPolicy implements RetryPolicy
     	try 
     	{
     	  Thread.sleep(withinCompanyHours ?
-    	    intervalInWorkingHours : intervalInNonWorkingHours);
+    	    intervalInWorkingHours : intervalInNonWorkingHours);//<co id="lis_09_working-hours-aware-retry-policy_1"/>
     	} catch (InterruptedException e) {
-    		throw new RuntimeException(e);
+    		throw new RuntimeException(e);//<co id="lis_09_working-hours-aware-retry-policy_2"/>
     	}
     	
     	return PolicyStatus.policyOk();
