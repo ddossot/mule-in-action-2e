@@ -28,12 +28,12 @@
         <!--<start id="lis_12_interceptor_cache_usage"/>-->
         <pooled-component>
             <interceptor-stack ref="PayloadCacheInterceptors" />
-            <singleton-object
+            <prototype-object
                 class="com.prancingdonkey.component.Md5FileHasher">
         <!--<end id="lis_12_interceptor_cache_usage"/>-->
                 <property key="fileConnector" value-ref="NonDeletingFileConnector" />
                 <property key="sourceFolder" value="${java.io.tmpdir}" />
-            </singleton-object>
+            </prototype-object>
             <pooling-profile initialisationPolicy="INITIALISE_ONE" maxActive="5" />
         </pooled-component>
     </flow>

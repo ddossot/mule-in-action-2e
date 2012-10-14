@@ -7,20 +7,22 @@
        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
 
-    <!--<start id="lis_12_interceptor_broker_not_ready_config"/>-->
+    <!--<start id="lis_12_interceptor_broker_not_ready_config-1"/>-->
     <notifications>
         <notification event="CONTEXT" />
     </notifications>
+    <!--<end id="lis_12_interceptor_broker_not_ready_config-1"/>-->
 
     <flow name="BrokerReadinessService">
         <vm:inbound-endpoint
             path="BrokerReadinessService.In"
             exchange-pattern="request-response" />
 
+        <!--<start id="lis_12_interceptor_broker_not_ready_config-2"/>-->
         <custom-processor
             class="com.prancingdonkey.interceptor.BrokerNotReadyInterceptor" />
+        <!--<end id="lis_12_interceptor_broker_not_ready_config-2"/>-->
 
         <expression-transformer expression="#['ACK']" />
     </flow>
-    <!--<end id="lis_12_interceptor_broker_not_ready_config"/>-->
 </mule>

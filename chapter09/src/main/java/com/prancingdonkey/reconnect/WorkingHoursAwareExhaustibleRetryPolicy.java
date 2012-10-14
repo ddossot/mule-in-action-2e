@@ -38,7 +38,7 @@ public class WorkingHoursAwareExhaustibleRetryPolicy
           (hour >= companyWorkStartHour && hour < companyWorkEndHour);
     	
     	if (!withinCompanyHours) {
-    		return PolicyStatus.policyExhausted(cause);
+    		return PolicyStatus.policyExhausted(cause);//<co id="lis_09_working-hours-aware-exhaustible-retry-policy_1"/> 
     	}
 
     	try 

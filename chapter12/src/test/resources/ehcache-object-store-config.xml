@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:test="http://www.mulesoft.org/schema/mule/test"
+    xmlns:spring="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xsi:schemaLocation="
+       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+       http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <vm:endpoint name="proxiedService" path="ib.out" />
+
+    <spring:beans>
+        <spring:bean id="vmEhCache"
+            class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+            p:cacheName="vmCache" />
+
+        <spring:bean id="idempotentEhCache"
+            class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+            p:cacheName="idempotentCache" />
+
+        <spring:bean id="untilSuccessfulEhCache"
+            class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+            p:cacheName="untilSuccessfulCache" />
+    </spring:beans>
+
+    <!--<start id="lis_12_ehcache_object_store"/>-->
+    <spring:beans>
+        <spring:bean name="vmStore"
+            class="com.prancingdonkey.objectstore.EhCacheObjectStore"
+            p:cache-ref="vmEhCache" />
+
+        <spring:bean name="vmQueueStore"
+            class="org.mule.util.store.QueueStoreAdapter"
+            c:store-ref="vmStore" />
+
+        <spring:bean name="idempotentStore"
+            class="com.prancingdonkey.objectstore.EhCacheObjectStore"
+            p:cache-ref="idempotentEhCache" />
+
+        <spring:bean name="untilSuccessfulStore"
+            class="com.prancingdonkey.objectstore.EhCacheObjectStore"
+            p:cache-ref="untilSuccessfulEhCache" />
+    </spring:beans>
+
+    <vm:connector name="vmConnector">
+        <vm:queue-profile>
+            <queue-store ref="vmQueueStore" />
+        </vm:queue-profile>
+    </vm:connector>
+
+    <flow name="idempotent-bridge">
+        <vm:inbound-endpoint path="ib.in" />
+        <idempotent-message-filter>
+            <spring-object-store ref="idempotentStore" />
+        </idempotent-message-filter>
+        <until-successful objectStore-ref="untilSuccessfulStore">
+            <outbound-endpoint ref="proxiedService" />
+        </until-successful>
+    </flow>
+    <!--<end id="lis_12_ehcache_object_store"/>-->
+</mule>

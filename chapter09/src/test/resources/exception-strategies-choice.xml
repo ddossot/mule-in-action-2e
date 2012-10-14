@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:https="http://www.mulesoft.org/schema/mule/http" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/3.2/mule-jersey.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.2/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.2/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        ">
+
+<jms:activemq-connector name="jmsConnector" maxRedelivery="-1"/><!--<co id="lis_01_prod_reg-4"/>-->
+       
+<!--<start id="lis_09_exception-strategies-choice"/>-->
+<flow name="ShippingCostCalculatorFlow" >
+  <jms:inbound-endpoint queue="/queue/calculateShippingCost">
+      <jms:transaction action="ALWAYS_BEGIN"/>
+  </jms:inbound-endpoint>
+  
+  <component>
+    <singleton-object 
+	  class="com.prancingdonkey.component.ShippingCostCalculator" />
+  </component>
+
+  <choice-exception-strategy><!--<co id="lis_09_exception-strategies-choice_1"/>-->
+
+    <rollback-exception-strategy 
+      when="exception.causedBy(java.lang.IllegalStateException)"
+      maxRedeliveryAttempts="3"><!--<co id="lis_09_exception-strategies-choice_2"/>-->
+      <logger message="Retrying shipping cost calc." level="WARN" />
+      <on-redelivery-attempts-exceeded>
+        <logger message="Too many retries shipping cost calc." 
+          level="WARN" />
+        <set-payload value="Error: #[exception.getSummaryMessage()]"/>
+      </on-redelivery-attempts-exceeded>
+    </rollback-exception-strategy>
+
+    <catch-exception-strategy>
+      <logger message=
+        "ShippingCost error : #[exception.getSummaryMessage()]"
+        level="ERROR" />
+      <set-payload value="Error: #[exception.getSummaryMessage()]"/>
+    </catch-exception-strategy>
+    
+  </choice-exception-strategy>
+
+</flow>
+<!--<end id="lis_09_exception-strategies-choice"/>-->
+
+</mule>
