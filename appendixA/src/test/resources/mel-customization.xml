@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+    xsi:schemaLocation="
+       http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+       http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+
+    <!--<start id="lis_a_mel_custom_config"/>-->
+    <configuration>
+      <expression-language autoResolveVariables="false">
+        <import class="org.mule.util.StringUtils" />
+        <import name="rsu"
+                class="org.apache.commons.lang.RandomStringUtils" />
+        <alias name="appName" expression="app.name" />
+        <global-functions>
+          def reversePayload() { StringUtils.reverse(payload) }
+          def randomString(size) { rsu.randomAlphanumeric(size) }
+        </global-functions>
+      </expression-language>
+    </configuration>
+    <!--<end id="lis_a_mel_custom_config"/>-->
+
+    <flow name="TestMELFlow">
+        <vm:inbound-endpoint path="test.in" />
+        <!--<start id="lis_a_mel_custom_usage"/>-->
+        <set-property propertyName="random-app-property"
+                      value="#[appName + ':' + randomString(20)]" />
+        <set-payload  value="#[reversePayload()]" />
+        <!--<end id="lis_a_mel_custom_usage"/>-->
+        <vm:outbound-endpoint path="test.out" />
+    </flow>
+</mule>

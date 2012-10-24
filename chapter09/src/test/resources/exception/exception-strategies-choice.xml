@@ -13,14 +13,17 @@
         http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
         ">
 
-<jms:activemq-connector name="jmsConnector" maxRedelivery="-1"/><!--<co id="lis_01_prod_reg-4"/>-->
-       
 <!--<start id="lis_09_exception-strategies-choice"/>-->
-<flow name="ShippingCostCalculatorFlow" >
-  <jms:inbound-endpoint queue="/queue/calculateShippingCost">
-      <jms:transaction action="ALWAYS_BEGIN"/>
-  </jms:inbound-endpoint>
-  
+<flow name="ShippingCostCalculatorFlow" 
+   processingStrategy="synchronous">
+   <inbound-endpoint address="vm://calculateShippingCost.in" 
+	exchange-pattern="request-response" />
+	
+	<message-properties-transformer>
+        <add-message-property key="MULE_REPLYTO" 
+          value="jms://replyQueue"/>
+    </message-properties-transformer>
+    
   <component>
     <singleton-object 
 	  class="com.prancingdonkey.component.ShippingCostCalculator" />
@@ -43,7 +46,8 @@
       <logger message=
         "ShippingCost error : #[exception.getSummaryMessage()]"
         level="ERROR" />
-      <set-payload value="Error: #[exception.getSummaryMessage()]"/>
+      <set-payload value="Error"/>
+      <jms:outbound-endpoint queue="dlq" />
     </catch-exception-strategy>
     
   </choice-exception-strategy>

@@ -20,7 +20,7 @@ public class ExceptionStrategiesConfFlowTestCase extends FunctionalTestCase
     @Override
     protected String getConfigResources()
     {
-        return "exception-strategies-conf-flow.xml";
+        return "exception/exception-strategies-conf-flow.xml";
     }
 
     @Test

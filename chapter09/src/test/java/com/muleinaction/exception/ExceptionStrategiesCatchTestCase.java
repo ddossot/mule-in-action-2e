@@ -9,14 +9,13 @@ import org.mule.api.MuleMessage;
 import org.mule.module.client.MuleClient;
 import org.mule.tck.junit4.FunctionalTestCase;
 
-
 public class ExceptionStrategiesCatchTestCase extends FunctionalTestCase
 {
 
     @Override
     protected String getConfigResources()
     {
-        return "exception-strategies-catch.xml";
+        return "exception/exception-strategies-catch.xml";
     }
 
     @Test

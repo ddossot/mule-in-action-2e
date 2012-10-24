@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:https="http://www.mulesoft.org/schema/mule/http" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/jdbc http://www.mulesoft.org/schema/mule/jdbc/current/mule-jdbc.xsd
+        ">
+
+<!--<start id="lis_09_jdbc-single-transaction"/>-->
+<spring:beans>
+    <spring:import resource="spring-config.xml"/>
+</spring:beans>
+         
+<jms:activemq-connector name="jmsConnector" specification="1.1" />
+    
+<jdbc:connector name="jdbcConnector" dataSource-ref="dataSource">
+    <jdbc:query key="statsInsert"
+        value="INSERT INTO PERF_METRICS VALUES  
+         (0,#[map-payload:CLIENT_ID],'AVG_RESPONSE_TIME',
+            #[map-payload:AVG_RESPONSE_TIME],
+            #[map-payload:TIMESTAMP]),
+         (0,#[map-payload:CLIENT_ID], 'MED_RESPONSE_TIME',
+            #[map-payload:MED_RESPONSE_TIME],
+            #[map-payload:TIMESTAMP]),
+         (0,#[map-payload:CLIENT_ID],'MAX_RESPONSE_TIME',
+            #[map-payload:MAX_RESPONSE_TIME],
+            #[map-payload:TIMESTAMP])"/><!--<co id="lis_09_jdbc-single-transaction_1" />-->
+ </jdbc:connector>
+
+<flow name="URLAlertingFlow">
+    <jms:inbound-endpoint topic="monitoring.performance" 
+        exchange-pattern="request-response"/>
+    
+    <component class=
+        "com.prancingdonkey.component.URLMetricsComponent"/>
+            
+    <jdbc:outbound-endpoint queryKey="statsInsert"><!--<co id="lis_09_jdbc-single-transaction_2" />-->
+        <jdbc:transaction action="ALWAYS_BEGIN"/><!--<co id="lis_09_jdbc-single-transaction_3" />-->
+    </jdbc:outbound-endpoint>
+</flow>
+<!--<end id="lis_09_jdbc-single-transaction"/>-->
+
+</mule>

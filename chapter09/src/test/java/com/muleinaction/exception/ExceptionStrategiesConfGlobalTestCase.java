@@ -20,7 +20,7 @@ public class ExceptionStrategiesConfGlobalTestCase extends FunctionalTestCase
     @Override
     protected String getConfigResources()
     {
-        return "exception-strategies-conf-global.xml";
+        return "exception/exception-strategies-conf-global.xml";
     }
 
     @Test

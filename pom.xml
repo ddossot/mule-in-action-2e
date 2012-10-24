@@ -22,6 +22,7 @@
         <module>chapter05</module>
         <module>chapter06</module>
         <module>chapter12</module>
+        <module>appendixA</module>
     </modules>
 
     <dependencyManagement>
