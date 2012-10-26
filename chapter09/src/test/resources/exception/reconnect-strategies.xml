@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:https="http://www.mulesoft.org/schema/mule/http" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:https="http://www.mulesoft.org/schema/mule/https" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
 	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:spring="http://www.springframework.org/schema/beans"
 	xsi:schemaLocation="
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
         http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/3.2/mule-https.xsd
         http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/3.2/mule-jersey.xsd
         http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.2/mule-cxf.xsd
         http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.2/mule-file.xsd
         http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
         ">
         
 <!--<start id="lis_09_reconnect-strategies-reconnect"/>-->
@@ -29,17 +33,23 @@
 
 <!--<start id="lis_09_reconnect-strategies-custom"/>-->
 <jms:activemq-connector name="jmsWithCustomReconnect">
-    <reconnect-custom-strategy 
-      class="org.mule.retry.test.TestRetryPolicyTemplate">
-        <spring:property name="fooBar" value="true"/>
-        <spring:property name="revolutions" value="500"/>
-    </reconnect-custom-strategy>
+  <reconnect-custom-strategy 
+    class=
+"com.prancingdonkey.reconnect.WorkingHoursAwareRetryPolicyTemplate">
+    <spring:property name="companyWorkStartHour" value="9"/>
+    <spring:property name="companyWorkEndHour" value="18"/>
+    <spring:property name="intervalInWorkingHours" value="5000"/>
+    <spring:property name="intervalInNonWorkingHours" 
+        value="360000000"/>
+    <spring:property name="timeZone" 
+      value="$[T(TimeZone).getTimeZone('America/Los_Angeles')]"/>
+  </reconnect-custom-strategy>
 </jms:activemq-connector>
 <!--<end id="lis_09_reconnect-strategies-custom"/>-->
 
 <!--<start id="lis_09_reconnect-strategies-non-blocking"/>-->
 <configuration>
-    <reconnect-forever blocking="false" frequency="5000"/>
+    <reconnect-forever blocking="true" frequency="5000"/>
 </configuration>
 <!--<end id="lis_09_reconnect-strategies-non-blocking"/>-->
 </mule>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:https="http://www.mulesoft.org/schema/mule/http" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc"
+	xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/jdbc http://www.mulesoft.org/schema/mule/jdbc/current/mule-jdbc.xsd
+        http://www.mulesoft.org/schema/mule/jbossts http://www.mulesoft.org/schema/mule/jbossts/current/mule-jbossts.xsd
+        ">
+
+<!--<start id="lis_09_transaction-xa-resin"/>-->
+<jms:activemq-xa-connector name="jmsConnector" specification="1.1" />
+
+<jdbc:connector name="operationalDb" 
+  dataSource-ref="operationalDataSource">
+  <jdbc:query key="operationalBillingInsert"
+    value="INSERT INTO billing_stats VALUES (0,#[map-payload:STAT])"/>
+</jdbc:connector>
+
+<jdbc:connector name="warehouseDb" 
+  dataSource-ref="warehouseDataSource">
+  <jdbc:query key="warehouseBillingInsert"
+    value="INSERT INTO billing_stats VALUES (0,#[map-payload:STAT])"/>
+</jdbc:connector>
+
+<resin-transaction-manager/><!--<co id="lis_09_transaction-xa-resin_1" />-->
+
+<flow name="transactedMulticastingRouterService" >
+
+	<jms:inbound-endpoint queue="billingData">
+		<xa-transaction action="ALWAYS_BEGIN" />
+	</jms:inbound-endpoint>
+
+	<component class="com.prancingdonkey.component.BillingService" />
+
+	<jdbc:outbound-endpoint connector-ref="operationalDb"
+		queryKey="operationalBillingInsert">
+		<xa-transaction action="ALWAYS_JOIN" />
+	</jdbc:outbound-endpoint>
+	 
+	<jdbc:outbound-endpoint connector-ref="warehouseDb"
+		queryKey="warehouseBillingInsert">
+		<xa-transaction action="ALWAYS_JOIN" />
+	</jdbc:outbound-endpoint>
+
+</flow>
+<!--<end id="lis_09_transaction-xa-resin"/>-->
+    
+</mule>
