@@ -14,16 +14,16 @@
      
 <!--<start id="lis_09_exception-strategies-catch"/>-->
 <flow name="ShippingCostCalculatorFlow">
-  <inbound-endpoint address="vm://calculateShippingCost.in" 
+  <vm:inbound-endpoint path="calculateShippingCost.in" 
 	exchange-pattern="request-response" />
   <component>
     <singleton-object 
 	  class="com.prancingdonkey.component.ShippingCostCalculator" />
   </component>
   <catch-exception-strategy><!--<co id="lis_09_exception-strategies-catch_1" />-->
-    <set-payload value="Error: #[exception.getSummaryMessage()]"/>
+    <set-payload value="Error: #[exception.summaryMessage]"/>
     <logger message=
-      "ShippingCost error : #[exception.getSummaryMessage()]" 
+      "ShippingCost error : #[exception.summaryMessage]" 
       level="ERROR" /><!--<co id="lis_09_exception-strategies-catch_2" />-->
   </catch-exception-strategy>
 </flow>

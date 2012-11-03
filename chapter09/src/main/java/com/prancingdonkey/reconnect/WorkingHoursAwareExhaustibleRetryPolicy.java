@@ -11,10 +11,10 @@ import org.mule.retry.PolicyStatus;
 public class WorkingHoursAwareExhaustibleRetryPolicy 
   implements RetryPolicy
 {
-	int companyWorkStartHour;
-	int companyWorkEndHour;
-	int intervalInWorkingHours;
-	TimeZone timeZone;
+    int companyWorkStartHour;
+    int companyWorkEndHour;
+    int intervalInWorkingHours;
+    TimeZone timeZone;
 		
     public WorkingHoursAwareExhaustibleRetryPolicy(
       int companyWorkStartHour,

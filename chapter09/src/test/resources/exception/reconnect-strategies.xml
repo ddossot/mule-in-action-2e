@@ -17,9 +17,9 @@
         ">
         
 <!--<start id="lis_09_reconnect-strategies-reconnect"/>-->
-<http:connector name="httpClientConnector">
+<jms:activemq-connector name="jmsConnector">
     <reconnect count="5" frequency="1000"/>
-</http:connector>
+</jms:activemq-connector>
 <!--<end id="lis_09_reconnect-strategies-reconnect"/>-->
 
 <!--<start id="lis_09_reconnect-strategies-reconnect-forever"/>-->
@@ -49,7 +49,7 @@
 
 <!--<start id="lis_09_reconnect-strategies-non-blocking"/>-->
 <configuration>
-    <reconnect-forever blocking="true" frequency="5000"/>
+    <reconnect-forever blocking="false" frequency="5000"/>
 </configuration>
 <!--<end id="lis_09_reconnect-strategies-non-blocking"/>-->
 </mule>

@@ -15,14 +15,9 @@
 
 <!--<start id="lis_09_exception-strategies-choice"/>-->
 <flow name="ShippingCostCalculatorFlow" 
-   processingStrategy="synchronous">
-   <inbound-endpoint address="vm://calculateShippingCost.in" 
-	exchange-pattern="request-response" />
-	
-	<message-properties-transformer>
-        <add-message-property key="MULE_REPLYTO" 
-          value="jms://replyQueue"/>
-    </message-properties-transformer>
+  processingStrategy="synchronous">
+  <vm:inbound-endpoint path="calculateShippingCost.in" 
+    exchange-pattern="request-response" />
     
   <component>
     <singleton-object 
@@ -38,16 +33,15 @@
       <on-redelivery-attempts-exceeded>
         <logger message="Too many retries shipping cost calc." 
           level="WARN" />
-        <set-payload value="Error: #[exception.getSummaryMessage()]"/>
+        <set-payload value="Error: #[exception.summaryMessage]"/>
       </on-redelivery-attempts-exceeded>
     </rollback-exception-strategy>
 
     <catch-exception-strategy>
       <logger message=
-        "ShippingCost error : #[exception.getSummaryMessage()]"
+        "ShippingCost error : #[exception.summaryMessage]"
         level="ERROR" />
-      <set-payload value="Error"/>
-      <jms:outbound-endpoint queue="dlq" />
+      <set-payload value="Error: #[exception.summaryMessage]"/>
     </catch-exception-strategy>
     
   </choice-exception-strategy>

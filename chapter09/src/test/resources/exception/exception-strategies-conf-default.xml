@@ -14,15 +14,15 @@
      
 <!--<start id="lis_09_exception-strategies-conf-default"/>-->
 <catch-exception-strategy name="globalCatchStrategy"><!--<co id="lis_09_exception-strategies-conf-default_1" />-->
-    <set-payload value="Error: #[exception.getSummaryMessage()]"/> 
+    <set-payload value="Error: #[exception.summaryMessage]"/> 
 </catch-exception-strategy>
 
 <configuration defaultExceptionStrategy-ref="globalCatchStrategy" /><!--<co id="lis_09_exception-strategies-conf-default_2" />-->
   
 <flow name="tax-calculator">
 
-  <inbound-endpoint 
-    address="vm://tax-calculator-service.in" 
+  <vm:inbound-endpoint 
+    path="tax-calculator-service.in" 
 	exchange-pattern="request-response" />
 	
   <component>
