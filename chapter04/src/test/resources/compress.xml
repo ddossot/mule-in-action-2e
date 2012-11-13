@@ -29,8 +29,8 @@
 <jms:inbound-endpoint 
     queue="compressedDataQueue"
     connector-ref="dataJmsConnector"/>
-    <gzip-uncompress-transformer />
-    <byte-array-to-string-transformer />
+<gzip-uncompress-transformer />
+<byte-array-to-string-transformer />
 <!--<end id="lis_04_uncompress"/>-->
         
         <jms:outbound-endpoint 
