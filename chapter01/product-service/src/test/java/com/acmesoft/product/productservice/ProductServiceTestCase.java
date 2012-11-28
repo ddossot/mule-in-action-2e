@@ -10,9 +10,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 //<start id="lis_02_product_test"/>
-public class ProductserviceTestCase extends FunctionalTestCase {
+public class ProductServiceTestCase extends FunctionalTestCase {
     protected String getConfigResources() {
-        return "src/main/app/mule-config.xml"; 
+        return "./product-service/src/main/app/mule-config.xml";
     }
 
     @Test

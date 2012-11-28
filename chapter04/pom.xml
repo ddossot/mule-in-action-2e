@@ -86,6 +86,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mule.transports</groupId>
+			<artifactId>mule-transport-file</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.transports</groupId>
 			<artifactId>mule-transport-http</artifactId>
 		</dependency>
 		<dependency>

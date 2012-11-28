@@ -9,17 +9,19 @@
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
         http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
         http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
-        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/xml/current/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
         http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+     
+     <jms:activemq-connector name="jmsConnector" specification="1.1" />
         
     <flow name="groovy-uppercase-flow">
         <vm:inbound-endpoint path="groovy-uppercase.in" exchange-pattern="request-response" />
         
 <!--<start id="lis_04_groovy-uppercase"/>-->
 <scripting:transformer name="groovyTransformer"><!--<co id="lis_04_transform_payload_csv_1" />-->
-    <scripting:script engine="groovy"><!--<co id="lis_04_transform_payload_csv_2" />-->
-        return payload.toUpperCase()<!--<co id="lis_04_transform_payload_csv_3" />-->
-    </scripting:script>
+    <!--<co id="lis_04_transform_payload_csv_2" />--><scripting:script engine="groovy">
+        return payload.toUpperCase()
+    </scripting:script><!--<co id="lis_04_transform_payload_csv_3" />-->
 </scripting:transformer>
 <!--<end id="lis_04_groovy-uppercase"/>-->
     </flow>
@@ -33,9 +35,9 @@
     <scripting:transformer><!--<co id="lis_04_order_transformer_config_3" />-->
         <scripting:script 
             file="orderTransformer.groovy" /><!--<co id="lis_04_order_transformer_config_4" />-->
-     </scripting:transformer>
+    </scripting:transformer>
         
-     <jms:outbound-endpoint queue="orders" />
+    <jms:outbound-endpoint queue="orders" />
 </flow>
 <!--<end id="lis_04_order_transformer_config"/>-->
     

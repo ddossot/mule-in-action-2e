@@ -9,8 +9,8 @@ builder.orders() {
         def fields = line.split(',') //<co id="lis04_groovy-payload-csv-2_cor"/>
         order() { //<co id="lis04_groovy-payload-csv-3_cor"/>
             subscriberId(fields[0])
-            productId(csvFields[1])
-            status(csvFields[2])
+            productId(fields[1])
+            status(fields[2])
         }
     }
 }

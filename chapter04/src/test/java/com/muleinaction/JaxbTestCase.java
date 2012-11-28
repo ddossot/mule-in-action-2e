@@ -3,6 +3,7 @@ package com.muleinaction;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -31,7 +32,8 @@ public class JaxbTestCase extends FunctionalTestCase
         friend.setSurname("Doe");
 
         MuleMessage result = muleClient.send("vm://jaxb-simple.in", friend, null);
-
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getPayload(), is(notNullValue()));
         assertThat(result.getPayload(), is(instanceOf(Friend.class)));
     }
 

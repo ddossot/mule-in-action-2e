@@ -15,8 +15,12 @@ import org.w3c.dom.NodeList;
 public class XpathTestCase extends FunctionalTestCase
 {
 
-    private static final String PAYLOAD = "<products><product><id>1234</id><type>Imported Beer</type><name>Mordor's Pale Lager</name><price>10.90</price></product></products>";
-
+    private static final String PAYLOAD = 
+    		"<products><product><id>1234</id>" +
+    		"<type>Imported Beer</type>" +
+    		"<name>Mordor's Pale Lager</name>" +
+    		"<price>10.90</price></product></products>";
+    
     @Override
     protected String getConfigResources()
     {
@@ -29,7 +33,7 @@ public class XpathTestCase extends FunctionalTestCase
         final MuleClient muleClient = new MuleClient(muleContext);
 
         final MuleMessage result = muleClient.send("vm://xpath-expression.in", PAYLOAD, null);
-
+        assertThat(result, is(notNullValue()));
         assertThat(result.getInboundProperty("productId"), is(notNullValue()));
     }
 
@@ -39,7 +43,8 @@ public class XpathTestCase extends FunctionalTestCase
         final MuleClient muleClient = new MuleClient(muleContext);
 
         final MuleMessage result = muleClient.send("vm://xpath-extractor.in", PAYLOAD, null);
-
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getPayload(), is(notNullValue()));
         assertThat(result.getPayload(), is(instanceOf(NodeList.class)));
     }
 

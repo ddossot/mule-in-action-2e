@@ -3,6 +3,7 @@ package com.muleinaction;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -13,7 +14,9 @@ import org.mule.tck.junit4.FunctionalTestCase;
 public class CompressTestCase extends FunctionalTestCase
 {
 
-    @Override
+    private static final String PAYLOAD = "The quick fox jumped over the lazy dog";
+
+	@Override
     protected String getConfigResources()
     {
         return "compress.xml";
@@ -24,13 +27,12 @@ public class CompressTestCase extends FunctionalTestCase
     {
         MuleClient muleClient = new MuleClient(muleContext);
 
-        final String payload = "The quick fox jumped over the lazy dog";
-
-        muleClient.dispatch("vm://compress.in", payload, null);
+        muleClient.dispatch("vm://compress.in", PAYLOAD, null);
 
         MuleMessage result = muleClient.request("jms://uncompressedDataQueue", 10000);
-
-        assertThat((String) result.getPayload(), is(equalTo(payload)));
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getPayload(), is(notNullValue()));
+        assertThat((String) result.getPayload(), is(equalTo(PAYLOAD)));
     }
 
 }

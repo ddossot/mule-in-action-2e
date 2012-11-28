@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--<start id="lis_01_prod_reg"/>-->
-<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
       xsi:schemaLocation="
-        http://www.mulesoft.org/schema/mule/core 
-        http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
-        http://www.mulesoft.org/schema/mule/http 
-        http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
-        http://www.mulesoft.org/schema/mule/jms 
-        http://www.mulesoft.org/schema/mule/jms/3.2/mule-jms.xsd
-       ">
+http://www.mulesoft.org/schema/mule/http
+http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms
+http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core
+http://www.mulesoft.org/schema/mule/core/current/mule.xsd "
+      version="CE-3.3.0"> <!--<co id="lis_01_prod_reg-1"/>-->
 
     <description>
         Mule Application to REST-fully Accept Product Data
     </description>
 
-    <jms:activemq-connector name="jmsConnector"/><!--<co id="lis_01_prod_reg-4"/>-->
+    <jms:activemq-connector name="jmsConnector" doc:name="Active MQ"/><!--<co id="lis_01_prod_reg-5"/>-->
 
-    <flow name="product.registration"><!--<co id="lis_01_prod_reg-1"/>-->
-        <http:inbound-endpoint host="api.prancingdonkey.com" 
-                 port="80" 
-                 path="products"
-                 method="POST"/><!--<co id="lis_01_prod_reg-2"/>-->
-        <byte-array-to-string-transformer/><!--<co id="lis_01_prod_reg-3"/>-->
-        <jms:outbound-endpoint queue="products"/><!--<co id="lis_01_prod_reg-5"/>-->
+    <flow name="product.registration" doc:name="product.registration"><!--<co id="lis_01_prod_reg-2"/>-->
+        <http:inbound-endpoint host="localhost"
+                               port="8080"
+                               path="products" doc:name="HTTP"/><!--<co id="lis_01_prod_reg-3"/>-->
+        <byte-array-to-string-transformer
+                doc:name="Byte Array to String"/><!--<co id="lis_01_prod_reg-4"/>-->
+        <jms:outbound-endpoint queue="products"
+                               connector-ref="jmsConnector"
+                               doc:name="JMS"/><!--<co id="lis_01_prod_reg-6"/>-->
     </flow>
 </mule>
-<!--<end id="lis_01_prod_reg"/>-->
+        <!--<end id="lis_01_prod_reg"/>-->

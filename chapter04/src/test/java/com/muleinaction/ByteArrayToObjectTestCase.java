@@ -2,6 +2,7 @@
 package com.muleinaction;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
@@ -30,7 +31,8 @@ public class ByteArrayToObjectTestCase extends FunctionalTestCase
         map.put("Iamakey", "Iamavalue");
 
         MuleMessage result = muleClient.send("vm://byte-array-to-object.in", map, null);
-
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getPayload(), is(notNullValue()));
         assertThat(result.getPayload().equals(map), is(true));
     }
 

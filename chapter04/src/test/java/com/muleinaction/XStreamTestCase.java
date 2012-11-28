@@ -3,6 +3,7 @@ package com.muleinaction;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import org.mule.api.MuleMessage;
@@ -23,7 +24,7 @@ public class XStreamTestCase extends FunctionalTestCase
     }
 
     @Test
-    public void testRegularTrip() throws Exception
+    public void testRegular() throws Exception
     {
         MuleClient muleClient = new MuleClient(muleContext);
 
@@ -32,7 +33,8 @@ public class XStreamTestCase extends FunctionalTestCase
         payload.setValue2("2");
 
         MuleMessage result = muleClient.send("vm://xstream_xml-to-object-regular.in", payload, null);
-
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getPayload(), is(notNullValue()));
         assertThat(result.getPayload(), is(instanceOf(ActivityReport.class)));
     }
 
@@ -46,7 +48,8 @@ public class XStreamTestCase extends FunctionalTestCase
         payload.setValue2("2");
 
         MuleMessage result = muleClient.send("vm://xstream_xml-to-object-alias.in", payload, null);
-
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getPayload(), is(notNullValue()));
         assertThat(result.getPayload(), is(instanceOf(ActivityReport.class)));
     }
 
@@ -56,7 +59,8 @@ public class XStreamTestCase extends FunctionalTestCase
         MuleClient muleClient = new MuleClient(muleContext);
 
         MuleMessage result = muleClient.send("vm://xstream_xml-to-object-mule-message.in", "dummy", null);
-
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getPayload(), is(notNullValue()));
         assertThat(result.getPayload(), is(instanceOf(String.class)));
     }
 

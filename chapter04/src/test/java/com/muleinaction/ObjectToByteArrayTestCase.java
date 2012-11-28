@@ -2,6 +2,7 @@
 package com.muleinaction;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -26,7 +27,8 @@ public class ObjectToByteArrayTestCase extends FunctionalTestCase
         MuleClient muleClient = new MuleClient(muleContext);
 
         MuleMessage result = muleClient.send("vm://object-to-byte-array.in", TEST_PAYLOAD, null);
-
+        assertThat(result, is(notNullValue()));
+        assertThat(result.getPayload(), is(notNullValue()));
         assertThat(result.getPayload().equals(TEST_PAYLOAD), is(true));
     }
 
