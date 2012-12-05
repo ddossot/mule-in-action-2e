@@ -1,5 +1,3 @@
-package com.acmesoft.product.productservice;
-
 import org.mule.api.MuleMessage;
 import org.mule.api.client.MuleClient;
 import org.mule.tck.junit4.FunctionalTestCase;
@@ -10,9 +8,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 //<start id="lis_02_product_test"/>
-public class ProductServiceTestCase extends FunctionalTestCase {
+
+public class ProductRegistrationFunctionalTestCase
+        extends FunctionalTestCase {
     protected String getConfigResources() {
-        return "./product-service/src/main/app/mule-config.xml";
+        return "./src/main/app/product_registration.xml";
     }
 
     @Test

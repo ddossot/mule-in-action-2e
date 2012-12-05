@@ -25,8 +25,5 @@ public class ExpenseReportsCallbackFunctionalTestCase extends FunctionalTestCase
         MuleMessage result = client.send("http://localhost:8081/expenses", "Foo", properties);
         Assert.assertNotNull(result);
 
-        Thread.sleep(10000);
-
-
     }
 }

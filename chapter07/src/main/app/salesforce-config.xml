@@ -24,10 +24,10 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <sfdc:create-single config-ref="sfconfig" type="Contact">
             <sfdc:object><!-- <co id="crm_salesforce-1-co"/> -->
                 <sfdc:object key="FirstName">
-                    #[payload.firstName]
+                    #[message.payload.firstName]
                 </sfdc:object>
                 <sfdc:object key="LastName">
-                    #[payload.lastName]
+                    #[message.payload.lastName]
                 </sfdc:object>
             </sfdc:object>
         </sfdc:create-single>
@@ -36,7 +36,8 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <vm:inbound-endpoint exchange-pattern="request-response"
                              path="crm.contact.get"/>
         <sfdc:query-single config-ref="sfconfig"
-            query="SELECT Name from Contact where Name = '#[payload]'"
+            query=
+      "SELECT Name from Contact where Name = '#[message.payload]'"
                           />
         <transformer ref="salesforceResultToCustomerTransformer"/>
     </flow>

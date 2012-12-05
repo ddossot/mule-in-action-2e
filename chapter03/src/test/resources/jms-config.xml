@@ -10,29 +10,34 @@
       xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
       xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
       xsi:schemaLocation="
-        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
-        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.2/mule-vm.xsd
-        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
-        http://www.mulesoft.org/schema/mule/ajax http://www.mulesoft.org/schema/mule/ajax/3.2/mule-ajax.xsd
-        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/3.2/mule-jms.xsd
-        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.2/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/ajax http://www.mulesoft.org/schema/mule/ajax/current/mule-ajax.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.2/mule-xml.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
       ">
 
+    <context:property-placeholder location="/mule.properties"/>
+
+    <http:connector name="httpConnector"/>
 
     <!--<start id="ch03_jms-outbound_lis"/>-->
     <jms:activemq-connector name="jmsConnector"
                             specification="1.1"
-                            brokerURL="tcp://mq.prancingdonkey.com:61616"/>
+                            brokerURL="${jms.url}"/>
     <!-- <co id="ch03_jms-outbound_1-cor"/> -->
 
     <flow name="dispatchExpenseReports">
         <http:inbound-endpoint exchange-pattern="one-way"
-                               host="api.prancingdonkey.com"
-                               path="/expenses/status" method="POST"
-                               port="80"/>
+                               host="${http.host}"
+                               path="/expenses/status"
+                               method="POST"
+                               port="${http.port}"
+                               connector-ref="httpConnector"/>
         <jms:outbound-endpoint topic="expenses.status"/>
         <!-- <co id="ch03_jms-outbound_2-cor"/> -->
     </flow>
@@ -52,26 +57,24 @@
     <!--<start id="ch03_jms-sync_lis"/>-->
        <flow name="brewJmsService">
           <jms:inbound-endpoint queue="brews.list"
-                                exchange-pattern="request-response">
+                                exchange-pattern="request-response"/>
               <!-- <co id="ch03_jms-sync-1_cor"/> -->
-               <cxf:simple-service
-               serviceClass="com.prancingdonkey.service.BrewService"/>
-           </jms:inbound-endpoint>
-           <component class="com.pracingdonkey.service.BrewServiceImpl"/>
+           <component class="com.prancingdonkey.service.BrewServiceImpl"/>
 
        </flow>
     <!--<end id="ch03_jms-sync_lis"/>-->
     
      <!--<start id="ch03_jms-ajax_lis"/>-->
     <ajax:connector name="ajaxConnector"
-                    serverUrl="http://api.prancingdonkey.com/ajax"/>
+                    serverUrl="http://${http.host}:${http.port}/ajax"/>
     <!-- <co id="ch03_jms-ajax-1_cor"/> -->
 
     <flow name="ajaxExpenseReports">
         <jms:inbound-endpoint topic="expenses.status"
                               exchange-pattern="one-way"/>
 
-        <ajax:outbound-endpoint channel="/expense/reports"/>
+        <ajax:outbound-endpoint channel="/expense/reports"
+                                connector-ref="ajaxConnector"/>
     </flow>
     <!--<end id="ch03_jms-ajax_lis"/>-->
 

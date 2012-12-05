@@ -1,6 +1,6 @@
-package com.pracingdonkey.service;
+package com.prancingdonkey.service;
 
-import com.pracingdonkey.model.Brew;
+import com.prancingdonkey.model.Brew;
 
 import javax.jws.WebService;
 import java.util.List;

@@ -22,7 +22,7 @@
     <!--<start id="esper_cep_config_lis"/>-->
     <flow name="orderCompletionEventInjection">
         <jms:inbound-endpoint topic="events.orders.completed"/>
-        <esper:send eventPayload-ref="#[payload:]"
+        <esper:send eventPayload-ref="#[message.payload]"
                     eventName="OrderEvent"/> <!-- <co id="esper_cep_config-1-co"/> -->
     </flow>
 

@@ -26,7 +26,7 @@
             <twitter:get-public-timeline/>
         </poll>
         <collection-splitter/>
-        <esper:send eventPayload-ref="#[payload:]"/>
+        <esper:send eventPayload-ref="#[message.payload]"/>
     </flow>
     <!--<end id="poll_config_lis"/>-->
 

@@ -1,10 +1,11 @@
-package com.pracingdonkey.model;
+package com.prancingdonkey.model;
 
 import com.google.common.collect.ImmutableList;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Brew {
+public class Brew implements Serializable {
 
     String name;
 

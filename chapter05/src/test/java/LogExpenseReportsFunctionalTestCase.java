@@ -18,6 +18,5 @@ public class LogExpenseReportsFunctionalTestCase extends FunctionalTestCase {
         MuleClient client = muleContext.getClient();
         client.dispatch("jms://topic:expenses.status",
                 "<expense><id>1234</id><status>PROCESSED</status></expense>", null);
-        Thread.sleep(10000);
     }
 }

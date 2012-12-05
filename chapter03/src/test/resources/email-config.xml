@@ -12,36 +12,43 @@
       xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
       xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
       xsi:schemaLocation="
-        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
-        http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/3.2/mule-email.xsd
-        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.2/mule-http.xsd
-        http://www.mulesoft.org/schema/mule/imap http://www.mulesoft.org/schema/mule/imap/3.2/mule-imap.xsd
-        http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/3.2/mule-smtp.xsd
-        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.2/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/imap http://www.mulesoft.org/schema/mule/imap/current/mule-imap.xsd
+        http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
         
-        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/3.2/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.2/mule-xml.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
       ">
 
+    <context:property-placeholder location="/mule.properties"/>
+
     <!--<start id="ch03_imap_lis"/>-->
 
+    <jms:activemq-connector name="jmsConnector"
+                            specification="1.1"
+                            brokerURL="${jms.url}"/>
+
     <imap:connector name="imapConnector"
-                    email:deleteReadMessages="true"
-                    email:mailboxFolder="COOLING_SYSTEM"
-                    email:checkFrequency="60000"/>
+                    deleteReadMessages="true"
+                    mailboxFolder="COOLING_SYSTEM"
+                    checkFrequency="60000"/>
     <!-- <co id="ch03_imap-1_cor"/> -->
 
     <flow name="dispatchCoolingAlerts">
         <imap:inbound-endpoint
-                email:host="mail.prancingdonkey.com"
-                email:user="cooling"
-                email:password="password"><!-- <co id="ch03_imap-2_cor"/> -->
+                host="${imap.host}"
+                port="${imap.port}"
+                user="cooling"
+                password="password"><!-- <co id="ch03_imap-2_cor"/> -->
 
         </imap:inbound-endpoint>
         <all>   <!-- <co id="ch03_imap-3_cor"/> -->
-            <file:outbound-endpoint path="/data/cooling/reports">
+            <file:outbound-endpoint path="./data/cooling/reports">
               <expression-transformer
                  expression="#[message.inboundAttachments.report]"/>
                 <!-- <co id="ch03_imap-4_cor"/> -->
@@ -61,7 +68,8 @@
                               exchange-pattern="one-way"/>
         <!-- <co id="ch03_smtp-1_cor"/> -->
         <smtp:outbound-endpoint from="mule@prancingdonkey.com"
-                                email:host="smtp.prancingdonkey.com"
+                                host="${smtp.host}"
+                                port="${smtp.port}"
                                 subject="Expense Report Processed"
                                 to="accounting@prancingdonkey.com">
             <!-- <co id="ch03_smtp-2_cor"/> -->
