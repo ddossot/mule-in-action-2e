@@ -1,41 +1,45 @@
+
 package com.muleinaction;
 
-import com.icegreen.greenmail.user.GreenMailUser;
-import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetup;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mule.tck.FunctionalTestCase;
+import org.mule.tck.junit4.FunctionalTestCase;
 import org.mule.transport.email.ImapConnector;
 import org.mule.transport.email.SmtpConnector;
 
-public class EmailFunctionalTestCase extends FunctionalTestCase {
+import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.ServerSetup;
 
-    private GreenMail smtpServer;
-    private GreenMail imapServer;
+public class EmailFunctionalTestCase extends FunctionalTestCase
+{
+    private static GreenMail smtpServer;
+    private static GreenMail imapServer;
 
     @Override
-    protected String getConfigResources() {
+    protected String getConfigResources()
+    {
         return "src/test/resources/email-config.xml";
     }
 
-    @Override
-    protected void suitePreSetUp() throws Exception {
-        ServerSetup smtpSetup = new ServerSetup(2525, null, SmtpConnector.SMTP);
+    @BeforeClass
+    public static void startServers() throws Exception
+    {
+        final ServerSetup smtpSetup = new ServerSetup(2525, null, SmtpConnector.SMTP);
         smtpServer = new GreenMail(smtpSetup);
         smtpServer.start();
 
-        ServerSetup imapSetup = new ServerSetup(2626, null, ImapConnector.IMAP);
+        final ServerSetup imapSetup = new ServerSetup(2626, null, ImapConnector.IMAP);
         imapServer = new GreenMail(imapSetup);
         imapServer.start();
-        imapServer.getManagers().getUserManager()
-                .createUser("cooling@prancingdonkey.com", "cooling", "password");
+        imapServer.getManagers()
+            .getUserManager()
+            .createUser("cooling@prancingdonkey.com", "cooling", "password");
 
     }
 
-
     @Test
-    public void testCanGetEmail() throws Exception {
-
+    public void testCanGetEmail() throws Exception
+    {
+        // TODO implement
     }
 }

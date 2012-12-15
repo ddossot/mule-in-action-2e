@@ -1,40 +1,48 @@
-package com.prancingdonkey.model;
 
-import com.google.common.collect.ImmutableList;
+package com.prancingdonkey.model;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class Brew implements Serializable {
+import com.google.common.collect.ImmutableList;
 
-    String name;
+public class Brew implements Serializable
+{
+    private static final long serialVersionUID = 1L;
 
-    String description;
+    private String name;
+    private String description;
 
-    public Brew(String name, String description) {
+    public Brew(final String name, final String description)
+    {
         this.name = name;
         this.description = description;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name)
+    {
         this.name = name;
     }
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description)
+    {
         this.description = description;
     }
 
-    static public List<Brew> findAll() {
-        return ImmutableList.of(new Brew("Hobbit IPA", "Hobbit IPA"), new Brew("Frodo's Lager", "Frodo's Lager"));
+    static public List<Brew> findAll()
+    {
+        return ImmutableList.of(new Brew("Hobbit IPA", "Hobbit IPA"), new Brew("Frodo's Lager",
+            "Frodo's Lager"));
     }
-
 
 }

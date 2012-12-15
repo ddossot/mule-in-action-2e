@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:https="http://www.mulesoft.org/schema/mule/http" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc"
+	xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts" xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/jdbc http://www.mulesoft.org/schema/mule/jdbc/current/mule-jdbc.xsd
+        http://www.mulesoft.org/schema/mule/jbossts http://www.mulesoft.org/schema/mule/jbossts/current/mule-jbossts.xsd
+        ">
+
+
+<jms:activemq-connector name="jmsConnector" specification="1.1" />
+
+<!--<start id="lis_09_transaction-reliability"/>-->
+<flow name="reliable-acquisition-phase" 
+  processingStrategy="synchronous">
+    <http:inbound-endpoint address="http://127.0.0.1:8081/inbound" 
+      exchange-pattern="request-response" /><!--<co id="lis_09_transaction-reliability_1" />-->
+    <object-to-string-transformer />
+    <jms:outbound-endpoint queue="application-logic-queue" 
+      exchange-pattern="one-way"/><!--<co id="lis_09_transaction-reliability_2" />-->
+</flow>
+
+<flow name="application-logic-phase">
+  <jms:inbound-endpoint queue="application-logic-queue">
+      <jms:transaction action="ALWAYS_BEGIN"/><!--<co id="lis_09_transaction-reliability_3" />-->
+  </jms:inbound-endpoint>
+        
+  <logger message="business-logic is performed here." /><!--<co id="lis_09_transaction-reliability_4" />-->
+</flow>
+<!--<end id="lis_09_transaction-reliability"/>-->
+    
+</mule>
