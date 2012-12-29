@@ -18,15 +18,15 @@
 <jdbc:connector name="jdbcConnector" dataSource-ref="dataSource">
     <jdbc:query key="statsInsert"
         value="INSERT INTO PERF_METRICS VALUES  
-         (0,#[map-payload:CLIENT_ID],'AVG_RESPONSE_TIME',
-            #[map-payload:AVG_RESPONSE_TIME],
-            #[map-payload:TIMESTAMP]),
-         (0,#[map-payload:CLIENT_ID], 'MED_RESPONSE_TIME',
-            #[map-payload:MED_RESPONSE_TIME],
-            #[map-payload:TIMESTAMP]),
-         (0,#[map-payload:CLIENT_ID],'MAX_RESPONSE_TIME',
-            #[map-payload:MAX_RESPONSE_TIME],
-            #[map-payload:TIMESTAMP])"/><!--<co id="lis_09_jdbc-single-transaction_1" />-->
+         (0,#[message.payload.CLIENT_ID],'AVG_RESPONSE_TIME',
+            #[message.payload.AVG_RESPONSE_TIME],
+            #[message.payload.TIMESTAMP]),
+         (0,#[message.payload.CLIENT_ID], 'MED_RESPONSE_TIME',
+            #[message.payload.MED_RESPONSE_TIME],
+            #[message.payload.TIMESTAMP]),
+         (0,#[message.payload.CLIENT_ID],'MAX_RESPONSE_TIME',
+            #[message.payload.MAX_RESPONSE_TIME],
+            #[message.payload.TIMESTAMP])"/><!--<co id="lis_09_jdbc-single-transaction_1" />-->
  </jdbc:connector>
 
 <flow name="URLAlertingFlow">

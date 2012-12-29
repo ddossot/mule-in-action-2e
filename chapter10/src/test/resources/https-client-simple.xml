@@ -12,39 +12,14 @@
         http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
         ">
 
-<!--<start id="lis_10_client_keystore"/>-->
-<https:connector name="httpsClientConnector">
-  <https:tls-client path="clientkeystore.jks"
-    storePassword="password"/>
-</https:connector>
-<!--<end id="lis_10_client_keystore"/>-->
-
-<!--<start id="lis_10_https_client"/>-->
- <flow name="securePostExpenseReports">
-  <file:inbound-endpoint path="/data/expenses/in"
-    pollingFrequency="60000">
-    <file:filename-regex-filter pattern=".*xls" 
-      caseSensitive="false"/>
-  </file:inbound-endpoint>
-  
-  <https:outbound-endpoint host="api.accounting.com"
-    port="443" path="expenseReports"
-    method="POST" exchange-pattern="one-way" 
-    connector-ref="httpsClientConnector"/>
-</flow>
-<!--<end id="lis_10_https_client"/>-->
-
 <!--<start id="lis_10_https_client_google"/>-->
-<https:connector name="httpsConnector" />
-
 <flow name="getGoogle">
   <vm:inbound-endpoint address="vm://getGoogle.in" 
     exchange-pattern="request-response" />
   
   <https:outbound-endpoint host="www.google.com"
     port="443" path="/"
-    method="GET" 
-    connector-ref="httpsConnector" />
+    method="GET" />
     
   <object-to-string-transformer />
 </flow>
