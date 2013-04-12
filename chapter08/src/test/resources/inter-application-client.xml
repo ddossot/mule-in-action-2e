@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+
+<flow name="shipping-cost-client">
+
+	<vm:inbound-endpoint path="shippingCostClient.in"
+		exchange-pattern="request-response" />
+		
+<!--<start id="lis_08_inter-application-client"/>-->
+<mulexml:object-to-xml-transformer /><!--<co id="lis_08_inter-application-client_1" />-->
+	
+<jms:outbound-endpoint queue="calculateShippingCost"
+    exchange-pattern="request-response" /><!--<co id="lis_08_inter-application-client_2" />-->
+
+<mulexml:xml-to-object-transformer /><!--<co id="lis_08_inter-application-client_3" />-->
+<!--<end id="lis_08_inter-application-client"/>-->
+    
+</flow>
+
+</mule>

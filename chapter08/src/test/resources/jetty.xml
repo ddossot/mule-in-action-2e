@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:redis="http://www.mulesoft.org/schema/mule/redis"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:jetty="http://www.mulesoft.org/schema/mule/jetty"
+	xmlns:jettyssl="http://www.mulesoft.org/schema/mule/jetty-ssl"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+        http://www.mulesoft.org/schema/mule/redis http://www.mulesoft.org/schema/mule/redis/current/mule-redis.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/jetty http://www.mulesoft.org/schema/mule/jetty/current/mule-jetty.xsd
+        http://www.mulesoft.org/schema/mule/jetty-ssl http://www.mulesoft.org/schema/mule/jetty-ssl/current/mule-jetty-ssl.xsd">
+
+<!--<start id="lis_08_jetty-connector"/>-->
+<jetty:connector name="jettyConnector">
+    <jetty:webapps 
+      directory="${app.home}/webapps" port="${jettyPort}"/><!--<co id="lis_08_jetty-connector_1" />-->
+</jetty:connector>
+<!--<end id="lis_08_jetty-connector"/>-->
+
+<!--<start id="lis_08_jetty-ssl-connector"/>-->
+<jettyssl:connector name="jettySslConnector">
+    <jettyssl:tls-key-store path="keystore.jks"
+        keyPassword="password" storePassword="password" />
+    <jettyssl:webapps directory="${app.home}/webapps" 
+        port="${jettySslPort}"/>
+</jettyssl:connector>
+<!--<end id="lis_08_jetty-ssl-connector"/>-->
+
+<!--<start id="lis_08_jetty-connector-config"/>-->
+<jetty:connector name="jettyConnectorWithConfigFile"
+    configFile="${app.home}/jetty-conf.xml" />
+<!--<end id="lis_08_jetty-connector-config"/>-->
+
+</mule>

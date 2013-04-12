@@ -39,6 +39,7 @@
         
   <logger message="business-logic is performed here." /><!--<co id="lis_09_transaction-reliability_4" />-->
 </flow>
-<!--<end id="lis_09_transaction-reliability"/>-->
+<!--<end id="lis_09_transaction-reliability"/>
+-->
     
 </mule>

@@ -1,9 +1,10 @@
-Examples for Mule in Action, second edition
+Examples for Mule in Action, Second Edition
 -------------------------------------------
 
 Requirements:
-- JDK 1.6
-- Maven 3
+
+- JDK 1.6 or better, with unlimited JCE cryptography,
+- Maven 3.
 
 
 Tests in the examples will open ports while they run, like 8080, so watch out for potential conflicts. 
@@ -24,4 +25,4 @@ To open projects in Eclipse, run:
 
 in the directory where is README file is located, then import the generated projects in Eclipse.
 
-### Copyright 2012 Manning Publications Co. - Licensed under the MIT License.
+### Copyright 2012-2013 Manning Publications Co. - Licensed under the MIT License.

@@ -21,7 +21,7 @@
 
 <!--<start id="lis_10_https_client"/>-->
  <flow name="securePostExpenseReports">
-  <file:inbound-endpoint path="/data/expenses/in"
+  <file:inbound-endpoint path="./data/expenses/in"
     pollingFrequency="60000">
     <file:filename-regex-filter pattern=".*xls" 
       caseSensitive="false"/>

@@ -7,16 +7,16 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
 import org.mule.api.ExceptionPayload;
 import org.mule.api.MuleMessage;
-import org.mule.module.client.MuleClient;
+import org.mule.api.client.MuleClient;
 import org.mule.tck.junit4.FunctionalTestCase;
 import org.mule.util.FileUtils;
+import org.springframework.util.ResourceUtils;
 
 public class PgpBasedEncryptionTestCase extends FunctionalTestCase 
 {
@@ -30,12 +30,12 @@ public class PgpBasedEncryptionTestCase extends FunctionalTestCase
 	@Test
 	public void testEndpointAuthenticated() throws Exception 
 	{
-		MuleClient client = new MuleClient(muleContext);
-		
-		String decryptedMessage = FileUtils.readFileToString(new File("src/test/resources/test.txt"));
-        String encryptedMessage = FileUtils.readFileToString(new File("src/test/resources/test.txt.asc"));
+		MuleClient client = muleContext.getClient();
+
+		String decryptedMessage = FileUtils.readFileToString(ResourceUtils.getFile(this.getClass().getResource("/test.txt")));
+        String encryptedMessage = FileUtils.readFileToString(ResourceUtils.getFile(this.getClass().getResource("/test.txt.asc")));
         
-        Map<String, String> messageProperties = new HashMap<String, String>();
+        Map<String, Object> messageProperties = new HashMap<String, Object>();
         messageProperties.put("MULE_USER","Mule in Action <john.demic@gmail.com>");
         
 		client.dispatch("jms:/messages.in", encryptedMessage, messageProperties);

@@ -46,8 +46,8 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
    class="com.prancingdonkey.service.RegistryLookupService"/> <!-- <co id="mediation-4-co"/> -->
         <http:outbound-endpoint
                 exchange-pattern="request-response"
-                address="#[flowVars['resolvedEndpoint']"/> <!-- <co id="mediation-5-co"/> -->
-
+                host="api.prancingdonkey.com" port="80"
+                path="#[flowVars['resolvedEndpoint']]"/>  <!-- <co id="mediation-5-co"/> -->
     </flow>
     <!--<end id="mediation_lis"/>-->
 

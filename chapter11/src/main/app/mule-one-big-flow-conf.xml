@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+      xmlns:ajax="http://www.mulesoft.org/schema/mule/ajax"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+      xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/ajax http://www.mulesoft.org/schema/mule/ajax/current/mule-ajax.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+      ">
+
+    <context:property-placeholder location="/mule.properties"/>
+
+    <http:connector name="httpConnector"/>
+
+    <jms:activemq-connector name="jmsConnector"
+                            specification="1.1"
+                            brokerURL="${jms.url}"/>
+
+    <!--<start id="ch11_monolithic_lis"/>-->
+    <flow name="processExpenseReports">
+        <jms:inbound-endpoint queue="report.processing"
+                              exchange-pattern="one-way"/>
+        <component
+            class="com.prancingdonkey.service.FraudDetectionService"/>
+        <!-- <co id="ch11_monolithic_1-cor"/> -->
+        <component
+            class="com.prancingdonkey.service.DataPeristenceService"/>
+        <component
+           class="com.prancingdonkey.service.DataWarehousingService"/>
+        <jms:outbound-endpoint topic="report.generation.complete"/>
+
+    </flow>
+    <!--<end id="ch11_monolithic_lis"/>-->
+
+</mule>
