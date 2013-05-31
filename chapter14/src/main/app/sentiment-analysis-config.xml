@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"  xmlns:http="http://www.mulesoft.org/schema/mule/http"  xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:esper="http://www.mulesoft.org/schema/mule/esper" xmlns:twitter="http://www.mulesoft.org/schema/mule/twitter" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/twitter http://www.mulesoft.org/schema/mule/twitter/2.4/mule-twitter.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/5.0/mule-sfdc.xsd
+http://www.mulesoft.org/schema/mule/esper http://www.mulesoft.org/schema/mule/esper/1.0/mule-esper.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd ">
+    <twitter:config name="Twitter" accessKey="18309082-Tgn2tQdqfg3JAdx2pagtmvpJ7bOArlWU5zoWPi4U0" accessSecret="Jhelo120w5AUUoc3YYLvNnO3clm2YZ3WyotRsKL0s" consumerKey="oEkHq9pmzJW27VtLa2ag" consumerSecret="In9lCrDpdmjjcArwsMvkIx6BTUoOQqHKYkELy0kAo" doc:name="Twitter"/>
+    <esper:config name="Esper" configuration="esper-sentiment-config.xml" doc:name="Esper"/>
+    <sfdc:config name="sfconfig" username="foo" password="foo" securityToken="foo" doc:name="Salesforce" doc:description="Global configuration for Salesforce operations"/>
+
+
+    <!--<start id="sentiment_analysis_lis"/>-->
+
+    <flow name="StatusIngest" doc:name="StatusIngest">
+        <twitter:sample-stream
+                config-ref="Twitter"
+                doc:name="Twitter Firehose"/>  <!-- <co id="sentiment_analysis-1-co"/> -->
+        <esper:send config-ref="Esper"
+                    eventPayload-ref="#[payload]"
+                    eventName="Tweets"
+                    doc:name="Insert Status Event"/>
+        <!-- <co id="sentiment_analysis-2-co"/> -->
+    </flow>
+
+    <flow name="SentimentAnalysis" doc:name="SentimentAnalysis">
+        <esper:listen config-ref="Esper"
+        statement="select count(hashtagEntities.where
+            (p => p.text = 'prancingdonkey')) as tagged
+            from Tweets having count(hashtagEntities.where
+            (p => p.text = 'prancingdonkey')) > 0"
+                doc:name="Listen For Events"/>
+        <!-- <co id="sentiment_analysis-3-co"/> -->
+        <sfdc:create-single config-ref="sfconfig"
+               type="Case" doc:name="Create SFDC Case"
+                           >
+            <sfdc:object>
+                <sfdc:object key="SuppliedName">
+                    #[payload['account']]</sfdc:object>
+                <sfdc:object key="Description">
+                    #[payload['text']]</sfdc:object>
+                <sfdc:object key="Subject">
+                    #[payload['text']]</sfdc:object>
+            </sfdc:object>
+        </sfdc:create-single> <!-- <co id="sentiment_analysis-4-co"/> -->
+    </flow>
+
+    <!--<end id="sentiment_analysis_lis"/>-->
+
+
+
+</mule>

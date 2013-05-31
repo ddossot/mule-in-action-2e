@@ -41,8 +41,8 @@ public class Brew implements Serializable
 
     static public List<Brew> findAll()
     {
-        return ImmutableList.of(new Brew("Hobbit IPA", "Hobbit IPA"), new Brew("Frodo's Lager",
-            "Frodo's Lager"));
+        return ImmutableList.of(new Brew("Hobbit IPA", "Hobbit IPA"), new Brew("Frodos Lager",
+            "Frodos Lager"));
     }
 
 }

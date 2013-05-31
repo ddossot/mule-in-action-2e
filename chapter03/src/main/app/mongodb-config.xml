@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/2.0/mule-mongo.xsd">
+
+    <context:property-placeholder location="/mule.properties"/>
+
+    <notifications dynamic="true">
+        <notification event="ENDPOINT-MESSAGE"/>
+    </notifications>
+
+    <!--<start id="ch03_mongo_save_lis"/>-->
+
+    <mongo:config name="mongoDB"
+                  database="prancingdonkey"
+                  username="${mongo.user}"
+                  password="${mongo.password}"
+                  host="${mongo.host}"
+                    />  <!-- <co id="ch03_mongo_save_1-cor"/> -->
+    <jms:activemq-connector name="jmsConnector"
+                            specification="1.1"
+                            brokerURL="${jms.url}"/>
+
+    <flow name="saveCoolingAlerts">
+        <jms:inbound-endpoint topic="cooling.alerts"
+                              connector-ref="jmsConnector" />
+        <mongo:json-to-dbobject/>   <!-- <co id="ch03_mongo_save_2-cor"/> -->
+        <mongo:insert-object collection="cooling_alerts"
+                             config-ref="mongoDB" /> <!-- <co id="ch03_mongo_save_3-cor"/> -->
+
+    </flow>
+
+    <!--<end id="ch03_mongo_save_lis"/>-->
+
+
+    <!--<start id="ch03_mongo_query_lis"/>-->
+    <flow name="queryCoolingAlerts" >
+        <http:inbound-endpoint host="${http.host}"
+                               port="${http.port}"
+                               path="alerts/cooling" />
+        <byte-array-to-string-transformer/>
+        <!-- <co id="ch03_mongo_query-1_cor" /> -->
+        <mongo:find-objects config-ref="mongoDB"
+                            collection="cooling_alerts" />  <!-- <co id="ch03_mongo_query-2_cor" /> -->
+        <mongo:mongo-collection-to-json/>
+
+    </flow>
+    <!--end id="ch03_mongo_query_lis"/>-->
+
+</mule>

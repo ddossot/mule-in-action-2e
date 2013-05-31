@@ -1,0 +1,12 @@
+<com.google.common.collect.RegularImmutableList resolves-to="com.google.common.collect.ImmutableList$SerializedForm">
+  <elements>
+    <com.prancingdonkey.model.Brew>
+      <name>Hobbit IPA</name>
+      <description>Hobbit IPA</description>
+    </com.prancingdonkey.model.Brew>
+    <com.prancingdonkey.model.Brew>
+      <name>Frodos Lager</name>
+      <description>Frodos Lager</description>
+    </com.prancingdonkey.model.Brew>
+  </elements>
+</com.google.common.collect.RegularImmutableList>

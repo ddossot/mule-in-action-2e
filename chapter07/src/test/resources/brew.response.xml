@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><ns1:getBrewsResponse xmlns:ns1="http://service.prancingdonkey.com/">
+    <ns1:return>
+        <ns2:Brew xmlns:ns2="http://model.prancingdonkey.com">
+            <ns2:description>Hobbit IPA</ns2:description>
+            <ns2:name>Hobbit IPA</ns2:name>
+        </ns2:Brew>
+        <ns2:Brew xmlns:ns2="http://model.prancingdonkey.com">
+            <ns2:description>Frodos Lager</ns2:description>
+            <ns2:name>Frodos Lager</ns2:name>
+        </ns2:Brew>
+    </ns1:return>
+</ns1:getBrewsResponse>

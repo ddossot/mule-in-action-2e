@@ -1,0 +1,51 @@
+
+package com.prancingdonkey
+
+import com.prancingdonkey.model.*
+import org.mule.MessageExchangePattern
+import java.util.*
+
+global org.mule.module.bpm.MessageService mule;
+
+dialect "mvel"
+
+rule "Purchasing Reward"
+when
+    $order : Order(customer.totalOrders > 25
+    || customer.totalSpendForYear > 1000.00)
+then
+    $order.rewards.add("PURCHASE");
+    mule.generateMessage("vm://loyalty",
+                $order, null,
+                MessageExchangePattern.ONE_WAY);
+end
+
+rule "Purchasing Reward And In Free Shipping State"
+salience 100
+when
+    $order : Order( );
+    HashMap(
+        eval( ((List)this["states"])
+        .contains($order.customer.address.state) ) )
+then
+    $order.rewards.add("STATE");
+    mule.generateMessage("vm://loyalty",
+    $order,
+    null,
+    MessageExchangePattern.ONE_WAY);
+end
+
+rule "Birthday Reward"
+when
+    $order : Order();
+    eval(Date now = new Date();
+           $order.customer.birthday.day == now.day
+           &&
+           $order.customer.birthday.month == now.month)
+then
+    $order.rewards.add("BIRTHDAY");
+    mule.generateMessage("vm://loyalty",
+    $order,
+    null, MessageExchangePattern.ONE_WAY);
+end
+

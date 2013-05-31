@@ -12,8 +12,6 @@ import org.mule.module.client.MuleClient;
 
 public class RawTransportTestCase
 {
-    // TODO reactivate when webservicex.net comes back to life
-    @Ignore("Deactivated because webservicex.net is down")
     @Test
     public void testCxfWsdlRawCall() throws Exception
     {

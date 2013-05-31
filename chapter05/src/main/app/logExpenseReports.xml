@@ -4,8 +4,6 @@
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
       xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
-
-      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       version="EE-3.3.0" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/http
@@ -22,17 +20,17 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
           brokerURL="vm://localhost"/>
 
 <!--<start id="ch05_logExpenseReports_lis"/>-->
-    <flow name="logExpenseReports" doc:name="logExpenseReports">
+    <flow name="logExpenseReports" >
         <jms:inbound-endpoint topic="expenses.status"
-        connector-ref="Active_MQ" doc:name="JMS"/>
-        <choice doc:name="Choice"><!-- <co id="ch05_logExpenseReports-1-cor"/> -->
+        connector-ref="Active_MQ" />
+        <choice ><!-- <co id="ch05_logExpenseReports-1-cor"/> -->
             <when
         expression="xpath('/expense/status/text() = \'PROCESSED\'')">
                 <processor-chain>
                     <logger
 message=
 "#[xpath('/expense/id').text] processed]"
-    level="INFO" doc:name="Logger"/>
+    level="INFO"/>
                 </processor-chain>
             </when>
             <when expression=
@@ -40,7 +38,7 @@ message=
                 <processor-chain>
                     <logger message=
 "Error processing expense report:#[xpath('/expense/id/text()]"
-level="ERROR" doc:name="Logger"/>
+level="ERROR" />
                 </processor-chain>
             </when>
         </choice>

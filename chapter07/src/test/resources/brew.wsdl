@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="BrewService" targetNamespace="http://service.prancingdonkey.com/"
+                  xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="http://service.prancingdonkey.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <wsdl:types>
+        <xsd:schema attributeFormDefault="qualified" elementFormDefault="qualified"
+                    targetNamespace="http://model.prancingdonkey.com" xmlns:tns="http://model.prancingdonkey.com"
+                    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:complexType name="ArrayOfBrew">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="Brew" nillable="true" type="tns:Brew"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Brew">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+        <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+                    targetNamespace="http://service.prancingdonkey.com/" xmlns:ns0="http://model.prancingdonkey.com"
+                    xmlns:tns="http://service.prancingdonkey.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://model.prancingdonkey.com"/>
+            <xsd:element name="getBrews" type="tns:getBrews"/>
+            <xsd:complexType name="getBrews">
+                <xsd:sequence/>
+            </xsd:complexType>
+            <xsd:element name="getBrewsResponse" type="tns:getBrewsResponse"/>
+            <xsd:complexType name="getBrewsResponse">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" name="return" type="ns0:ArrayOfBrew"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getBrewsResponse">
+        <wsdl:part element="tns:getBrewsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getBrews">
+        <wsdl:part element="tns:getBrews" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="BrewServicePortType">
+        <wsdl:operation name="getBrews">
+            <wsdl:input message="tns:getBrews" name="getBrews">
+            </wsdl:input>
+            <wsdl:output message="tns:getBrewsResponse" name="getBrewsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="BrewServiceSoapBinding" type="tns:BrewServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getBrews">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getBrews">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getBrewsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="BrewService">
+        <wsdl:port binding="tns:BrewServiceSoapBinding" name="BrewServicePort">
+            <soap:address location="http://192.168.1.131:8090/soap"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

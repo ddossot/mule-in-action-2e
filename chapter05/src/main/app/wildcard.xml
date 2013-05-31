@@ -1,67 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" 
-      xmlns:vm="http://www.mulesoft.org/schema/mule/vm" 
-      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" 
-      xmlns:http="http://www.mulesoft.org/schema/mule/http" 
-      xmlns:file="http://www.mulesoft.org/schema/mule/file" 
-      xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo" 
-      xmlns:jms="http://www.mulesoft.org/schema/mule/jms" 
-      xmlns:imap="http://www.mulesoft.org/schema/mule/imap" 
-      xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" 
-      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
-      xmlns:email="http://www.mulesoft.org/schema/mule/email" 
-      xmlns:spring="http://www.springframework.org/schema/beans" 
-      xmlns:core="http://www.mulesoft.org/schema/mule/core" 
-      xmlns:bpm="http://www.mulesoft.org/schema/mule/bpm" 
-      xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" 
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-      version="EE-3.3.0" xsi:schemaLocation="
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:imap="http://www.mulesoft.org/schema/mule/imap"
+      xmlns:email="http://www.mulesoft.org/schema/mule/email"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/vm 
-http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
-http://www.mulesoft.org/schema/mule/xml 
-http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
+http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/http 
-http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
-http://www.mulesoft.org/schema/mule/file 
-http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd 
-http://www.mulesoft.org/schema/mule/mongo 
-http://www.mulesoft.org/schema/mule/mongo/2.0/mule-mongo.xsd 
+http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/jms 
 http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd 
 http://www.mulesoft.org/schema/mule/imap 
-http://www.mulesoft.org/schema/mule/imap/current/mule-imap.xsd 
-http://www.mulesoft.org/schema/mule/smtp 
-http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd 
+http://www.mulesoft.org/schema/mule/imap/current/mule-imap.xsd
 http://www.mulesoft.org/schema/mule/email 
-http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
-http://www.springframework.org/schema/beans 
-http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
 http://www.mulesoft.org/schema/mule/core 
-http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
-http://www.mulesoft.org/schema/mule/bpm 
-http://www.mulesoft.org/schema/mule/bpm/current/mule-bpm.xsd">
+http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+ http://www.springframework.org/schema/context
+  http://www.springframework.org/schema/context/spring-context-3.0.xsd
+">
+
+
+    <context:property-placeholder location="/mule.properties"/>
+
+
+    <jms:activemq-connector name="Active_MQ"
+                            specification="1.1"
+                            brokerURL="vm://localhost"/>
 
  <!--<start id="ch05_wildcard_lis"/>-->
- <flow name="dispatchCoolingAlerts" 
-            doc:name="dispatchCoolingAlerts">
-        <imap:inbound-endpoint host="mail.prancingdonkey.com" 
-            port="143" 
+ <flow name="dispatchCoolingAlerts">
+
+        <imap:inbound-endpoint host="${imap.host}"
+            port="${imap.port}"
             user="cooling" 
             password="password" 
-            responseTimeout="10000" 
-            doc:name="IMAP"/>
-        <email:email-to-string-transformer 
-            doc:name="Email to String"/>
-        <file:outbound-endpoint 
-            path="/data/cooling/reports" 
-            doc:name="File"/>
-        <wildcard-filter pattern="*SEVERE*" 
-            doc:name="Wildcard"/>
+            responseTimeout="10000" />
+        <email:email-to-string-transformer/>
+        <wildcard-filter pattern="*SEVERE*"/>
         <jms:outbound-endpoint 
             topic="cooling.alerts" 
             connector-ref="Active_MQ" 
-            doc:name="JMS"/>
+           />
     </flow>
    <!--<end id="ch05_wildcard_lis"/>-->
 

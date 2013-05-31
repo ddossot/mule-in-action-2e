@@ -1,0 +1,15 @@
+<order>
+    <id>ABCD-1234-5678</id>
+    <priority>HIGH</priority>
+    <items>
+        <lineItem>
+            <priority>HIGH</priority>
+        </lineItem>
+        <lineItem>
+            <priority>LOW</priority>
+        </lineItem>
+        <lineItem>
+            <priority>LOW</priority>
+        </lineItem>
+    </items>
+</order>

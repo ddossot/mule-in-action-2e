@@ -15,7 +15,6 @@ public class BrewServiceImpl implements BrewService {
 
     @GET
     @Produces("application/json")
-    @Path("/list")
     public List<Brew> getBrews() {
         return Brew.findAll();
     }

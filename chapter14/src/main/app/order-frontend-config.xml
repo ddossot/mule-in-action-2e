@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:file="http://www.mulesoft.org/schema/mule/file"
+      xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+      xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:core="http://www.mulesoft.org/schema/mule/core"
+      xmlns:salesforce="http://www.mulesoft.org/schema/mule/sfdc"
+      version="EE-3.3.1"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd "
+      xmlns:vm="http://www.mulesoft.org/schema/mule/https">
+
+    <sfdc:config name="sfconfig" username="username" password="password" securityToken="TOKEN"
+                 doc:name="SalesForce Configuration" doc:description="Global configuration for Salesforce operations"/>
+    <cxf:configuration initializeStaticBusInstance="false" doc:name="CXF Configuration"
+                       doc:description="Global CXF Configuration"/>
+
+
+    <!--<start id="order_front_lis"/>-->
+
+    <flow name="orderSubmission">
+        <http:inbound-endpoint exchange-pattern="request-response"
+                               host="localhost" port="8081"
+                               path="order"
+                />
+        <cxf:jaxws-service
+     serviceClass="com.prancingdonkey.service.OrderSubmissionService"
+                        />
+        <component
+    class="com.prancingdonkey.service.OrderSubmissionServiceImpl"/>
+
+        <jms:outbound-endpoint queue="order.submit"><!-- <co id="order_front-1-co"/> -->
+            <jms:transaction action="ALWAYS_BEGIN"/>
+        </jms:outbound-endpoint>
+    </flow>
+
+    <!--<end id="order_front_lis"/>-->
+
+</mule>

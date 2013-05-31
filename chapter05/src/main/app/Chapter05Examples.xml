@@ -246,7 +246,10 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
                 <smtp:outbound-endpoint host="localhost" port="25" responseTimeout="10000" doc:name="SMTP"/><!-- <co id="h05_processSalesForceAlert-3.cod"/> -->
             </processor-chain>
             <processor-chain>
-                <mongo:insert-object config-ref="Mongo_DB" collection="alerts" doc:name="Mongo DB"/><!-- <co id="h05_processSalesForceAlert-4.cod"/> -->
+                <mongo:insert-object
+                        config-ref="Mongo_DB"
+                        collection="alerts"
+                        doc:name="Mongo DB"/><!-- <co id="h05_processSalesForceAlert-4.cod"/> -->
             </processor-chain>
         </all>
     </flow>

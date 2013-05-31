@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+      xmlns:file="http://www.mulesoft.org/schema/mule/file"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:test="http://www.mulesoft.org/schema/mule/test"
+      xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+      xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+                http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+      ">
+
+    <context:property-placeholder location="/mule.properties"/>
+
+
+    <!-- <start id="ch03_vm_lis"/> -->
+    <flow name="readExpensesFromFilesystemFlow">
+        <file:inbound-endpoint path="./data/expenses/in"
+                               pollingFrequency="60000"
+                >
+            <file:filename-regex-filter pattern=".*xls$"
+                                        caseSensitive="false"/>
+        </file:inbound-endpoint>
+        <vm:outbound-endpoint path="expenses"/>
+        <!-- <co id="ch03_vm-1_cor" /> -->
+
+    </flow>
+
+    <flow name="postExpenses">
+        <vm:inbound-endpoint path="expenses"/>
+        <!-- <co id="ch03_vm-2_cor" /> -->
+        <http:outbound-endpoint host="${http.host}"
+                                port="${http.port}"
+                                method="POST"
+                                path="expenses/prancingdonkey"/>
+    </flow>
+
+    <!-- <end id="ch03_vm_lis"/> -->
+
+
+    <flow name="dummyHttpServer">
+        <http:inbound-endpoint host="${http.host}" port="${http.port}" path="expenses/prancingdonkey"/>
+        <test:component/>
+    </flow>
+
+
+</mule>

@@ -1,43 +1,51 @@
 
 package com.muleinaction;
 
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
+import org.custommonkey.xmlunit.Diff;
+import org.junit.Test;
 import org.mule.api.MuleMessage;
 import org.mule.api.client.MuleClient;
 import org.mule.tck.junit4.FunctionalTestCase;
 
-public class WebServicesFunctionalTestCase extends FunctionalTestCase
-{
+public class WebServicesFunctionalTestCase extends FunctionalTestCase {
     @Override
-    protected String getConfigResources()
-    {
-        return "src/test/resources/ws-config.xml";
+    protected String getConfigResources() {
+        return "src/main/app/ws-config.xml";
     }
 
-    public void testCanConsumeJaxRSWebService() throws Exception
-    {
-        final MuleClient client = muleContext.getClient();
-        final MuleMessage response = client.send("http://localhost:8091/rest/brews/list", null, null);
+    @Test
+    public void testCanConsumeRESTfulService() throws Exception {
+        MuleClient client = muleContext.getClient();
+        Map parameters = new HashMap();
+        parameters.put("Content-Type", "application/json");
+        parameters.put("http.method", "GET");
+
+        MuleMessage response = client.send("http://localhost:8091/rest/brews", "", parameters);
+
         assertNotNull(response);
+        assertEquals(FileUtils.readFileToString(new File("src/test/resources/brew.rest.response.js")),
+                response.getPayloadAsString());
     }
 
-    public void testCanAddBrew() throws Exception
-    {
-        final MuleClient client = muleContext.getClient();
-        final String brewXml = "<brew>\n" + "<name>Hobbit IPA 2</name>\n"
-                               + "<description>Hobbit IPA 2</description>\n" + "</brew>";
 
-        final Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("guid", UUID.randomUUID().toString());
-        properties.put("content-type", "application/xml");
-        properties.put("accept", "application/json");
-
-        final MuleMessage response = client.send("http://localhost:8091/rest/brews/add", brewXml, properties);
+    @Test
+    public void testCanConsumeSOAPService() throws Exception {
+        MuleClient client = muleContext.getClient();
+        String request = FileUtils.readFileToString(new File("src/test/resources/brew.soap.request.xml"));
+        MuleMessage response = client.send("http://localhost:8090/soap", request, null);
         assertNotNull(response);
+        Diff diff = new Diff(FileUtils.readFileToString(new File("src/test/resources/brew.soap.response.xml")),
+                response.getPayloadAsString());
+        assertTrue( diff.toString(),diff.similar());
     }
 }

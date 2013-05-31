@@ -3,44 +3,59 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:file="http://www.mulesoft.org/schema/mule/file"
-      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      version="EE-3.3.0" xsi:schemaLocation="
+      xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/http 
 http://www.mulesoft.org/schema/mule/http/3.3/mule-http.xsd
 http://www.mulesoft.org/schema/mule/file 
 http://www.mulesoft.org/schema/mule/file/3.3/mule-file.xsd
 http://www.mulesoft.org/schema/mule/core 
-http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
+http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd
+ http://www.springframework.org/schema/context
+ http://www.springframework.org/schema/context/spring-context-3.0.xsd
+">
+
+
+    <notifications dynamic="true">
+        <notification event="ENDPOINT-MESSAGE"/>
+    </notifications>
+
+    <context:property-placeholder location="/mule.properties"/>
 
  <!--<start id="ch05_expenseReportCallback_lis"/>-->
-    <flow name="expenseReportCallback"
-            doc:name="expenseReportCallback">
-        <http:inbound-endpoint exchange-pattern="request-response" 
-                host="localhost" port="8081" path="expenses"
-                doc:name="HTTP"/>
-        <choice doc:name="Choice">
+    <flow name="expenseReportCallback">
+
+        <http:inbound-endpoint
+                exchange-pattern="request-response"
+                host="localhost"
+                port="8081"
+                path="expenses"/>
+
+        <logger level="INFO"
+    message="MIME TYPE: #[message.inboundProperties['mimeType']]"/>
+        <choice>
             <when 
-            expression=
-"message.inboundProperties['mimeType'] ==
-'application/vnd.ms-excel'"><!-- <co id="ch05_expenseReportCallback-1-cor"/> -->
+            expression="message.inboundProperties['mimeType']
+      == 'application/vnd.ms-excel'">
+                <!-- <co id="ch05_expenseReportCallback-1-cor"/> -->
                 <processor-chain>
                     <file:outbound-endpoint 
-        path="/opt/expenses/rejected" 
+        path="./data/expenses/status"
 outputPattern=
-"#[java.util.UUID.randomUUID()]-
+"#[java.util.UUID.randomUUID()]-&#xD;
 #[java.lang.System.currentTimeMillis()].xls"
-                doc:name="File"/>
+               />
                 </processor-chain>
             </when>
             <otherwise>
                 <processor-chain>
                     <file:outbound-endpoint 
-path="/opt/expenses/status" 
+path="./data/expenses/rejected"
 outputPattern=
-"#[java.util.UUID.randomUUID()]-
+"#[java.util.UUID.randomUUID()]-&#xD;
 #[java.lang.System.currentTimeMillis()].xls"
-                doc:name="File"/>
+                />
                 </processor-chain>
             </otherwise>
         </choice>

@@ -4,8 +4,6 @@
       xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
       xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
-
-      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       version="EE-3.3.0" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/http 
@@ -22,29 +20,29 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
                             brokerURL="vm://localhost"/>
 
  <!--<start id="ch05_expenseReportCallbackWithDLQ_lis"/>-->
-    <flow name="expenseReportCallbackWithDLQ" 
-            doc:name="expenseReportCallback">
-        <vm:inbound-endpoint path="orders" doc:name="VM"/>
-        <choice doc:name="Choice"><!-- <co id="ch05_expenseReportCallbackWithDLQ-1-cor"/> -->
-            <when 
-        expression="payload.class == 'com.prancingdonkey.domain.Brew'">
+    <flow name="expenseReportCallbackWithDLQ">
+
+        <vm:inbound-endpoint path="orders" />
+        <choice ><!-- <co id="ch05_expenseReportCallbackWithDLQ-1-cor"/> -->
+            <when
+expression="payload is com.prancingdonkey.domain.Brew">
                 <processor-chain>
                     <jms:outbound-endpoint 
                         queue="brews.definitions" 
-                        connector-ref="Active_MQ" doc:name="JMS"/>
+                        connector-ref="Active_MQ"/>
                 </processor-chain>
             </when>
             <when 
             expression="payload is com.prancingdonkey.domain.Order">
                 <processor-chain>
                     <jms:outbound-endpoint queue="brews.orders" 
-                        connector-ref="Active_MQ" doc:name="JMS"/>
+                        connector-ref="Active_MQ"/>
                 </processor-chain>
             </when>
             <otherwise>
                 <processor-chain>
                     <jms:outbound-endpoint queue="DLQ" 
-                    connector-ref="Active_MQ" doc:name="JMS"/>
+                    connector-ref="Active_MQ"/>
                 </processor-chain>
             </otherwise>
         </choice>

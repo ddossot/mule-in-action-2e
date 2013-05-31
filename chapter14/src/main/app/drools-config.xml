@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:util="http://www.springframework.org/schema/util"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+      xmlns:bpm="http://www.mulesoft.org/schema/mule/bpm"
+      xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.2/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.2/mule-xml.xsd
+        http://www.mulesoft.org/schema/mule/bpm http://www.mulesoft.org/schema/mule/bpm/3.2/mule-bpm.xsd">
+
+    <!--<start id="loyalty_lis"/>-->
+    <bpm:drools/>   <!-- <co id="loyalty-1-co"/> -->
+
+    <spring:bean id="states"
+    class="org.springframework.beans.factory.config.ListFactoryBean">
+        <spring:property name="sourceList">
+            <spring:list>
+                <spring:value>NY</spring:value>
+                <spring:value>NJ</spring:value>
+                <spring:value>CT</spring:value>
+                <spring:value>MA</spring:value>
+            </spring:list>
+        </spring:property>
+    </spring:bean>
+
+    <spring:beans>
+        <util:map id="facts">
+                <spring:entry
+                        key="states"
+                        value-ref="states"/>
+        </util:map>    <!-- <co id="loyalty-2-co"/> -->
+    </spring:beans>
+
+    <flow name="customerLoyalty">
+        <vm:inbound-endpoint path="order.processing.loyalty"/>
+        <bpm:rules rulesDefinition="drools/loyalty.drl"
+                   initialFacts-ref="facts"/>  <!-- <co id="loyalty-3-co"/> -->
+    </flow>
+
+    <!--<end id="loyalty_lis"/>-->
+
+</mule>

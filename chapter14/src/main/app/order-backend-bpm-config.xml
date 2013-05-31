@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:file="http://www.mulesoft.org/schema/mule/file"
+      xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+      xmlns:bpm="http://www.mulesoft.org/schema/mule/bpm"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:core="http://www.mulesoft.org/schema/mule/core"
+      xmlns:salesforce="http://www.mulesoft.org/schema/mule/bpm"
+      version="EE-3.3.1"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/bpm http://www.mulesoft.org/schema/mule/bpm/current/mule-bpm.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/bpm http://www.mulesoft.org/schema/mule/bpm/current/mule-bpm.xsd "
+      xmlns:vm="http://www.mulesoft.org/schema/mule/https">
+
+
+    <jms:activemq-connector name="jmsConnector"
+                            specification="1.1"
+                            brokerURL="vm://localhost"/>
+
+
+    <!--<start id="order_jbpm_lis"/>-->
+    <bpm:jbpm name="jbpm"/><!-- <co id="order_jbpm-1-co"/> -->
+
+    <flow name="orderProcessing">
+        <jms:inbound-endpoint queue="order.submit">
+            <jms:transaction action="ALWAYS_BEGIN"/>
+        </jms:inbound-endpoint>
+        <bpm:process processName="submitOrder"
+           processDefinition="process/order-process.jpdl.xml"/> <!-- <co id="order_jbpm-2-co"/> -->
+    </flow>
+
+    <!--<end id="order_jbpm_lis"/>-->
+
+
+    <flow name="crmContactCreate">
+        <jms:inbound-endpoint queue="crm.customer.create"
+                              exchange-pattern="request-response"/>
+        <echo-component/>
+    </flow>
+
+    <flow name="erpOrderRecord">
+        <jms:inbound-endpoint queue="erp.order.record"
+                              exchange-pattern="request-response"/>
+        <echo-component/>
+    </flow>
+
+
+</mule>
