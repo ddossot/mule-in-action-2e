@@ -11,10 +11,10 @@
     <flow name="invoice-processor">
         <vm:inbound-endpoint path="invoice-processor"
                              exchange-pattern="request-response" />
-        <enricher source="#[map-payload:currencyCode]"
-                  target="#[header:INBOUND:currencyCode]">
+        <enricher source="#[message.payload.currencyCode]"
+ 			target="#[header:INBOUND:currencyCode]">
             <vm:outbound-endpoint path="client.service"
-                                  exchange-pattern="request-response" />
+ 				exchange-pattern="request-response" />
         </enricher>
         <component class="com.prancingdonkey.service.InvoiceProcessor" />
     </flow>
@@ -27,9 +27,9 @@
         <enricher>
             <vm:outbound-endpoint path="client.service"
                                   exchange-pattern="request-response" />
-            <enrich source="#[map-payload:currencyCode]"
+            <enrich source="#[message.payload.currencyCode]"
                     target="#[header:INBOUND:currencyCode]" />
-            <enrich source="#[map-payload:promoCode]"
+            <enrich source="#[message.payload.promoCode]"
                     target="#[header:INBOUND:promoCode]" />
         </enricher>
         <!--<end id="lis_02_message-enricher-2"/>-->

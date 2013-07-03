@@ -1,0 +1,3 @@
+<!-- BEGIN_INCLUDE(myconn:my-processor) -->
+    <myconn:my-processor content="#[map-payload:content]" />
+<!-- END_INCLUDE(myconn:my-processor) -->

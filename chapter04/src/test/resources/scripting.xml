@@ -19,8 +19,11 @@
         
 <!--<start id="lis_04_groovy-uppercase"/>-->
 <scripting:transformer name="groovyTransformer"><!--<co id="lis_04_transform_payload_csv_1" />-->
-    <!--<co id="lis_04_transform_payload_csv_2" />--><scripting:script engine="groovy">
-        return payload.toUpperCase()
+    <scripting:script engine="groovy"><!--<co id="lis_04_transform_payload_csv_2" />-->
+    	<scripting:text><![CDATA[
+			return payload.toUpperCase();
+			]]>	
+		</scripting:text>
     </scripting:script><!--<co id="lis_04_transform_payload_csv_3" />-->
 </scripting:transformer>
 <!--<end id="lis_04_groovy-uppercase"/>-->

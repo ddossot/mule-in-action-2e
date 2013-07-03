@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:myconn="http://www.mulesoft.org/schema/mule/myconn"
+      xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/myconn http://www.mulesoft.org/schema/mule/myconn/1.0-SNAPSHOT/mule-myconn.xsd">
+
+<!--<start id="lis_13_connector-config-usage"/>-->    		
+<myconn:config 
+	parameterOne="valueOne" 
+	parameterTwo="valueTwo"/>
+<!--<end id="lis_13_connector-config-usage"/>-->
+
+    <flow name="testFlow">
+        <myconn:my-processor content="Another string"/>
+    </flow>
+
+</mule>

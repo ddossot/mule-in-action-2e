@@ -12,10 +12,8 @@
         <vm:inbound-endpoint path="xpath-expression.in" exchange-pattern="request-response" />
         
 <!--<start id="lis_04_xpath-expression"/>-->
-<message-properties-transformer scope="outbound">
-    <add-message-property key="productId" 
-        value="#[xpath('/products/product[1]/id')]" /><!--<co id="lis_04_expression_add_prop_1" />-->
-</message-properties-transformer>
+<set-property propertyName="productId" 
+	value="#[xpath('/products/product[1]/id').getText()]" />
 <!--<end id="lis_04_xpath-expression"/>-->
         
     </flow>

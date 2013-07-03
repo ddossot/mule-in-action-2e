@@ -34,7 +34,7 @@
                 
 <!--<start id="lis_04_message-properties-transformer-delete-expr"/>-->
 <remove-property propertyName="temp.*" /><!--<co id="lis_04_message-properties-transformer-add-not-present_1" />-->
-<remove-property propertyName="prancing.*" /><!--<co id="lis_04_message-properties-transformer-add-not-present_2" />-->
+<remove-property propertyName="prancing*" /><!--<co id="lis_04_message-properties-transformer-add-not-present_2" />-->
 <!--<end id="lis_04_message-properties-transformer-delete-expr"/>-->
         
     </flow>

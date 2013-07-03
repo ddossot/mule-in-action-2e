@@ -108,6 +108,12 @@
             <groupId>org.mule.patterns</groupId>
             <artifactId>mule-pattern-core</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.mule.tools.devkit</groupId>
+    	    <artifactId>mule-devkit-annotations</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>

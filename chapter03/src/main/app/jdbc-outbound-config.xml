@@ -58,9 +58,9 @@
         <byte-array-to-string-transformer/>
         <all>   <!-- <co id="ch03_jdbc-outbound-2_cor"/> -->
             <processor-chain>
+                <!-- <co id="ch03_jdbc-outbound-3_cor"/> -->
                 <custom-transformer name="csvToMapTransformer"
     class="com.prancingdonkey.transformer.CSVToListOfMapsTransformer"/>
-                <!-- <co id="ch03_jdbc-outbound-3_cor"/> -->
                 <foreach>  <!-- <co id="ch03_jdbc-outbound-4_cor"/> -->
                     <jdbc:outbound-endpoint queryKey="productInsert"
                         connector-ref="jdbcConnector"/>    <!-- <co id="ch03_jdbc-outbound-5_cor"/> -->

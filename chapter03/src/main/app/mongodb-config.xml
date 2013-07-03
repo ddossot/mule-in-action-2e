@@ -48,16 +48,16 @@ http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mo
 
     <!--<start id="ch03_mongo_query_lis"/>-->
     <flow name="queryCoolingAlerts" >
+        <!-- <co id="ch03_mongo_query-1_cor" /> -->
         <http:inbound-endpoint host="${http.host}"
                                port="${http.port}"
                                path="alerts/cooling" />
         <byte-array-to-string-transformer/>
-        <!-- <co id="ch03_mongo_query-1_cor" /> -->
         <mongo:find-objects config-ref="mongoDB"
                             collection="cooling_alerts" />  <!-- <co id="ch03_mongo_query-2_cor" /> -->
         <mongo:mongo-collection-to-json/>
 
     </flow>
-    <!--end id="ch03_mongo_query_lis"/>-->
+    <!--<end id="ch03_mongo_query_lis"/>-->
 
 </mule>

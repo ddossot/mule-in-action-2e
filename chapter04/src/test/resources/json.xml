@@ -51,7 +51,7 @@
 <json:json-to-object-transformer
      returnClass="java.util.HashMap" />
 <set-property propertyName="requestType"
-     value="#[message.payload.requestType]"/><!--<co id="lis_04_json-query-config-1_item" />-->
+     value="#[message.payload.requestType]"/><!--<co id="lis04_JsonPath-config-1_item" />-->
 <set-property propertyName="productId"
      value="#[message.payload.products[0].productId]"/><!--<co id="lis04_JsonPath-config-2_array" />-->
 <!--<end id="lis_04_json-query"/>-->

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:weather="http://www.mulesoft.org/schema/mule/weather"
+      xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/weather http://www.mulesoft.org/schema/mule/weather/1.0-SNAPSHOT/mule-weather.xsd">
+
+<!--<start id="lis_13_argument-in-mp"/>-->
+<weather:config celsius="true" />
+ 
+<flow name="configInMp">
+	<weather:get-weather 
+		username="organization1" password="testPassword"
+		countryName="Spain" cityName="Malaga" /><!--<co id="lis_13_argument-in-mp_1" />-->
+	<weather:get-weather 
+		username="organization2" password="testPassword2"
+		countryName="Canada" cityName="Vancouver" /><!--<co id="lis_13_argument-in-mp_2" />-->
+	<weather:get-weather 
+		username="organization1" password="testPassword"
+		countryName="USA" cityName="New York" /><!--<co id="lis_13_argument-in-mp_3" />-->
+</flow>
+<!--<end id="lis_13_argument-in-mp"/>-->
+
+</mule>

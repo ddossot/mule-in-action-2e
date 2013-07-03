@@ -19,4 +19,4 @@ public abstract class ExternalItemMixin
     @JsonIgnore
     public abstract void setUnwantedValue(String unwantedValue);
 }
-// <end id="lis_04_json-create-mixin"/>
+//<end id="lis_04_json-create-mixin"/>

@@ -1,0 +1,3 @@
+<!-- BEGIN_INCLUDE(brewerydb:get-beers) -->
+    <brewerydb:get-beers />
+<!-- END_INCLUDE(brewerydb:get-beers) -->

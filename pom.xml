@@ -28,6 +28,7 @@
         <module>chapter10</module>
         <module>chapter11</module>
         <module>chapter12</module>
+        <module>chapter13</module>        
         <module>chapter14</module>
         <module>appendixA</module>
     </modules>
@@ -51,12 +52,18 @@
 
     <dependencyManagement>
         <dependencies>
-        <!-- Modules -->
+            <!-- Modules -->
             <dependency>
                 <groupId>org.mule.modules</groupId>
                 <artifactId>mule-module-annotations</artifactId>
                 <version>${mule.version}</version>
             </dependency>
+           <dependency>
+                <groupId>org.mule.tools.devkit</groupId>
+                <artifactId>mule-devkit-annotations</artifactId>
+                <version>${mule.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.mule.modules</groupId>
                 <artifactId>mule-module-atom</artifactId>
