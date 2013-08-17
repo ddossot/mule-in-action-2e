@@ -468,5 +468,11 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
+        <repository>
+            <id>java.net</id>
+            <name>java.net Maven Repository</name>
+            <url>https://maven-repository.dev.java.net/nonav/repository</url>
+            <layout>legacy</layout>
+        </repository>
     </repositories>
 </project>
