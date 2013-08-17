@@ -41,7 +41,7 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
         <component
     class="com.prancingdonkey.service.OrderSubmissionServiceImpl"/>
 
-        <jms:outbound-endpoint queue="order.submit"><!-- <co id="order_front-1-co"/> -->
+        <jms:outbound-endpoint queue="order.submit"><!--<co id="order_front-1-co"/>-->
             <jms:transaction action="ALWAYS_BEGIN"/>
         </jms:outbound-endpoint>
     </flow>

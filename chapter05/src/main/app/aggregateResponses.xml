@@ -16,27 +16,26 @@ http://www.mulesoft.org/schema/mule/core
 http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 ">
 
-
-
- <!--<start id="ch05_asyncRequestReply_lis/>-->
-    <flow name="asyncRequestReply">
-        <vm:inbound-endpoint exchange-pattern="one-way" 
-            path="order.submission"/>
-        <request-reply>
-            <jms:outbound-endpoint queue="db.order.insert" 
-                    connector-ref="Active_MQ">
-            </jms:outbound-endpoint>  <!-- <co id="ch05-request-reply-1-cor"/> -->
-            <jms:inbound-endpoint 
-                topic="db.order.insert.status">  <!-- <co id="ch05-request-reply-2-cor"/> -->
-                <jms:selector 
-               expression=
-            "PD_ORDER_ID=#[inboundProperties('PD_ORDER_ID')]"/>
-            </jms:inbound-endpoint>
-        </request-reply>
-        <logger message=
-"Order status for #[inboundProperties('PD_ORDER_ID')]: #[payload]" 
-    level="INFO"/><!-- <co id="ch05-request-reply-3-cor"/> -->
+ <!--<start id="ch05_aggregateResponses_lis"/>-->
+<flow name="aggregateResponses" doc:name="aggregateResponses">
+        <vm:inbound-endpoint exchange-pattern="request-response" 
+            path="order.netprice" 
+            doc:name="VM"/> <!--<co id="ch05-aggregateResponses-1-cod"/>-->
+        <all doc:name="All"><!--<co id="ch05-aggregateResponses-2-cod"/>-->
+            <http:outbound-endpoint 
+                exchange-pattern="request-response" 
+                host="api.internal.prancingdonkey.com" 
+                port="9091" path="shipping" doc:name="HTTP"/>
+            <http:outbound-endpoint 
+                exchange-pattern="request-response" 
+                host="api.internal.prancingdonkey.com" 
+                port="9091" path="tax" doc:name="HTTP"/>
+        </all>
+        <expression-transformer 
+            expression="payload[0].toBigDecimal() 
+                      + payload[1].toBigDecimal()" 
+            doc:name="Expression"/><!--<co id="ch05-aggregateResponses-3-cod"/>-->
     </flow>
-    <!--<end id="ch05_asyncRequestReply_lis/>-->
+<!--<end id="ch05_aggregateResponses_lis"/>-->
 
   </mule>

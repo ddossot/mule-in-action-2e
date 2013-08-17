@@ -35,7 +35,7 @@
                               exchange-pattern="one-way"/>
         <component
             class="com.prancingdonkey.service.FraudDetectionService"/>
-        <!-- <co id="ch11_monolithic_1-cor"/> -->
+        <!--<co id="ch11_monolithic_1-cor"/>-->
         <component
             class="com.prancingdonkey.service.DataPeristenceService"/>
         <component

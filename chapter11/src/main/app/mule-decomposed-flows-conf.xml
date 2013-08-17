@@ -36,7 +36,7 @@
         <component
            class="com.prancingdonkey.service.FraudDetectionService"/>
         <vm:outbound-endpoint path="report.generation.stage.2"/>
-        <!-- <co id="ch11_seda_1-cor"/> -->
+        <!--<co id="ch11_seda_1-cor"/>-->
     </flow>
 
     <flow name="processExpenseReportsStage2">
@@ -44,14 +44,14 @@
         <component
            class="com.prancingdonkey.service.DataPeristenceService"/>
         <vm:outbound-endpoint path="report.generation.stage.3"/>
-        <!-- <co id="ch11_seda_2-cor"/> -->
+        <!--<co id="ch11_seda_2-cor"/>-->
     </flow>
 
     <flow name="processExpenseReportsStage3">
         <vm:inbound-endpoint path="report.generation.stage.3"/>
         <component
            class="com.prancingdonkey.service.DataWarehousingService"/>
-        <!-- <co id="ch11_seda_3-cor"/> -->
+        <!--<co id="ch11_seda_3-cor"/>-->
         <jms:outbound-endpoint topic="report.generation.complete"/>
     </flow>
     <!--<end id="ch11_seda_lis"/>-->

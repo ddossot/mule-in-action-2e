@@ -28,28 +28,24 @@
 
     <context:property-placeholder location="/mule.properties"/>
 
-    <!-- <start id="ch03_ftp-inbound_lis" /> -->
+    <!--<start id="ch03_ftp-inbound_lis"/>-->
     <flow name="retrieveSalesStatistics">
         <ftp:inbound-endpoint user="joe" password="123456"
                               host="${ftp.host}"
                               port="${ftp.port}"
                               path="/ftp/incoming"
-                              pollingFrequency="3600000"/>
-        <!-- <co id="ch03_ftp-inbound-1_cor" /> -->
-        <file:outbound-endpoint path="./data/sales/statistics"/>
-        <!-- <co id="ch03_ftp-inbound-2_cor" /> -->
+                              pollingFrequency="3600000"/><!--<co id="ch03_ftp-inbound-1_cor"/>-->
+        <file:outbound-endpoint path="./data/sales/statistics"/><!--<co id="ch03_ftp-inbound-2_cor"/>-->
     </flow>
-    <!-- <end id="ch03_ftp-inbound_lis" /> -->
+    <!--<end id="ch03_ftp-inbound_lis"/>-->
 
-    <!-- <start id="ch03_ftp-outbound_lis" /> -->
+    <!--<start id="ch03_ftp-outbound_lis"/>-->
     <flow name="ftpProductCatalog">
-        <file:inbound-endpoint path="./data/in"/>
-        <!-- <co id="ch03_ftp-outbound-1_cor" /> -->
+        <file:inbound-endpoint path="./data/in"/><!--<co id="ch03_ftp-outbound-1_cor"/>-->
         <ftp:outbound-endpoint user="joe" password="123456"
                                host="${ftp.host}" port="${ftp.port}"
-                               path="/data/prancingdonkey/catalog"/>
-        <!-- <co id="ch03_ftp-outbound-2_cor" /> -->
+                               path="/data/prancingdonkey/catalog"/><!--<co id="ch03_ftp-outbound-2_cor"/>-->
 
     </flow>
-    <!-- <end id="ch03_ftp-outbound_lis" /> -->
+    <!--<end id="ch03_ftp-outbound_lis"/>-->
 </mule>

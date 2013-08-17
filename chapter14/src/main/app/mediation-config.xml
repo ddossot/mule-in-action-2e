@@ -37,17 +37,17 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
         <http:inbound-endpoint
                 exchange-pattern="request-response"
                 host="api.prancingdonkey.com"
-                port="80"/><!-- <co id="mediation-1-co"/> -->
-        <mule-ss:http-security-filter realm="mule-realm"/> <!-- <co id="mediation-2-co"/> -->
+                port="80"/><!--<co id="mediation-1-co"/>-->
+        <mule-ss:http-security-filter realm="mule-realm"/> <!--<co id="mediation-2-co"/>-->
         <mulexml:schema-validation-filter
                 schemaLocations="schema/order.xsd"
-                returnResult="true"/> <!-- <co id="mediation-3-co"/> -->
+                returnResult="true"/> <!--<co id="mediation-3-co"/>-->
         <component
-   class="com.prancingdonkey.service.RegistryLookupService"/> <!-- <co id="mediation-4-co"/> -->
+   class="com.prancingdonkey.service.RegistryLookupService"/> <!--<co id="mediation-4-co"/>-->
         <http:outbound-endpoint
                 exchange-pattern="request-response"
                 host="api.prancingdonkey.com" port="80"
-                path="#[flowVars['resolvedEndpoint']]"/>  <!-- <co id="mediation-5-co"/> -->
+                path="#[flowVars['resolvedEndpoint']]"/><!--<co id="mediation-5-co"/>-->
     </flow>
     <!--<end id="mediation_lis"/>-->
 

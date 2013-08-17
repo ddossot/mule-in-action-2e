@@ -26,7 +26,7 @@
     <context:property-placeholder location="/mule.properties"/>
 
 
-    <!-- <start id="ch03_vm_lis"/> -->
+    <!--<start id="ch03_vm_lis"/>-->
     <flow name="readExpensesFromFilesystemFlow">
         <file:inbound-endpoint path="./data/expenses/in"
                                pollingFrequency="60000"
@@ -35,21 +35,20 @@
                                         caseSensitive="false"/>
         </file:inbound-endpoint>
         <vm:outbound-endpoint path="expenses"/>
-        <!-- <co id="ch03_vm-1_cor" /> -->
+        <!--<co id="ch03_vm-1_cor"/>-->
 
     </flow>
 
     <flow name="postExpenses">
         <vm:inbound-endpoint path="expenses"/>
-        <!-- <co id="ch03_vm-2_cor" /> -->
+        <!--<co id="ch03_vm-2_cor"/>-->
         <http:outbound-endpoint host="${http.host}"
                                 port="${http.port}"
                                 method="POST"
                                 path="expenses/prancingdonkey"/>
     </flow>
 
-    <!-- <end id="ch03_vm_lis"/> -->
-
+    <!--<end id="ch03_vm_lis"/>-->
 
     <flow name="dummyHttpServer">
         <http:inbound-endpoint host="${http.host}" port="${http.port}" path="expenses/prancingdonkey"/>

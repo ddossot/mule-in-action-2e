@@ -47,9 +47,7 @@ http://www.mulesoft.org/schema/mule/core/current/mule.xsd
             user="cooling"
             password="password"/>
         <email:email-to-string-transformer/>
-        <logger level="INFO" message="FOO: #[payload]"/>
-
-        <choice><!-- <co id="ch05_dispatchCoolingAlerts-1-cor"/> -->
+        <choice><!--<co id="ch05_dispatchCoolingAlerts-1-cor"/>-->
             <when expression="payload.contains('SEVERE')">
                 <processor-chain>
                     <jms:outbound-endpoint

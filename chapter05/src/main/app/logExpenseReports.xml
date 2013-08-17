@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
     <flow name="logExpenseReports" >
         <jms:inbound-endpoint topic="expenses.status"
         connector-ref="Active_MQ" />
-        <choice ><!-- <co id="ch05_logExpenseReports-1-cor"/> -->
+        <choice ><!--<co id="ch05_logExpenseReports-1-cor"/>-->
             <when
         expression="xpath('/expense/status/text() = \'PROCESSED\'')">
                 <processor-chain>
@@ -34,7 +34,7 @@ message=
                 </processor-chain>
             </when>
             <when expression=
-"xpath('/expense/status/text()') =='FAILED'">
+"xpath('/expense/status').text =='FAILED'">
                 <processor-chain>
                     <logger message=
 "Error processing expense report:#[xpath('/expense/id/text()]"

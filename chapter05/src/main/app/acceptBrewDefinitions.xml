@@ -29,9 +29,8 @@ http://www.mulesoft.org/schema/mule/core/current/mule.xsd
     <flow name="acceptBrewDefinitions">
         <jms:inbound-endpoint queue="brews.definitions" 
             connector-ref="Active_MQ" />
-        <logger level="INFO" message="FOO: #[payload]"/>
         <payload-type-filter expectedType="com.prancingdonkey.domain.Brew"
-            /><!-- <co id="ch05_acceptBrewDefinitions-1-cor"/> -->
+            /><!--<co id="ch05_acceptBrewDefinitions-1-cor"/>-->
         <component 
              class="com.prancingdonkey.service.BrewProcessingService"
              />

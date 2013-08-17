@@ -36,17 +36,14 @@
     <!--<start id="ch03_file_lis"/>-->
     <flow name="copyExpenseReports">
         <file:inbound-endpoint path="./data/expenses/1/in"
-                               pollingFrequency="60000">
-            <!-- <co id="ch03_file-1_cor" /> -->
+                               pollingFrequency="60000"><!--<co id="ch03_file-1_cor"/>-->
             <file:filename-regex-filter pattern=".*xls$"
-                                        caseSensitive="false"/>
-            <!-- <co id="ch03_file-2_cor" /> -->
+                                        caseSensitive="false"/><!--<co id="ch03_file-2_cor"/>-->
         </file:inbound-endpoint>
         <file:outbound-endpoint path="./data/expenses/out"
              outputPattern="EXPENSE-REPORT-&#xD;
       #[org.mule.util.DateUtils.getTimeStamp('dd-MM-yy_HH-mm-ss.SSS')]&#xD;
-      -#[message.inboundProperties.originalFilename]"/>
-        <!-- <co id="ch03_file-3_cor" /> -->
+      -#[inboundProperties['originalFilename']]"/><!--<co id="ch03_file-3_cor"/>-->
     </flow>
     <!--<end id="ch03_file_lis"/>-->
 
@@ -61,8 +58,7 @@
                                 port="${http.port}"
                                 path="expenseReports"
                                 method="POST"
-                                />
-        <!-- <co id="ch03_file_http-1_cor" /> -->
+                                /><!--<co id="ch03_file_http-1_cor"/>-->
     </flow>
     <!--<end id="ch03_file_http_lis"/>-->
 

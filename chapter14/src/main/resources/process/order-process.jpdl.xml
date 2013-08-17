@@ -2,9 +2,8 @@
 
 
 <!--<start id="order_jbpm_process_lis"/>-->
-
 <process name="submitOrder"
-         xmlns="http://jbpm.org/4.3/jpdl">   <!-- <co id="order_jbpm_process-1-co"/> -->
+         xmlns="http://jbpm.org/4.3/jpdl">   <!--<co id="order_jbpm_process-1-co"/>-->
 
     <start name="start">
         <transition to="fork"/>
@@ -20,22 +19,22 @@
                payload="incoming"
                exchange-pattern="request-response">
         <transition to="join"/>
-    </mule-send>   <!-- <co id="order_jbpm_process-2-co"/> -->
+    </mule-send>   <!--<co id="order_jbpm_process-2-co"/>-->
 
     <mule-send name="sendOrderToNetSuite"
                endpoint="jms://erp.order.record"
                payload="incoming"
                exchange-pattern="request-response">
         <transition to="join"/>
-    </mule-send>  <!-- <co id="order_jbpm_process-3-co"/> -->
+    </mule-send>  <!--<co id="order_jbpm_process-3-co"/>-->
 
-    <join name="join">  <!-- <co id="order_jbpm_process-4-co"/> -->
+    <join name="join">  <!--<co id="order_jbpm_process-4-co"/>-->
         <transition to="dispatchOrderCompletedEvent"/>
     </join>
 
     <mule-send name="dispatchOrderCompletedEvent"
                endpoint="jms://topic:events.orders.completed"
-               payload="incoming" exchange-pattern="one-way">  <!-- <co id="order_jbpm_process-5-co"/> -->
+               payload="incoming" exchange-pattern="one-way">  <!--<co id="order_jbpm_process-5-co"/>-->
         <transition to="end"/>
     </mule-send>
 

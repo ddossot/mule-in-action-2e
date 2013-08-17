@@ -24,8 +24,8 @@
     <flow name="firstOfMonthEventGenerator">
         <quartz:inbound-endpoint
                 jobName="firstOfMonth"
-                cronExpression="0 0 1 * * ?"><!-- <co id="quartz_config-1-co"/> -->
-            <quartz:event-generator-job><!-- <co id="quartz_config-2-co"/> -->
+                cronExpression="0 0 0 1 * ?"><!--<co id="quartz_config-1-co"/>-->
+            <quartz:event-generator-job><!--<co id="quartz_config-2-co"/>-->
                 <quartz:payload>FIRST_OF_THE_MONTH_EVENT</quartz:payload>
             </quartz:event-generator-job>
         </quartz:inbound-endpoint>

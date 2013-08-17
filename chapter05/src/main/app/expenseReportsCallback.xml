@@ -32,13 +32,11 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd
                 port="8081"
                 path="expenses"/>
 
-        <logger level="INFO"
-    message="MIME TYPE: #[message.inboundProperties['mimeType']]"/>
         <choice>
             <when 
-            expression="message.inboundProperties['mimeType']
+            expression="message.inboundProperties['Content-Type']
       == 'application/vnd.ms-excel'">
-                <!-- <co id="ch05_expenseReportCallback-1-cor"/> -->
+                <!--<co id="ch05_expenseReportCallback-1-cor"/>-->
                 <processor-chain>
                     <file:outbound-endpoint 
         path="./data/expenses/status"

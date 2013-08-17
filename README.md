@@ -11,7 +11,7 @@ Requirements:
 - JDK 1.6 with unlimited JCE cryptography,
 - Maven 3.
 
-Tests in the examples will open ports while they run, like 8080, so watch out for potential conflicts. 
+Tests in the examples will open ports while they run, like 8080, 5555 and 52525, so watch out for potential conflicts. 
 
 Some examples are not meant to be run, as they try to bind to fictitious host names. These examples are not included in the POM hierarchy.
 

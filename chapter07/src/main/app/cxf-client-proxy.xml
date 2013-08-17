@@ -24,7 +24,7 @@
                              exchange-pattern="request-response"/>
         <byte-array-to-string-transformer/>
         <cxf:proxy-client payload="body"
-                enableMuleSoapHeaders="false"/> <!-- <co id="cxf_client_proxy-1-co"/> -->
+                enableMuleSoapHeaders="false"/> <!--<co id="cxf_client_proxy-1-co"/>-->
         <http:outbound-endpoint address="http://localhost:8090/soap"
                  exchange-pattern="request-response"/>
     </flow>

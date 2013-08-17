@@ -29,14 +29,14 @@ http://www.mulesoft.org/schema/mule/bpm http://www.mulesoft.org/schema/mule/bpm/
 
 
     <!--<start id="order_jbpm_lis"/>-->
-    <bpm:jbpm name="jbpm"/><!-- <co id="order_jbpm-1-co"/> -->
+    <bpm:jbpm name="jbpm"/><!--<co id="order_jbpm-1-co"/>-->
 
     <flow name="orderProcessing">
         <jms:inbound-endpoint queue="order.submit">
             <jms:transaction action="ALWAYS_BEGIN"/>
         </jms:inbound-endpoint>
         <bpm:process processName="submitOrder"
-           processDefinition="process/order-process.jpdl.xml"/> <!-- <co id="order_jbpm-2-co"/> -->
+           processDefinition="process/order-process.jpdl.xml"/><!--<co id="order_jbpm-2-co"/>-->
     </flow>
 
     <!--<end id="order_jbpm_lis"/>-->

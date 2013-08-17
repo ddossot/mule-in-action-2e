@@ -23,19 +23,17 @@
     <flow name="orderCompletionEventInjection">
         <jms:inbound-endpoint topic="events.orders.completed"/>
         <esper:send eventPayload-ref="#[message.payload]"
-                    eventName="OrderEvent"/> <!-- <co id="esper_cep_config-1-co"/> -->
+                    eventName="OrderEvent"/> <!--<co id="esper_cep_config-1-co"/>-->
     </flow>
 
     <flow name="Event Listener Flow">
         <esper:listen  statement=
                         "select count(*), stddev(count(*))
                         from OrderCompletedEvent.win:length(3600000)
-                         having stddev(count(*)) > 1 "/>  <!-- <co id="esper_cep_config-2-co"/> -->
+                         having stddev(count(*)) > 1 "/> <!--<co id="esper_cep_config-2-co"/>-->
         <expression-transformer evaluator="map-payload"
                                 expression="count(*)"/>
         <jms:outbound-endpoint topic="alerts.orders" />
     </flow>
     <!--<end id="esper_cep_config_lis"/>-->
-
-
 </mule>

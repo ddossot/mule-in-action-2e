@@ -28,14 +28,14 @@ http://www.mulesoft.org/schema/mule/core/current/mule.xsd
                               connector-ref="jmsConnector"/>
         <or-filter>
             <expression-filter
-expression="xpath('/order/priority/text()').text == 'HIGH'"/>
+expression="xpath('/order/priority').text == 'HIGH'"/>
             <message-property-filter pattern="PD_PRIORITY='HIGH'"
               caseSensitive="true" scope="inbound"/>
         </or-filter>
         <idempotent-message-filter
-                idExpression="xpath('/order/id/text()').text"
+                idExpression="xpath('/order/id').text"
                 />
-        <!-- <co id="ch05-idempotent-receiver-1-cod"/> -->
+        <!--<co id="ch05-idempotent-receiver-1-cod"/>-->
         <component
 class="com.prancingdonkey.service.HighPriorityOrderProcessingService"/>
 

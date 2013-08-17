@@ -29,7 +29,7 @@ http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mo
                   username="${mongo.user}"
                   password="${mongo.password}"
                   host="${mongo.host}"
-                    />  <!-- <co id="ch03_mongo_save_1-cor"/> -->
+                    />  <!--<co id="ch03_mongo_save_1-cor"/>-->
     <jms:activemq-connector name="jmsConnector"
                             specification="1.1"
                             brokerURL="${jms.url}"/>
@@ -37,26 +37,22 @@ http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mo
     <flow name="saveCoolingAlerts">
         <jms:inbound-endpoint topic="cooling.alerts"
                               connector-ref="jmsConnector" />
-        <mongo:json-to-dbobject/>   <!-- <co id="ch03_mongo_save_2-cor"/> -->
+        <mongo:json-to-dbobject/>   <!--<co id="ch03_mongo_save_2-cor"/>-->
         <mongo:insert-object collection="cooling_alerts"
-                             config-ref="mongoDB" /> <!-- <co id="ch03_mongo_save_3-cor"/> -->
-
+                             config-ref="mongoDB" /> <!--<co id="ch03_mongo_save_3-cor"/>-->
     </flow>
 
     <!--<end id="ch03_mongo_save_lis"/>-->
 
-
     <!--<start id="ch03_mongo_query_lis"/>-->
     <flow name="queryCoolingAlerts" >
-        <!-- <co id="ch03_mongo_query-1_cor" /> -->
         <http:inbound-endpoint host="${http.host}"
                                port="${http.port}"
-                               path="alerts/cooling" />
+                               path="alerts/cooling"/><!--<co id="ch03_mongo_query-1_cor"/>-->
         <byte-array-to-string-transformer/>
         <mongo:find-objects config-ref="mongoDB"
-                            collection="cooling_alerts" />  <!-- <co id="ch03_mongo_query-2_cor" /> -->
+                            collection="cooling_alerts" /><!--<co id="ch03_mongo_query-2_cor"/>-->
         <mongo:mongo-collection-to-json/>
-
     </flow>
     <!--<end id="ch03_mongo_query_lis"/>-->
 

@@ -15,6 +15,7 @@ import org.mule.api.service.Service;
 import org.mule.api.transformer.TransformerException;
 import org.mule.transformer.AbstractTransformer;
 
+@SuppressWarnings("deprecation")
 public class LifecycleTrackerTransformer extends AbstractTransformer
     implements Lifecycle, MuleContextAware, FlowConstructAware
 {

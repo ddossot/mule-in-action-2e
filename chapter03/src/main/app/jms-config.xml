@@ -28,8 +28,7 @@
     <!--<start id="ch03_jms-outbound_lis"/>-->
     <jms:activemq-connector name="jmsConnector"
                             specification="1.1"
-                            brokerURL="${jms.url}"/>
-    <!-- <co id="ch03_jms-outbound_1-cor"/> -->
+                            brokerURL="${jms.url}"/><!--<co id="ch03_jms-outbound_1-cor"/>-->
 
     <flow name="dispatchExpenseReports">
         <http:inbound-endpoint exchange-pattern="one-way"
@@ -38,16 +37,14 @@
                                method="POST"
                                port="${http.port}"
                                connector-ref="httpConnector"/>
-        <jms:outbound-endpoint topic="expenses.status"/>
-        <!-- <co id="ch03_jms-outbound_2-cor"/> -->
+        <jms:outbound-endpoint topic="expenses.status"/> <!--<co id="ch03_jms-outbound_2-cor"/>-->
     </flow>
     <!--<end id="ch03_jms-outbound_lis"/>-->
 
     <!--<start id="ch03_jms-inbound_lis"/>-->
     <flow name="logExpenseReports">
         <jms:inbound-endpoint topic="expenses.status"
-                              exchange-pattern="one-way"/>
-        <!-- <co id="ch03_jms-inbound-1_cor"/> -->
+                              exchange-pattern="one-way"/><!--<co id="ch03_jms-inbound-1_cor"/>-->
         <logger level="INFO"
                 message="Expense Report Processed:
     #[org.mule.util.DateUtils.getTimeStamp('dd-MM-yy_HH-mm-ss.SSS')]"/>
@@ -57,27 +54,11 @@
     <!--<start id="ch03_jms-sync_lis"/>-->
        <flow name="brewJmsService">
           <jms:inbound-endpoint queue="brews.list"
-                                exchange-pattern="request-response"/>
-              <!-- <co id="ch03_jms-sync-1_cor"/> -->
+                                exchange-pattern="request-response"/><!--<co id="ch03_jms-sync-1_cor"/>-->
            <component class="com.prancingdonkey.service.BrewServiceImpl"/>
            <mule-xml:object-to-xml-transformer />
-
        </flow>
     <!--<end id="ch03_jms-sync_lis"/>-->
     
-     <!--<start id="ch03_jms-ajax_lis"/>-->
-    <ajax:connector name="ajaxConnector"
-                    serverUrl="http://${http.host}:${ajax.port}/ajax"/>
-    <!-- <co id="ch03_jms-ajax-1_cor"/> -->
-
-    <flow name="ajaxExpenseReports">
-        <jms:inbound-endpoint topic="expenses.status"
-                              exchange-pattern="one-way"/>
-
-        <ajax:outbound-endpoint channel="/expense/reports"
-                                connector-ref="ajaxConnector"/>
-    </flow>
-    <!--<end id="ch03_jms-ajax_lis"/>-->
-
 
 </mule>

@@ -18,13 +18,10 @@
     <!--<start id="ch03_brew_soap_lis"/>-->
     <flow name="brewSoapService">
         <http:inbound-endpoint address="http://localhost:8090/soap"
-                               exchange-pattern="request-response"/>
-            <!-- <co id="ch03_brew_soap-1_cor"/> -->
+                               exchange-pattern="request-response"/> <!--<co id="ch03_brew_soap-1_cor"/>-->
         <cxf:simple-service
-                serviceClass="com.prancingdonkey.service.BrewService"/>
-        <!-- <co id="ch03_brew_soap-2_cor"/> -->
-        <component class="com.prancingdonkey.service.BrewServiceImpl"/>
-        <!-- <co id="ch03_brew_soap-3_cor"/> -->
+                serviceClass="com.prancingdonkey.service.BrewService"/><!--<co id="ch03_brew_soap-2_cor"/>-->
+        <component class="com.prancingdonkey.service.BrewServiceImpl"/><!--<co id="ch03_brew_soap-3_cor"/> -->
     </flow>
     <!--<end id="ch03_brew_soap_lis"/>-->
 
@@ -33,10 +30,10 @@
     <flow name="brewRestService">
         <http:inbound-endpoint address="http://localhost:8091/rest"
                                exchange-pattern="request-response"/>
-        <!-- <co id="ch03_brew_res_lis-1_cor"/> -->
+        <!--<co id="ch03_brew_res_lis-1_cor"/>-->
         <jersey:resources>
             <component class="com.prancingdonkey.service.BrewServiceImpl"/>
-            <!-- <co id="ch03_brew_res_lis-2_cor"/> -->
+            <!--<co id="ch03_brew_res_lis-2_cor"/>-->
         </jersey:resources>
     </flow>
     <!--<end id="ch03_brew_res_lis"/>-->

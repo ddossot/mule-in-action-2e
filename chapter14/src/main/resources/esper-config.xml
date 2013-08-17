@@ -1,6 +1,4 @@
-
 <!--<start id="esper_config_lis"/>-->
-
 <esper-configuration
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://www.espertech.com/schema/esper"
@@ -9,8 +7,7 @@
  http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
 
     <event-type name="OrderCompletedEvent"
-                class="com.prancingdonkey.model.Order"/> <!-- <co id="esper_config-1-co"/> -->
+                class="com.prancingdonkey.model.Order"/> <!--<co id="esper_config-1-co"/>-->
 
 </esper-configuration>
-
 <!--<end id="esper_config_lis"/>-->

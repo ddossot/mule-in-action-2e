@@ -22,8 +22,8 @@
         <http:inbound-endpoint address="http://localhost:8090/soap"
                                exchange-pattern="request-response"/>
         <cxf:proxy-service  wsdlLocation="brew.wsdl" service="BrewService"
-            namespace="http://service.prancingdonkey.com/" /> <!-- <co id="cxf_service_proxy-1-co"/> -->
-        <mulexml:dom-to-xml-transformer/><!-- <co id="cxf_service_proxy-2-co"/> -->
+            namespace="http://service.prancingdonkey.com/" /> <!--<co id="cxf_service_proxy-1-co"/>-->
+        <mulexml:dom-to-xml-transformer/><!--<co id="cxf_service_proxy-2-co"/>-->
         <vm:outbound-endpoint path="brew.lookup"
                  exchange-pattern="request-response"/>
     </flow>

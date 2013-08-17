@@ -29,9 +29,9 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
                                path="orders"/>
 <component class=
             "com.prancingdonkey.service.OrderValidationService"/>
-    <!-- <co id="ch05_async-1-cor"/> -->
+    <!--<co id="ch05_async-1-cor"/>-->
 
-        <async><!-- <co id="ch05_async-2-cor"/> -->
+        <async><!--<co id="ch05_async-2-cor"/>-->
             <component
  class="com.prancingdonkey.service.OrderPreProcessingService"/>
             <component

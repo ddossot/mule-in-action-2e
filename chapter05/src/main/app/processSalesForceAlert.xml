@@ -37,24 +37,24 @@ http://www.mulesoft.org/schema/mule/mongo/2.0/mule-mongo.xsd
     <flow name="processSalesForceAlert" >
         <vm:inbound-endpoint exchange-pattern="one-way" 
             path="alerts.salesforce" doc:name="VM"/>
-        <logger message="#[payload]" level="INFO"/><!-- <co id="ch05_processSalesForceAlert-1-cod"/> -->
+        <logger message="#[payload]" level="INFO"/><!--<co id="ch05_processSalesForceAlert-1-cod"/>-->
 
-        <all ><!-- <co id="ch05_processSalesForceAlert-2-cod"/> -->
+        <all ><!--<co id="ch05_processSalesForceAlert-2-cod"/>-->
             <processor-chain>
                 <smtp:outbound-endpoint host="localhost" 
                 port="25" 
                 responseTimeout="10000" 
-               /><!-- <co id="h05_processSalesForceAlert-3-cod"/> -->
+               /><!--<co id="h05_processSalesForceAlert-3-cod"/>-->
             </processor-chain>
             <processor-chain>
                 <mongo:json-to-dbobject/>
                 <mongo:insert-object
                         config-ref="Mongo_DB"
                         collection="alerts"
-                /><!-- <co id="h05_processSalesForceAlert-4-cod"/> -->
+                /><!--<co id="h05_processSalesForceAlert-4-cod"/>-->
             </processor-chain>
         </all>
     </flow>
-    <!--<end id="ch05_processSalesForceAlert_lis "/>-->
+    <!--<end id="ch05_processSalesForceAlert_lis"/>-->
  
  </mule>

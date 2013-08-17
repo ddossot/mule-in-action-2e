@@ -20,11 +20,13 @@
 	exchange-pattern="request-response" />
 	
   <scripting:component><!--<co id="lis_06_scripting-component_1" />-->
-    <scripting:script engine="js">
-      if (payload.search("STATUS: CRITICAL") != -1) {
-        message.setProperty("PRIORITY", 'HIGH');
-      }
-      result = message
+    <scripting:script engine="javascript">
+      <scripting:text>
+        if (payload.search("STATUS: CRITICAL") != -1) {
+          message.setProperty("PRIORITY", 'HIGH');
+        }
+        result = message
+      </scripting:text>
     </scripting:script>
   </scripting:component>	
 </flow>

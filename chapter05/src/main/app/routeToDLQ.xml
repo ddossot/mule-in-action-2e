@@ -26,7 +26,7 @@ http://www.mulesoft.org/schema/mule/core/current/mule.xsd
         <jms:inbound-endpoint topic="orders"
                               connector-ref="jmsConnector"/>
         <message-filter onUnaccepted="sendToDLQ">
-            <and-filter><!-- <co id="ch05_routeToDLQ-1-cod"/> -->
+            <and-filter><!--<co id="ch05_routeToDLQ-1-cod"/>-->
                 <payload-type-filter
                         expectedType="java.lang.String"/>
                 <or-filter>
@@ -37,7 +37,6 @@ expression="xpath('/order/priority').text == 'HIGH'"/>
                             caseSensitive="true"
                             scope="inbound"/>
                 </or-filter>
-
             </and-filter>
         </message-filter>
         <component

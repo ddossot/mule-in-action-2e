@@ -30,7 +30,7 @@ http://www.mulesoft.org/schema/mule/core/current/mule.xsd
         <jms:inbound-endpoint queue="orders.audit"
                               connector-ref="jmsConnector"/>
         <foreach collection="xpath('//lineItem')"
-                 counterVariableName="lineItem"><!-- <co id="ch05_foreach-1-cod"/> -->
+                 counterVariableName="lineItem"><!--<co id="ch05_foreach-1-cod"/>-->
             <choice>
                 <when
 expression="xpath('priority/text()').textContent == 'HIGH'">

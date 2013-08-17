@@ -36,21 +36,18 @@
                          value="${jdbc.url}"/>
         <spring:property name="username" value="${jdbc.username}"/>
         <spring:property name="password" value="${jdbc.password}"/>
-    </spring:bean><!-- <co id="ch03_jdbc-inbound-1_cor"/> -->
+    </spring:bean><!--<co id="ch03_jdbc-inbound-1_cor"/>-->
 
-    <jdbc:connector name="jdbcConnector" dataSource-ref="dataSource">
-        <!-- <co id="ch03_jdbc-inbound-2_cor"/> -->
+    <jdbc:connector name="jdbcConnector" dataSource-ref="dataSource"> <!--<co id="ch03_jdbc-inbound-2_cor"/>-->
         <jdbc:query key="stuckOrderQuery"
 value="SELECT id FROM orders WHERE TIMESTAMP(timestamp)&#xD;
- &lt; {fn TIMESTAMPADD( SQL_TSI_DAY, -1, CURRENT_TIMESTAMP)}"/>
-        <!-- <co id="ch03_jdbc-inbound-3_cor"/> -->
+ &lt; {fn TIMESTAMPADD( SQL_TSI_DAY, -1, CURRENT_TIMESTAMP)}"/><!--<co id="ch03_jdbc-inbound-3_cor"/>-->
     </jdbc:connector>
 
     <flow name="pollForStuckOrders">
         <jdbc:inbound-endpoint pollingFrequency="3600000"
                                queryKey="stuckOrderQuery"
-                               connector-ref="jdbcConnector"/>
-        <!-- <co id="ch03_jdbc-inbound-4_cor"/> -->
+                               connector-ref="jdbcConnector"/><!--<co id="ch03_jdbc-inbound-4_cor"/>-->
         <jms:outbound-endpoint topic="orders.status.stuck"/>
     </flow>
     <!--<end id="ch03_jdbc-inbound_lis"/>-->

@@ -49,21 +49,19 @@
         <jdbc:query key="productInsert"
                     value="INSERT INTO products VALUES&#xD;
       (0,#[payload.name],#[payload.acv],&#xD;
-      #[payload.cost],#[payload.description])"/>
-        <!-- <co id="ch03_jdbc-outbound-1_cor"/> -->
+      #[payload.cost],#[payload.description])"/> <!--<co id="ch03_jdbc-outbound-1_cor"/>-->
     </jdbc:connector>
 
     <flow name="ftpProductsFromDatabase">
         <file:inbound-endpoint path="./data"/>
         <byte-array-to-string-transformer/>
-        <all>   <!-- <co id="ch03_jdbc-outbound-2_cor"/> -->
-            <processor-chain>
-                <!-- <co id="ch03_jdbc-outbound-3_cor"/> -->
+        <all>   <!--<co id="ch03_jdbc-outbound-2_cor"/>-->
+            <processor-chain><!--<co id="ch03_jdbc-outbound-3_cor"/>-->
                 <custom-transformer name="csvToMapTransformer"
     class="com.prancingdonkey.transformer.CSVToListOfMapsTransformer"/>
-                <foreach>  <!-- <co id="ch03_jdbc-outbound-4_cor"/> -->
+                <foreach>  <!--<co id="ch03_jdbc-outbound-4_cor"/>-->
                     <jdbc:outbound-endpoint queryKey="productInsert"
-                        connector-ref="jdbcConnector"/>    <!-- <co id="ch03_jdbc-outbound-5_cor"/> -->
+                        connector-ref="jdbcConnector"/><!--<co id="ch03_jdbc-outbound-5_cor"/>-->
                 </foreach>
             </processor-chain>
             <ftp:outbound-endpoint

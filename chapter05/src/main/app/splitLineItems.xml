@@ -24,15 +24,15 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
             connector-ref="jmsConnector"/>
         <set-property
                 propertyName="ORDER_ID"
-                value="#[xpath('/order/id').text]"/> <!-- <co id="ch05-splitter-1-cor"/> -->
+                value="#[xpath('/order/id').text]"/> <!--<co id="ch05-splitter-1-cor"/>-->
         <splitter
             expression="xpath('//lineItem')"
-            /><!-- <co id="ch05-splitter-2-cor"/> -->
+            /><!--<co id="ch05-splitter-2-cor"/>-->
         <set-property
           propertyName="MULE_CORRELATION_ID"
-          value="#[flowVars['PD_ORDER_ID']]"/> <!-- <co id="ch05-splitter-3-cor"/> -->
+          value="#[flowVars['PD_ORDER_ID']]"/><!--<co id="ch05-splitter-3-cor"/>-->
         <jms:outbound-endpoint queue="lineitem.processing" 
-            connector-ref="jmsConnector" /><!-- <co id="ch05-splitter-4-cor"/> -->
+            connector-ref="jmsConnector" /><!--<co id="ch05-splitter-4-cor"/>-->
     </flow>
     <!--<end id="ch05_splitLineItems_lis"/>-->
 

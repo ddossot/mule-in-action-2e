@@ -16,7 +16,7 @@
         http://www.mulesoft.org/schema/mule/bpm http://www.mulesoft.org/schema/mule/bpm/3.2/mule-bpm.xsd">
 
     <!--<start id="loyalty_lis"/>-->
-    <bpm:drools/>   <!-- <co id="loyalty-1-co"/> -->
+    <bpm:drools/><!--<co id="loyalty-1-co"/>-->
 
     <spring:bean id="states"
     class="org.springframework.beans.factory.config.ListFactoryBean">
@@ -35,13 +35,13 @@
                 <spring:entry
                         key="states"
                         value-ref="states"/>
-        </util:map>    <!-- <co id="loyalty-2-co"/> -->
+        </util:map>    <!--<co id="loyalty-2-co"/>-->
     </spring:beans>
 
     <flow name="customerLoyalty">
         <vm:inbound-endpoint path="order.processing.loyalty"/>
         <bpm:rules rulesDefinition="drools/loyalty.drl"
-                   initialFacts-ref="facts"/>  <!-- <co id="loyalty-3-co"/> -->
+                   initialFacts-ref="facts"/>  <!--<co id="loyalty-3-co"/>-->
     </flow>
 
     <!--<end id="loyalty_lis"/>-->

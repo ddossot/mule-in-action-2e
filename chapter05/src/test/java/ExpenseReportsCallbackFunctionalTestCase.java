@@ -54,7 +54,7 @@ public class ExpenseReportsCallbackFunctionalTestCase extends FunctionalTestCase
     public void testCannotSubmitExpenseReportWithIncorrectMIMEType() throws Exception {
         assertEquals(0,FileUtils.listFiles(new File("./data/expenses/rejected"), new String[]{"xls"}, false).size());
         Map properties = new HashMap();
-        properties.put("mimeType","application/foo");
+        properties.put("Content-Type","application/foo");
         MuleClient client = muleContext.getClient();
         MuleMessage result = client.send("http://localhost:8081/expenses", "Foo", properties);
         assertNotNull(result);
@@ -67,7 +67,7 @@ public class ExpenseReportsCallbackFunctionalTestCase extends FunctionalTestCase
     public void testCanSubmitExpenseReportWithCorrectMIMEType() throws Exception {
         assertEquals(0,FileUtils.listFiles(new File("./data/expenses/status"), new String[]{"xls"}, false).size());
         Map properties = new HashMap();
-        properties.put("mimeType","application/vnd.ms-excel");
+        properties.put("Content-Type","application/vnd.ms-excel");
         MuleClient client = muleContext.getClient();
         MuleMessage result = client.send("http://localhost:8081/expenses", "Foo", properties);
         assertNotNull(result);

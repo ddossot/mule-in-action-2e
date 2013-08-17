@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
     <flow name="expenseReportCallbackWithDLQ">
 
         <vm:inbound-endpoint path="orders" />
-        <choice ><!-- <co id="ch05_expenseReportCallbackWithDLQ-1-cor"/> -->
+        <choice ><!--<co id="ch05_expenseReportCallbackWithDLQ-1-cor"/>-->
             <when
 expression="payload is com.prancingdonkey.domain.Brew">
                 <processor-chain>

@@ -22,7 +22,7 @@
 
     <!--<start id="poll_config_lis"/>-->
     <flow name="main">
-        <poll frequency="300000"> <!-- <co id="poll_config-1-co"/> -->
+        <poll frequency="300000"> <!--<co id="poll_config-1-co"/>-->
             <twitter:get-public-timeline/>
         </poll>
         <collection-splitter/>

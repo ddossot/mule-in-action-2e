@@ -157,4 +157,10 @@ public void subscribeTopic(
 }
 //<end id="lis_13_source"/> 
 
+
+@Processor() 
+public String myProcessor(String content) throws Exception {
+	return "Another string";
+}
+
 }

@@ -36,14 +36,14 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
 
     <flow name="orderProcessing">
         <jms:inbound-endpoint queue="order.submit">
-            <jms:transaction action="ALWAYS_BEGIN"/>   <!-- <co id="order_back-1-co"/> -->
+            <jms:transaction action="ALWAYS_BEGIN"/><!--<co id="order_back-1-co"/>-->
         </jms:inbound-endpoint>
         <all>
             <jms:outbound-endpoint queue="crm.customer.create">
-                <jms:transaction action="ALWAYS_JOIN"/> <!-- <co id="order_back-2-co"/> -->
+                <jms:transaction action="ALWAYS_JOIN"/> <!--<co id="order_back-2-co"/>-->
             </jms:outbound-endpoint>
             <jms:outbound-endpoint queue="erp.order.record">
-                <jms:transaction action="ALWAYS_JOIN"/> <!-- <co id="order_back-3-co"/> -->
+                <jms:transaction action="ALWAYS_JOIN"/> <!--<co id="order_back-3-co"/>-->
             </jms:outbound-endpoint>
         </all>
     </flow>
@@ -53,9 +53,9 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
             <jms:transaction action="ALWAYS_BEGIN"/>
         </jms:inbound-endpoint>
         <collection-aggregator timeout="60000"
-                               failOnTimeout="false"/> <!-- <co id="order_back-4-co"/> -->
-        <jms:outbound-endpoint topic="events.orders.completed"> <!-- <co id="order_back-5-co"/> -->
-            <jms:transaction action="ALWAYS_BEGIN"/>
+                               failOnTimeout="false"/> <!--<co id="order_back-4-co"/>-->
+        <jms:outbound-endpoint topic="events.orders.completed"><!--<co id="order_back-5-co"/>-->
+            <jms:transaction action="ALWAYS_JOIN"/>
         </jms:outbound-endpoint>
     </flow>
 

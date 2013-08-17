@@ -39,25 +39,22 @@
 
     <imap:connector name="imapConnector"
                     deleteReadMessages="true"
-                    checkFrequency="60000"/>
-    <!-- <co id="ch03_imap-1_cor"/> -->
+                    checkFrequency="60000"/><!--<co id="ch03_imap-1_cor"/>-->
 
     <flow name="dispatchCoolingAlerts">
         <imap:inbound-endpoint
                 host="${imap.host}"
                 port="${imap.port}"
                 user="cooling"
-                password="password"><!-- <co id="ch03_imap-2_cor"/> -->
+                password="password"><!--<co id="ch03_imap-2_cor"/>-->
         </imap:inbound-endpoint>
-        <all>   <!-- <co id="ch03_imap-3_cor"/> -->
+        <all>   <!--<co id="ch03_imap-3_cor"/>-->
             <file:outbound-endpoint path="./data/cooling/reports">
               <expression-transformer
-                 expression="#[message.inboundAttachments.report]"/>
-                <!-- <co id="ch03_imap-4_cor"/> -->
+                 expression="#[message.inboundAttachments.report]"/><!--<co id="ch03_imap-4_cor"/>-->
             </file:outbound-endpoint>
             <jms:outbound-endpoint topic="cooling.alerts">
-                <email:email-to-string-transformer/>
-                <!-- <co id="ch03_imap-5_cor"/> -->
+                <email:email-to-string-transformer/><!--<co id="ch03_imap-5_cor"/>-->
             </jms:outbound-endpoint>
 
         </all>
@@ -67,16 +64,13 @@
     <!--<start id="ch03_smtp_lis"/>-->
     <flow name="sendExpenseReportEmails">
         <jms:inbound-endpoint topic="expenses.status"
-                              exchange-pattern="one-way"/>
-        <!-- <co id="ch03_smtp-1_cor"/> -->
+                              exchange-pattern="one-way"/><!--<co id="ch03_smtp-1_cor"/>-->
         <smtp:outbound-endpoint from="mule@prancingdonkey.com"
                                 host="${smtp.host}"
                                 port="${smtp.port}"
                                 subject="Expense Report Processed"
-                                to="accounting@prancingdonkey.com">
-            <!-- <co id="ch03_smtp-2_cor"/> -->
-            <email:string-to-email-transformer/>
-            <!-- <co id="ch03_smtp-3_cor"/> -->
+                                to="accounting@prancingdonkey.com"><!--<co id="ch03_smtp-2_cor"/>-->
+            <email:string-to-email-transformer/><!--<co id="ch03_smtp-3_cor"/>-->
         </smtp:outbound-endpoint>
     </flow>
     <!--<end id="ch03_smtp_lis"/>-->

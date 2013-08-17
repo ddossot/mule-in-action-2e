@@ -39,11 +39,11 @@
             name="queuedPerProcessorStrategy"
             maxThreads="16" minThreads="4" threadTTL="5000"
             poolExhaustedAction="WAIT" threadWaitTimeout="5000"
-            maxBufferSize="10000"/><!-- <co id="ch11_processing-strategy_1-cor"/> -->
+            maxBufferSize="10000"/><!--<co id="ch11_processing-strategy_1-cor"/>-->
 
     <flow name="processExpenseReports"
   processingStrategy="queuedPerProcessorStrategy">
-        <!-- <co id="ch11_processing-strategy_2-cor"/> -->
+        <!--<co id="ch11_processing-strategy_2-cor"/>-->
         <jms:inbound-endpoint queue="report.processing"
                               exchange-pattern="one-way"/>
         <component

@@ -9,7 +9,9 @@
 <flow name="ShippingCostCalculatorFlow" 
   processingStrategy="synchronous">
   <vm:inbound-endpoint path="calculateShippingCost.in" 
-    exchange-pattern="request-response" />
+    exchange-pattern="request-response">
+    <vm:transaction action="ALWAYS_BEGIN"/>
+  </vm:inbound-endpoint>
     
   <component>
     <singleton-object 

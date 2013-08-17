@@ -18,12 +18,12 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <flow name="StatusIngest" doc:name="StatusIngest">
         <twitter:sample-stream
                 config-ref="Twitter"
-                doc:name="Twitter Firehose"/>  <!-- <co id="sentiment_analysis-1-co"/> -->
+                doc:name="Twitter Firehose"/><!--<co id="sentiment_analysis-1-co"/>-->
         <esper:send config-ref="Esper"
                     eventPayload-ref="#[payload]"
                     eventName="Tweets"
                     doc:name="Insert Status Event"/>
-        <!-- <co id="sentiment_analysis-2-co"/> -->
+        <!--<co id="sentiment_analysis-2-co"/>-->
     </flow>
 
     <flow name="SentimentAnalysis" doc:name="SentimentAnalysis">
@@ -33,7 +33,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
             from Tweets having count(hashtagEntities.where
             (p => p.text = 'prancingdonkey')) > 0"
                 doc:name="Listen For Events"/>
-        <!-- <co id="sentiment_analysis-3-co"/> -->
+        <!--<co id="sentiment_analysis-3-co"/>-->
         <sfdc:create-single config-ref="sfconfig"
                type="Case" doc:name="Create SFDC Case"
                            >
@@ -45,11 +45,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                 <sfdc:object key="Subject">
                     #[payload['text']]</sfdc:object>
             </sfdc:object>
-        </sfdc:create-single> <!-- <co id="sentiment_analysis-4-co"/> -->
+        </sfdc:create-single> <!--<co id="sentiment_analysis-4-co"/>-->
     </flow>
-
     <!--<end id="sentiment_analysis_lis"/>-->
-
-
-
 </mule>

@@ -33,13 +33,13 @@ http://www.mulesoft.org/schema/mule/core/current/mule.xsd
             connector-ref="jmsConnector"/>
         <collection-aggregator timeout="60000" 
             failOnTimeout="true" 
-            /><!-- <co id="ch05-aggregator-1-cor"/> -->
+            /><!--<co id="ch05-aggregator-1-cor"/>-->
         <custom-transformer 
 class="com.prancingdonkey.transformer.LineItemsToOrderTransformer" 
-       /><!-- <co id="ch05-aggregator-2-cor"/> -->
+       /><!--<co id="ch05-aggregator-2-cor"/>-->
         <component
    class="com.prancingdonkey.service.OrderProcessingService"
-       /><!-- <co id="ch05-aggregator-3-cor"/> -->
+       /><!--<co id="ch05-aggregator-3-cor"/>-->
 
     </flow>
     <!--<end id="ch05_aggregateLineItems_lis"/>-->

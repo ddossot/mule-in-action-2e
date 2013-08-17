@@ -2,21 +2,18 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
 	xmlns:test="http://www.mulesoft.org/schema/mule/test" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
-	
+    xmlns:spring="http://www.springframework.org/schema/beans"
 	xsi:schemaLocation="
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
         http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd
         http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/current/mule-test.xsd
         http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
        
-<!--<start id="lis_06_patterns-service-ref"/>-->       
-<!--
-	TODO: can't implement till MULE-2719 gets fixed
-	<component
-	name="recicledCountComponent"
-	class="com.prancingdonkey.reciclingplant.RecicledCountComponent"/>
- -->
+<!--<start id="lis_06_patterns-service-ref"/>-->
+<spring:bean id="recicledCountComponent"
+  class="com.prancingdonkey.reciclingplant.RecicledCountComponent" />
 
 <endpoint name="recicledCountServiceEndpoint" 
 	address="vm://recicledCount.in" />      
@@ -32,8 +29,7 @@
 <pattern:simple-service 
 	name="recicling-service" 
 	endpoint-ref="recicledCountServiceEndpoint"
-	component-class=
-	  "com.prancingdonkey.reciclingplant.RecicledCountComponent" 
+	component-ref="recicledCountComponent" 
 	responseTransformer-refs="xmlToDom countExtractor"/>
 <!--<end id="lis_06_patterns-service-ref"/>-->
 
