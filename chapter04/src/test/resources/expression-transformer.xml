@@ -10,12 +10,8 @@
         <vm:inbound-endpoint path="expression-transformer.in" exchange-pattern="request-response" />
         
 <!--<start id="lis_04_expression-transformer"/>-->
-<expression-transformer>
-    <return-argument
-        expression="#[message.payload.hostAddress]" />
-    <return-argument 
-        expression="#[message.payload.multicastAddress]" />
-</expression-transformer>
+<expression-transformer expression=
+"{message.payload.hostAddress, message.payload.multicastAddress}"/>
 <!--<end id="lis_04_expression-transformer"/>-->
 
     </flow>
@@ -24,10 +20,7 @@
         <vm:inbound-endpoint path="expression-transformer-single.in" exchange-pattern="request-response" />
         
 <!--<start id="lis_04_expression-transformer-single"/>-->
-<expression-transformer>
-    <return-argument
-        expression="#[message.payload.hostAddress]" />
-</expression-transformer>
+<expression-transformer expression="message.payload.hostAddress" />
 <!--<end id="lis_04_expression-transformer-single"/>-->
         
     </flow>
