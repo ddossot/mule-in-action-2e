@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="prancing-donkey-product-service">
+    <global-element type="http://www.springframework.org/schema/context/property-placeholder" name="Property Placeholder" entity-id="Property Placeholder#1">
+        <properties>
+            <property name="properties-ref"/>
+            <property name="order"/>
+            <property value="/mule-app.properties" name="location"/>
+            <property name="local-override"/>
+            <property name="system-properties-mode"/>
+            <property name="file-encoding"/>
+            <property value="1" name="auxiliary;index"/>
+            <property name="ignore-unresolvable"/>
+            <property name="ignore-resource-not-found"/>
+        </properties>
+    </global-element>
+    <global-unknown index="2" description="false" entity-id="global-unknown#1">
+        <content>&lt;notifications xmlns=&quot;http://www.mulesoft.org/schema/mule/core&quot; dynamic=&quot;true&quot;&gt;
+        &lt;notification event=&quot;ENDPOINT-MESSAGE&quot;/&gt;
+    &lt;/notifications&gt;</content>
+    </global-unknown>
+    <global-element type="http://www.springframework.org/schema/beans/bean" name="Bean" entity-id="Bean#1">
+        <properties>
+            <property name="factory-bean"/>
+            <property name="abstract"/>
+            <property name="scope"/>
+            <property name="init-method"/>
+            <property name="autowire-candidate"/>
+            <property name="factory-method"/>
+            <property value="org.apache.commons.dbcp.BasicDataSource" name="class"/>
+            <property name="parent"/>
+            <property name="children"/>
+            <property name="lazy-init"/>
+            <property value="beans@spring@http://www.springframework.org/schema/beans" name="auxiliary;wrappedIn"/>
+            <property value="dataSource" name="id"/>
+            <property name="primary"/>
+            <property name="name"/>
+            <property name="autowire"/>
+            <property value="close" name="destroy-method"/>
+            <property value="5" name="auxiliary;index"/>
+            <property value="4" name="auxiliary;wrapIn"/>
+            <property name="depends-on"/>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;0">
+                <property value="driverClassName" name="name"/>
+                <property value="org.hsqldb.jdbcDriver" name="value"/>
+                <property value="6" name="auxiliary;index"/>
+                <property value="6" name="auxiliary;wrapIn"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;1">
+                <property value="url" name="name"/>
+                <property value="jdbc:hsqldb:mem:mule" name="value"/>
+                <property value="7" name="auxiliary;index"/>
+                <property value="7" name="auxiliary;wrapIn"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element type="http://www.springframework.org/schema/beans/bean" name="Bean" entity-id="Bean#2">
+        <properties>
+            <property name="factory-bean"/>
+            <property name="abstract"/>
+            <property name="scope"/>
+            <property name="init-method"/>
+            <property name="autowire-candidate"/>
+            <property name="factory-method"/>
+            <property value="org.springframework.orm.jpa.JpaTransactionManager" name="class"/>
+            <property name="parent"/>
+            <property name="children"/>
+            <property name="lazy-init"/>
+            <property value="beans@spring@http://www.springframework.org/schema/beans" name="auxiliary;wrappedIn"/>
+            <property value="transactionManager" name="id"/>
+            <property name="primary"/>
+            <property name="name"/>
+            <property name="autowire"/>
+            <property name="destroy-method"/>
+            <property value="8" name="auxiliary;index"/>
+            <property value="4" name="auxiliary;wrapIn"/>
+            <property name="depends-on"/>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;0">
+                <property value="entityManagerFactory" name="ref"/>
+                <property value="entityManagerFactory" name="name"/>
+                <property value="9" name="auxiliary;index"/>
+                <property value="9" name="auxiliary;wrapIn"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element type="http://www.springframework.org/schema/beans/bean" name="Bean" entity-id="Bean#3">
+        <properties>
+            <property name="factory-bean"/>
+            <property name="abstract"/>
+            <property name="scope"/>
+            <property name="init-method"/>
+            <property name="autowire-candidate"/>
+            <property name="factory-method"/>
+            <property value="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter" name="class"/>
+            <property name="parent"/>
+            <property name="children"/>
+            <property name="lazy-init"/>
+            <property value="beans@spring@http://www.springframework.org/schema/beans" name="auxiliary;wrappedIn"/>
+            <property value="openJpaVendorAdapter" name="id"/>
+            <property name="primary"/>
+            <property name="name"/>
+            <property name="autowire"/>
+            <property name="destroy-method"/>
+            <property value="10" name="auxiliary;index"/>
+            <property value="4" name="auxiliary;wrapIn"/>
+            <property name="depends-on"/>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;0">
+                <property value="showSql" name="name"/>
+                <property value="true" name="value"/>
+                <property value="11" name="auxiliary;index"/>
+                <property value="11" name="auxiliary;wrapIn"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;1">
+                <property value="generateDdl" name="name"/>
+                <property value="true" name="value"/>
+                <property value="12" name="auxiliary;index"/>
+                <property value="12" name="auxiliary;wrapIn"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;2">
+                <property value="databasePlatform" name="name"/>
+                <property value="org.apache.openjpa.jdbc.sql.HSQLDictionary" name="value"/>
+                <property value="13" name="auxiliary;index"/>
+                <property value="13" name="auxiliary;wrapIn"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element type="http://www.springframework.org/schema/beans/bean" name="Bean" entity-id="Bean#4">
+        <properties>
+            <property name="factory-bean"/>
+            <property name="abstract"/>
+            <property name="scope"/>
+            <property name="init-method"/>
+            <property name="autowire-candidate"/>
+            <property name="factory-method"/>
+            <property value="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" name="class"/>
+            <property name="parent"/>
+            <property name="children"/>
+            <property name="lazy-init"/>
+            <property value="beans@spring@http://www.springframework.org/schema/beans" name="auxiliary;wrappedIn"/>
+            <property value="entityManagerFactory" name="id"/>
+            <property name="primary"/>
+            <property name="name"/>
+            <property name="autowire"/>
+            <property name="destroy-method"/>
+            <property value="14" name="auxiliary;index"/>
+            <property value="4" name="auxiliary;wrapIn"/>
+            <property name="depends-on"/>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;0">
+                <property value="dataSource" name="ref"/>
+                <property value="dataSource" name="name"/>
+                <property value="15" name="auxiliary;index"/>
+                <property value="15" name="auxiliary;wrapIn"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;1">
+                <property value="openJpaVendorAdapter" name="ref"/>
+                <property value="jpaVendorAdapter" name="name"/>
+                <property value="16" name="auxiliary;index"/>
+                <property value="16" name="auxiliary;wrapIn"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;2">
+                <property value="persistenceUnitName" name="name"/>
+                <property value="openjpa" name="value"/>
+                <property value="17" name="auxiliary;index"/>
+                <property value="17" name="auxiliary;wrapIn"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element type="http://www.mulesoft.org/schema/mule/jpa/config" name="Java Persistence API" entity-id="Java Persistence API#1">
+        <properties>
+            <property value="entityManagerFactory" name="entityManagerFactory-ref"/>
+            <property value="Java_Persistence_API" name="name"/>
+            <property value="18" name="auxiliary;index"/>
+        </properties>
+    </global-element>
+    <flow SubFlow="false" name="pollProducts" entity-id="05477df0-7718-45dc-a545-d90b2dbdb0d3">
+        <properties>
+            <property name="processingStrategy"/>
+            <property name="processingStrategy2"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property value="19" name="auxiliary;index"/>
+        </properties>
+        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#1">
+            <graphicalData height="0" width="0" y="0" x="0"/>
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/ftp/endpoint" name="FTP" entity-id="FTP#1">
+                <graphicalData height="0" width="0" y="0" x="0"/>
+                <properties>
+                    <property value="${ftp.port}" name="port"/>
+                    <property name="binary"/>
+                    <property value="${ftp.host}" name="host"/>
+                    <property value="3600000" name="pollingFrequency"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="disableTransportTransformer"/>
+                    <property value="${ftp.password}" name="password"/>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="address"/>
+                    <property name="encoding"/>
+                    <property name="passive"/>
+                    <property value="${ftp.path}" name="path"/>
+                    <property name="outputPattern"/>
+                    <property value="${ftp.user}" name="user"/>
+                    <property name="mimeType"/>
+                    <property name="responseTimeout"/>
+                    <property value="20" name="auxiliary;index"/>
+                    <property name="connector-ref"/>
+                </properties>
+            </endpoint>
+            <scope type="http://www.mulesoft.org/schema/mule/core/foreach" name="For Each" entity-id="For Each#1">
+                <graphicalData height="0" width="0" y="0" x="0"/>
+                <properties>
+                    <property name="counterVariableName"/>
+                    <property name="rootMessageVariableName"/>
+                    <property name="batchSize"/>
+                    <property value="xpath('//product')&#xA;" name="collection"/>
+                    <property value="21" name="auxiliary;index"/>
+                </properties>
+                <compartment entity-id="compartment#1">
+                    <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#2">
+                        <pattern type="http://www.mulesoft.org/schema/mule/scripting/groovyTransformer" name="Groovy" entity-id="Groovy#1">
+                            <graphicalData height="0" width="0" y="0" x="0"/>
+                            <properties>
+<property name="returnClass"/>
+<property name="ignoreBadInput"/>
+<property name="encoding"/>
+<property name="mimeType"/>
+<property value="22" name="auxiliary;index"/>
+<property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script-for-properties;0">
+    <property value="" name="text"/>
+    <property value="Groovy" name="engine"/>
+    <property value="scripts/productTransformer.groovy" name="file"/>
+    <property value="23" name="auxiliary;index"/>
+    <property value="23" name="auxiliary;wrapIn"/>
+</property-collection>
+<property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script;0">
+    <property value="" name="text"/>
+    <property value="Groovy" name="engine"/>
+    <property value="scripts/productTransformer.groovy" name="file"/>
+    <property value="23" name="auxiliary;index"/>
+    <property value="23" name="auxiliary;wrapIn"/>
+</property-collection>
+                            </properties>
+                        </pattern>
+                        <scope type="http://www.mulesoft.org/schema/mule/core/transactional-scope" name="Transactional" entity-id="Transactional#1">
+                            <graphicalData height="0" width="0" y="0" x="0"/>
+                            <properties>
+<property value="ALWAYS_BEGIN" name="action"/>
+<property value="http://www.mulesoft.org/schema/mule/core/transactional" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+<property value="24" name="auxiliary;index"/>
+                            </properties>
+                            <compartment entity-id="compartment#2">
+<lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#3">
+    <pattern type="http://www.mulesoft.org/schema/mule/jpa/jpa-connector" name="Java Persistence API" entity-id="Java Persistence API#2">
+        <graphicalData height="0" width="0" y="0" x="0"/>
+        <properties>
+            <property value="true" name="flush"/>
+            <property value="http://www.mulesoft.org/schema/mule/jpa/persist" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+            <property value="#[payload]" name="entity-ref"/>
+            <property value="Java_Persistence_API" name="config-ref"/>
+            <property value="25" name="auxiliary;index"/>
+        </properties>
+    </pattern>
+</lane>
+                            </compartment>
+                        </scope>
+                    </lane>
+                </compartment>
+            </scope>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="prancing-donkey-product-serviceFlow2" entity-id="2f528799-3518-4e58-bb06-ce42ba4c6612">
+        <properties>
+            <property name="processingStrategy"/>
+            <property name="processingStrategy2"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property value="26" name="auxiliary;index"/>
+        </properties>
+        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#4">
+            <graphicalData height="0" width="0" y="0" x="0"/>
+            <endpoint message-exchange-pattern="RequestResponse" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="HTTP#1">
+                <graphicalData height="0" width="0" y="0" x="0"/>
+                <properties>
+                    <property value="8081" name="port"/>
+                    <property value="0.0.0.0" name="host"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="followRedirects"/>
+                    <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property name="keep-alive"/>
+                    <property name="contentType"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="password"/>
+                    <property value="request-response" name="exchange-pattern"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
+                    <property name="address"/>
+                    <property name="path"/>
+                    <property name="encoding"/>
+                    <property name="responseTransformer-refs"/>
+                    <property name="method"/>
+                    <property name="user"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
+                    <property value="27" name="auxiliary;index"/>
+                    <property name="connector-ref"/>
+                </properties>
+            </endpoint>
+            <pattern type="http://www.mulesoft.org/schema/mule/jersey/resources" name="REST" entity-id="REST#1">
+                <graphicalData height="0" width="0" y="0" x="0"/>
+                <properties>
+                    <property value="28" name="auxiliary;index"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/component;0">
+                        <property value="com.prancingdonkey.product.service.ProductService" name="class"/>
+                        <property value="29" name="auxiliary;index"/>
+                        <property value="29" name="auxiliary;wrapIn"/>
+                    </property-collection>
+                </properties>
+            </pattern>
+        </lane>
+    </flow>
+    <description></description>
+</mule-configuration>

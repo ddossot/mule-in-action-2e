@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:jpa="http://www.mulesoft.org/schema/mule/jpa" xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/jpa http://www.mulesoft.org/schema/mule/jpa/1.0/mule-jpa.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd">
+
+	<context:property-placeholder location="/mule-app.properties" />
+	
+	<notifications dynamic="true">
+        <notification event="ENDPOINT-MESSAGE"/>
+    </notifications>
+
+	<spring:beans>
+
+		<spring:bean class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close" id="dataSource">
+			<spring:property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+			<spring:property name="url" value="jdbc:hsqldb:mem:mule" />
+		</spring:bean>
+
+		<spring:bean class="org.springframework.orm.jpa.JpaTransactionManager"
+			id="transactionManager">
+			<spring:property name="entityManagerFactory" ref="entityManagerFactory" />
+		</spring:bean>
+
+		<spring:bean id="openJpaVendorAdapter"
+			class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">
+			<spring:property name="showSql" value="true" />
+			<spring:property name="generateDdl" value="true" />
+			<spring:property name="databasePlatform"
+				value="org.apache.openjpa.jdbc.sql.HSQLDictionary" />
+		</spring:bean>
+
+		<spring:bean id="entityManagerFactory"
+			class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+			<spring:property name="dataSource" ref="dataSource" />
+			<spring:property name="jpaVendorAdapter" ref="openJpaVendorAdapter" />
+			<spring:property name="persistenceUnitName" value="openjpa" />
+		</spring:bean>
+
+	</spring:beans>
+
+	<jpa:config name="Java_Persistence_API"
+		entityManagerFactory-ref="entityManagerFactory" doc:name="Java Persistence API" />
+
+	<flow name="pollProducts" doc:name="pollProducts">
+		<ftp:inbound-endpoint user="${ftp.user}"
+			password="${ftp.password}" host="${ftp.host}" port="${ftp.port}"
+			path="${ftp.path}" pollingFrequency="3600000" doc:name="FTP" />
+            <foreach collection="xpath('//product')
+" doc:name="For Each">
+            <scripting:transformer doc:name="Groovy">
+                <scripting:script engine="Groovy" file="scripts/productTransformer.groovy"/>
+            </scripting:transformer>
+
+            <transactional action="ALWAYS_BEGIN" doc:name="Transactional">
+                <jpa:persist config-ref="Java_Persistence_API" entity-ref="#[payload]" flush="true" doc:name="Java Persistence API"/>
+            </transactional>
+            </foreach>
+	</flow>
+    <flow name="prancing-donkey-product-serviceFlow2" doc:name="prancing-donkey-product-serviceFlow2">
+        <http:inbound-endpoint exchange-pattern="request-response" host="0.0.0.0" port="8081" doc:name="HTTP"/>
+        <jersey:resources doc:name="REST">
+            <component class="com.prancingdonkey.product.service.ProductService"/>
+        </jersey:resources>
+    </flow>
+</mule>
