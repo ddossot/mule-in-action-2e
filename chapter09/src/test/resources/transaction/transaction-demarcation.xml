@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:jdbc="http://www.mulesoft.org/schema/mule/jdbc"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+        http://www.mulesoft.org/schema/mule/jdbc http://www.mulesoft.org/schema/mule/jdbc/current/mule-jdbc.xsd">
+
+<jms:activemq-connector name="jmsConnector" specification="1.1" />
+
+<flow name="simpleDemarcationFlow">
+    <jms:inbound-endpoint topic="simple.demarcation" exchange-pattern="request-response"/>
+    
+<!--<start id="lis_09_demarcation-simple"/>-->
+<transactional><!--<co id="lis_09_demarcation-simple_1" />-->
+    <jms:outbound-endpoint queue="out1"/><!--<co id="lis_09_demarcation-simple_2" />-->
+    <jms:outbound-endpoint queue="out2"/>  
+</transactional>
+<!--<end id="lis_09_demarcation-simple"/>-->
+    
+</flow>
+
+<flow name="mixedDemarcationFlow">
+    <jms:inbound-endpoint topic="mixed.demarcation" exchange-pattern="request-response"/>
+
+<!--<start id="lis_09_demarcation-mixed"/>-->
+<transactional>
+  <jms:outbound-endpoint queue="out1"/>
+  <vm:outbound-endpoint path="alternate"><!--<co id="lis_09_demarcation-mixed_1" />-->
+     <vm:transaction action="NOT_SUPPORTED"/>
+  </vm:outbound-endpoint>
+  <jms:outbound-endpoint queue="out2"/>  
+</transactional>
+<!--<end id="lis_09_demarcation-mixed"/>-->
+    
+</flow>
+
+<!--<start id="lis_09_demarcation-join"/>-->
+<flow name="transactionalEntryPoint">
+  <jms:inbound-endpoint queue="orders">
+     <jms:transaction action="ALWAYS_BEGIN"/>
+  </jms:inbound-endpoint>
+  <flow-ref name="transactionalFlow"/>
+</flow>
+
+<flow name="nonTransactionalEntry">
+  <vm:inbound-endpoint path="nonTransactional.in"/>
+  <flow-ref name="transactionalFlow"/>
+</flow>
+ 
+<subflow name="transactionalFlow">
+  <transactional action="BEGIN_OR_JOIN">
+   <jms:outbound-endpoint queue="billingOrders"/>
+   <jms:outbound-endpoint queue="productionOrders"/>
+  </transactional>
+</subflow>
+<!--<end id="lis_09_demarcation-join"/>-->
+
+<!--<start id="lis_09_demarcation-rollback"/>-->
+<subflow name="transactionalFlowWithLogger">
+  <transactional action="BEGIN_OR_JOIN">
+   <jms:outbound-endpoint queue="billingOrders"/>
+   <jms:outbound-endpoint queue="productionOrders"/>
+   <rollback-exception-strategy>
+     <logger message="Problem in the transaction!" />
+   </rollback-exception-strategy>
+  </transactional>
+</subflow>
+<!--<end id="lis_09_demarcation-rollback"/>-->
+
+</mule>

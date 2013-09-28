@@ -26,24 +26,18 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
         <choice ><!--<co id="ch05_expenseReportCallbackWithDLQ-1-cor"/>-->
             <when
 expression="payload is com.prancingdonkey.domain.Brew">
-                <processor-chain>
                     <jms:outbound-endpoint 
                         queue="brews.definitions" 
                         connector-ref="Active_MQ"/>
-                </processor-chain>
             </when>
             <when 
             expression="payload is com.prancingdonkey.domain.Order">
-                <processor-chain>
                     <jms:outbound-endpoint queue="brews.orders" 
                         connector-ref="Active_MQ"/>
-                </processor-chain>
             </when>
             <otherwise>
-                <processor-chain>
                     <jms:outbound-endpoint queue="DLQ" 
                     connector-ref="Active_MQ"/>
-                </processor-chain>
             </otherwise>
         </choice>
     </flow>

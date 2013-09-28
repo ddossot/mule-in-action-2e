@@ -28,14 +28,10 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <email:email-to-string-transformer doc:name="Email to String"/>
         <choice doc:name="Choice"><!-- <co id="ch05_dispatchCoolingAlerts-1.cor"/> -->
             <when expression="payload.contains('SEVERE')">
-                <processor-chain>
                     <jms:outbound-endpoint topic="cooling.alerts" connector-ref="Active_MQ" doc:name="JMS"/>
-                </processor-chain>
             </when>
             <when expression="">
-                <processor-chain>
                     <file:outbound-endpoint path="/data/cooling/reports" responseTimeout="10000" doc:name="File"/>
-                </processor-chain>
             </when>
         </choice>
     </flow>
@@ -47,14 +43,10 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
         <choice doc:name="Choice">
             <when expression="message.mimeType == 'application/vnd.ms-excel'"><!-- <co id="ch05_expenseReportCallback-1.cor"/> -->
-                <processor-chain>
                     <file:outbound-endpoint path="/opt/expenses/rejected" outputPattern="#[java.util.UUID.randomUUID()]-#[currentTimeMillis()].xls" doc:name="File"/>
-                </processor-chain>
             </when>
             <otherwise>
-                <processor-chain>
                     <file:outbound-endpoint path="/opt/expenses/status" outputPattern="#[java.util.UUID.randomUUID()]-#[currentTimeMillis()].xls" doc:name="File"/>
-                </processor-chain>
             </otherwise>
         </choice>
     </flow>
@@ -65,19 +57,13 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <vm:inbound-endpoint path="orders" doc:name="VM"/>
         <choice doc:name="Choice"><!-- <co id="ch05_expenseReportCallbackWithDLQ-1.cor"/> -->
             <when expression="payload.class == 'com.prancingdonkey.domain.Brew">
-                <processor-chain>
                     <jms:outbound-endpoint queue="brews.definitions" connector-ref="Active_MQ" doc:name="JMS"/>
-                </processor-chain>
             </when>
             <when expression="payload.class == 'com.prancingdonkey.domain.Order">
-                <processor-chain>
                     <jms:outbound-endpoint queue="brews.orders" connector-ref="Active_MQ" doc:name="JMS"/>
-                </processor-chain>
             </when>
             <otherwise>
-                <processor-chain>
                     <jms:outbound-endpoint queue="DLQ" connector-ref="Active_MQ" doc:name="JMS"/>
-                </processor-chain>
             </otherwise>
         </choice>
     </flow>
@@ -88,9 +74,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <jms:inbound-endpoint topic="expenses.status" connector-ref="Active_MQ" doc:name="JMS"/>
         <choice doc:name="Choice"><!-- <co id="ch05_logExpenseReports-1.cor"/> -->
             <when expression="xpath('/expense/status/text()') =='PROCCESSED'">
-                <processor-chain>
                     <logger message="Expense Report #[xpath('/expense/id/text()')] processed on #[currentTimeMillis()]" level="INFO" doc:name="Logger"/>
-                </processor-chain>
             </when>
             <when expression="xpath('/expense/status/text()') =='FAILED'">
                 <processor-chain>

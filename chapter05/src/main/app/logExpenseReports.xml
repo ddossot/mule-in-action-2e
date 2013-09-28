@@ -25,21 +25,17 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd">
         connector-ref="Active_MQ" />
         <choice ><!--<co id="ch05_logExpenseReports-1-cor"/>-->
             <when
-        expression="xpath('/expense/status/text() = \'PROCESSED\'')">
-                <processor-chain>
+        expression="xpath('/expense/status/').text == \'PROCESSED\'')">
                     <logger
 message=
 "#[xpath('/expense/id').text] processed]"
     level="INFO"/>
-                </processor-chain>
             </when>
             <when expression=
 "xpath('/expense/status').text =='FAILED'">
-                <processor-chain>
                     <logger message=
 "Error processing expense report:#[xpath('/expense/id/text()]"
 level="ERROR" />
-                </processor-chain>
             </when>
         </choice>
     </flow>

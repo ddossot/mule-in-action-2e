@@ -49,20 +49,15 @@ http://www.mulesoft.org/schema/mule/core/current/mule.xsd
         <email:email-to-string-transformer/>
         <choice><!--<co id="ch05_dispatchCoolingAlerts-1-cor"/>-->
             <when expression="payload.contains('SEVERE')">
-                <processor-chain>
                     <jms:outbound-endpoint
                         topic="cooling.alerts"
                         connector-ref="Active_MQ"/>
-
-                </processor-chain>
             </when>
             <otherwise>
-                <processor-chain>
                     <file:outbound-endpoint
                         path="./data/cooling/reports"
                         responseTimeout="10000"
                         />
-                </processor-chain>
             </otherwise>
         </choice>
     </flow>

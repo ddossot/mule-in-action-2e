@@ -37,24 +37,20 @@ http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd
             expression="message.inboundProperties['Content-Type']
       == 'application/vnd.ms-excel'">
                 <!--<co id="ch05_expenseReportCallback-1-cor"/>-->
-                <processor-chain>
                     <file:outbound-endpoint 
         path="./data/expenses/status"
 outputPattern=
 "#[java.util.UUID.randomUUID()]-&#xD;
 #[java.lang.System.currentTimeMillis()].xls"
                />
-                </processor-chain>
             </when>
             <otherwise>
-                <processor-chain>
                     <file:outbound-endpoint 
 path="./data/expenses/rejected"
 outputPattern=
 "#[java.util.UUID.randomUUID()]-&#xD;
 #[java.lang.System.currentTimeMillis()].xls"
                 />
-                </processor-chain>
             </otherwise>
         </choice>
     </flow>

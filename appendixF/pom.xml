@@ -152,36 +152,6 @@
 		      
 		      <!--Install clover-plugins-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <id>copy-clover-plugins</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <overWriteReleases>true</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <stripVersion>true</stripVersion>
-
-                            <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.cloveretl</groupId>
-                                    <artifactId>cloveretl-engine</artifactId>
-                                    <version>${mule.version}</version>
-                                    <type>zip</type>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
 				<groupId>org.apache.openjpa</groupId>
 				<artifactId>openjpa-maven-plugin</artifactId>
 				<version>2.2.2</version>
@@ -209,24 +179,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <configuration>
-                            <tasks>
-                                <!-- Using an ant task to deflate cloveretl-engine.zip -->
-                                <unzip dest="${project.build.testOutputDirectory}" src="${project.build.testOutputDirectory}/cloveretl-engine.zip"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 		</plugins>
 	</build>
 
@@ -313,29 +265,12 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.mulesoft.muleesb.modules</groupId>
-			<artifactId>mule-module-boot-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-	    </dependency>
 		<!-- Xml configuration -->
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-spring-config</artifactId>
 			<version>${mule.version}</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-        	<groupId>com.mulesoft.muleesb</groupId>
-			<artifactId>mule-core-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.mulesoft.muleesb.modules</groupId>
-			<artifactId>mule-module-data-mapper</artifactId>
-			<version>${mule.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.openjpa</groupId>
@@ -348,7 +283,7 @@
 			<version>1.8.0.7</version>
 		</dependency>
 		<dependency>
-			<groupId>org.mule.module.jpa</groupId>
+			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-jpa</artifactId>
 			<version>1.1</version>
 		</dependency>
@@ -360,12 +295,6 @@
         </dependency>
 		
 		<!-- Xml configuration -->
-		<dependency>
-			<groupId>com.mulesoft.muleesb.modules</groupId>
-			<artifactId>mule-module-spring-config-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- Mule Transports -->
 		<dependency>
@@ -474,33 +403,49 @@
 <scope>provided</scope>
 </dependency>
 </dependencies>
-
-	<repositories>
-		<repository>
-			<id>jboss</id>
-			<name>JBoss</name>
-			<url>http://repository.jboss.com/</url>
-		</repository>
-		<repository>
-			<id>mulesoft-releases</id>
-			<name>MuleSoft Releases</name>
-			<url>http://repository.mulesoft.org/releases/</url>
-		</repository>
-		<repository>
-			<id>oss-sonatype-snapshots</id>
-			<url>http://oss.sonatype.org/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-			<id>codehaus-snaphosts</id>
-			<name>Codehaus Snapshots</name>
-			<url>http://snapshots.repository.codehaus.org/</url>
-		</repository>
+  <repositories>
         <repository>
-            <id>codehaus-releases</id>
-            <name>CodeHaus Releases</name>
-            <url>http://repository.codehaus.org/</url>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>http://repository.mulesoft.org/releases/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>mulesoft-snapshots</id>
+            <name>MuleSoft Snapshots Repository</name>
+            <url>http://repository.mulesoft.org/snapshots/</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>mule-deps</id>
+            <name>Mule Dependencies</name>
+            <url>http://dist.codehaus.org/mule/dependencies/maven2/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>codehaus</id>
+            <name>Codehaus Maven 2.x Release Repository</name>
+            <url>http://repository.codehaus.org</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>codehaus-snapshots</id>
+            <name>Codehaus Maven 2.x Snapshots Repository</name>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
           <id>mulesoft-release</id>
