@@ -30,7 +30,7 @@
         <module>chapter13</module>
         <module>chapter14</module>
         <module>appendixA</module>
-        <module>appendixF</module>
+        <module>appendixD</module>
     </modules>
 
     <build>

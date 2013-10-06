@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<start id="appf-product-service-flows"/>-->
+
+<mule xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+      xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xmlns:jpa="http://www.mulesoft.org/schema/mule/jpa"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      version="CE-3.4.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core
+http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.mulesoft.org/schema/mule/ftp
+http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/scripting
+http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/jms
+http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/json
+ http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/jpa
+http://www.mulesoft.org/schema/mule/jpa/1.0/mule-jpa.xsd
+http://www.mulesoft.org/schema/mule/http
+http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jersey
+http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+http://www.mulesoft.org/schema/mule/ftp
+http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd">  <!--<co id="appf-product-service-1_cor"/>-->
+
+    <spring:beans>
+        <spring:import
+                resource="spring/applicationContext.xml"/>
+        <!--<co id="appf-product-service-2_cor"/>-->
+    </spring:beans>
+
+    <context:property-placeholder location="/mule-app.properties"/>
+    <!--<co id="appf-product-service-3_cor"/>-->
+
+    <jpa:config name="Java_Persistence_API"
+                entityManagerFactory-ref="entityManagerFactory"
+                doc:name="Java Persistence API"/>
+    <!--<co id="appf-product-service-5_cor"/>-->
+
+    <jms:activemq-connector name="jmsConnector"
+                            specification="1.1"
+                            brokerURL="${jms.url}"/>
+    <!--<co id="appf-product-service-6_cor"/>-->
+
+    <flow name="pollProducts">
+        <ftp:inbound-endpoint user="${ftp.user}"
+                              password="${ftp.password}"
+                              host="${ftp.host}"
+                              port="${ftp.port}"
+                              path="${ftp.path}"
+                              pollingFrequency="3600000"
+                />
+        <!--<co id="appf-product-service-7_cor"/>-->
+        <foreach collection="xpath('//product')"> <!--<co id="appf-product-service-8_cor"/>-->
+            <scripting:transformer>
+                <scripting:script engine="Groovy"
+file="scripts/productTransformer.groovy"/>
+                <!--<co id="appf-product-service-9_cor"/>-->
+            </scripting:transformer>
+            <transactional action="ALWAYS_BEGIN"><!--<co id="appf-product-service-10_cor"/>-->
+                <jpa:upsert config-ref="Java_Persistence_API"
+                            entity-ref="#[payload]"
+                            id-ref="#[payload.id]"
+                            fields="name,description,price,shippingCost"
+                            flush="true"
+                        />
+            </transactional>
+        </foreach>
+        <expression-transformer
+                expression="flowVars['products']"/>
+        <!--<co id="appf-product-service-11_cor"/>-->
+        <json:object-to-json-transformer/>
+        <!--<co id="appf-product-service-12_cor"/>-->
+        <jms:outbound-endpoint topic="events.product"
+                               connector-ref="jmsConnector"/>
+        <!--<co id="appf-product-service-13_cor"/>-->
+    </flow>
+
+    <flow name="product-rest-api">
+        <http:inbound-endpoint exchange-pattern="request-response"
+                               host="${http.host}"
+                               port="${http.port}"
+                />
+        <!--<co id="appf-product-service-14_cor"/>-->
+        <jersey:resources>
+            <component
+                    class=
+              "com.prancingdonkey.product.service.ProductService"/>
+            <!--<co id="appf-product-service-15_cor"/>-->
+        </jersey:resources>
+    </flow>
+
+    <!--<end id="appf-product-service-flows"/>-->
+</mule>

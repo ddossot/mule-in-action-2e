@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       ">
+
+    <bean class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close" id="dataSource">
+        <property name="driverClassName"
+                  value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:mem:mule"/>
+    </bean>
+    <bean class="org.springframework.orm.jpa.JpaTransactionManager"
+          id="transactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+    <bean id="openJpaVendorAdapter"
+          class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">
+        <property name="showSql" value="true"/>
+        <property name="generateDdl" value="true"/>
+        <property name="databasePlatform"
+                  value="org.apache.openjpa.jdbc.sql.HSQLDictionary"/>
+    </bean>
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter" ref="openJpaVendorAdapter"/>
+        <property name="persistenceUnitName" value="openjpa"/>
+    </bean>
+
+</beans>

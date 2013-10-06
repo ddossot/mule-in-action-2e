@@ -16,3 +16,5 @@ bin/
 Ddo*
 .mule
 activemq-data/
+.studio/
+

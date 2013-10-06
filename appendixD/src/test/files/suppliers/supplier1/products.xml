@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+	<product>
+		<name>Balin's Epic Bottle Opener</name>
+		<category>
+			<primary>Bottle Opener</primary>
+		</category>
+		<description>
+			<short>A Bottle Opener
+			</short>
+			<long>Balin's Epic Bottle Opener</long>
+		</description>
+		<price>2.99</price>
+		<brand></brand>
+		<shipping>
+			<cost>
+				<amount>1.99</amount>
+			</cost>
+			<information></information>
+			<availability>Y</availability>
+		</shipping>
+		<keywords></keywords>
+		<upc>123456</upc>
+		<m1></m1>
+		<image>http://www.foo.com/opener.png</image>
+	</product>
+	<product>
+		<name>Balin's Epic Kegorator</name>
+		<category>
+			<primary>Refrigeration</primary>
+		</category>
+		<description>
+			<short>Keg Refridgerator
+			</short>
+			<long>Jim's Awesome Kegorator</long>
+		</description>
+		<price>200.00</price>
+		<brand></brand>
+		<shipping>
+			<cost>
+				<amount>25.99</amount>
+			</cost>			
+		</shipping>
+		<keywords></keywords>
+		<upc>7891011121415</upc>
+		<m1></m1>
+		<image>http://www.foo.com/kegorator.png</image>
+	</product>
+</products>
+        
