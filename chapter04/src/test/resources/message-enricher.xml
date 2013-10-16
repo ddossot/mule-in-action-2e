@@ -12,7 +12,7 @@
         <vm:inbound-endpoint path="invoice-processor"
                              exchange-pattern="request-response" />
         <enricher source="#[message.payload.currencyCode]"
- 			target="#[header:INBOUND:currencyCode]">
+ 			target="#[flowVars['currencyCode']]">
             <vm:outbound-endpoint path="client.service"
  				exchange-pattern="request-response" />
         </enricher>
@@ -28,17 +28,15 @@
             <vm:outbound-endpoint path="client.service"
                                   exchange-pattern="request-response" />
             <enrich source="#[message.payload.currencyCode]"
-                    target="#[header:INBOUND:currencyCode]" />
+                    target="#[flowVars['currencyCode']]" />
             <enrich source="#[message.payload.promoCode]"
-                    target="#[header:INBOUND:promoCode]" />
+                    target="#[flowVars['promoCode']]" />
         </enricher>
         <!--<end id="lis_02_message-enricher-2"/>-->
         <response>
             <expression-transformer>
-                <return-argument expression="INBOUND:currencyCode"
-                                 evaluator="header" />
-                <return-argument expression="INBOUND:promoCode"
-                                 evaluator="header" />
+                <return-argument expression="flowVars['currencyCode']" />
+                <return-argument expression="flowVars['promoCode']" />
             </expression-transformer>
         </response>
     </flow>

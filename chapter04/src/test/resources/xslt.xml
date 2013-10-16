@@ -38,7 +38,7 @@
 <mulexml:xslt-transformer 
     xsl-file="xsl/prancing-to-gondor-bm.xsl">  
     <mulexml:context-property key="discount" 
-        value="#[message.inboundProperties.discount]" />
+        value="#[message.inboundProperties['discount']]" />
 </mulexml:xslt-transformer>
 <!--<end id="lis_04_xsl-param-expr"/>-->
 

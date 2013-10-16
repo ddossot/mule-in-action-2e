@@ -12,7 +12,9 @@ import static org.junit.Assert.*;
 import com.prancingdonkey.product.event.ProductIngestCompleted;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mule.api.MuleMessage;
 import org.mule.api.context.notification.EndpointMessageNotificationListener;
 import org.mule.api.context.notification.ServerNotification;
@@ -37,18 +39,6 @@ public class ProductImportFunctionalTestCase extends FunctionalTestCase {
     private FakeFtpServer fakeFtpServer;//<co id="lis_appf_test-case-1"/>
 
     JdbcTemplate jdbcTemplate;
-
-    @BeforeClass
-    public static void setupDirectories() throws Exception {//<co id="lis_appf_test-case-3"/>
-        File dataDirectory = new File("./data");
-        if (dataDirectory.exists()) {
-            FileUtils.deleteDirectory(dataDirectory);
-        }
-        dataDirectory.mkdirs();
-        new File("./products").mkdirs();
-        new File("./data/in").mkdirs();
-    }
-
     @Override
     protected void doSetUp() throws Exception {
         super.doSetUp();
@@ -60,7 +50,7 @@ public class ProductImportFunctionalTestCase extends FunctionalTestCase {
 
     @Override
     protected String getConfigResources() {
-        return "src/main/app/prancing-donkey-product-service.xml";
+        return "prancing-donkey-product-service.xml";
     }
 
     @Test
@@ -96,7 +86,7 @@ public class ProductImportFunctionalTestCase extends FunctionalTestCase {
         fileSystem.add(new FileEntry("/products/file1.xml",
                 FileUtils.readFileToString(
                         new File(
-        "src/test/files/suppliers/supplier1/products.xml"))));
+                                "src/test/files/suppliers/supplier1/products.xml"))));
         fakeFtpServer.setFileSystem(fileSystem);
         fakeFtpServer.start();
     }

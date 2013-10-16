@@ -8,6 +8,6 @@ public class InvoiceProcessor implements Callable
 {
     public Object onCall(final MuleEventContext eventContext) throws Exception
     {
-        return eventContext.getMessage().getInboundProperty("currencyCode");
+        return eventContext.getMessage().getInvocationProperty("currencyCode");
     }
 }

@@ -13,7 +13,7 @@
         
 <!--<start id="lis_04_xpath-expression"/>-->
 <set-property propertyName="productId" 
-	value="#[xpath('/products/product[1]/id').getText()]" />
+	value="#[xpath('/products/product[1]/id').text]" />
 <!--<end id="lis_04_xpath-expression"/>-->
         
     </flow>
