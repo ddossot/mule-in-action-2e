@@ -25,19 +25,23 @@
 <!--<start id="lis_09_transaction-reliability"/>-->
 <flow name="reliable-acquisition-phase" 
   processingStrategy="synchronous">
-    <http:inbound-endpoint address="http://127.0.0.1:8081/inbound" 
+    <http:inbound-endpoint address
+			="http://127.0.0.1:8081/inbound" 
       exchange-pattern="request-response" /><!--<co id="lis_09_transaction-reliability_1" />-->
     <object-to-string-transformer />
-    <jms:outbound-endpoint queue="application-logic-queue" 
+    <jms:outbound-endpoint queue
+			="application-logic-queue" 
       exchange-pattern="one-way"/><!--<co id="lis_09_transaction-reliability_2" />-->
 </flow>
 
 <flow name="application-logic-phase">
-  <jms:inbound-endpoint queue="application-logic-queue">
+  <jms:inbound-endpoint queue
+		="application-logic-queue">
       <jms:transaction action="ALWAYS_BEGIN"/><!--<co id="lis_09_transaction-reliability_3" />-->
   </jms:inbound-endpoint>
         
-  <logger message="business-logic is performed here." /><!--<co id="lis_09_transaction-reliability_4" />-->
+  <logger message
+		="business-logic is performed here." /><!--<co id="lis_09_transaction-reliability_4" />-->
 </flow>
 <!--<end id="lis_09_transaction-reliability"/>
 -->

@@ -16,7 +16,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mule.api.MuleMessage;
-import org.mule.api.context.notification.EndpointMessageNotificationListener;
+import org.mule.api.context.notification.
+	   EndpointMessageNotificationListener;
 import org.mule.api.context.notification.ServerNotification;
 import org.mule.tck.junit4.FunctionalTestCase;
 import org.mule.util.FileUtils;
@@ -34,7 +35,8 @@ import javax.persistence.Query;
 import javax.sql.DataSource;
 
 //<start id="lis_appf_test-case"/>
-public class ProductImportFunctionalTestCase extends FunctionalTestCase {
+public class ProductImportFunctionalTestCase extends 
+		FunctionalTestCase {
 
     private FakeFtpServer fakeFtpServer;//<co id="lis_appf_test-case-1"/>
 
@@ -77,16 +79,16 @@ public class ProductImportFunctionalTestCase extends FunctionalTestCase {
     }
 
     void startServer() throws IOException {
-        fakeFtpServer = new FakeFtpServer();
-        fakeFtpServer.setServerControlPort(9879);
-        fakeFtpServer.addUserAccount(
+      fakeFtpServer = new FakeFtpServer();
+      fakeFtpServer.setServerControlPort(9879);
+      fakeFtpServer.addUserAccount(
                 new UserAccount("foo", "foo", "/"));
 
-        FileSystem fileSystem = new UnixFakeFileSystem();
-        fileSystem.add(new FileEntry("/products/file1.xml",
-                FileUtils.readFileToString(
-                        new File(
-                                "src/test/files/suppliers/supplier1/products.xml"))));
+      FileSystem fileSystem = new UnixFakeFileSystem();
+      fileSystem.add(new FileEntry("/products/file1.xml",
+         FileUtils.readFileToString(
+            new File(
+                "src/test/files/suppliers/supplier1/products.xml"))));
         fakeFtpServer.setFileSystem(fileSystem);
         fakeFtpServer.start();
     }

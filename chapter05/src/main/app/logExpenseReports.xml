@@ -34,7 +34,7 @@ message=
             <when expression=
 "xpath('/expense/status').text =='FAILED'">
                     <logger message=
-"Error processing expense report:#[xpath('/expense/id/text()]"
+"Error processing expense report:#[xpath('/expense/id').text]"
 level="ERROR" />
             </when>
         </choice>

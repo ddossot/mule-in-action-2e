@@ -69,15 +69,15 @@ http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd">  <!--<co id="appf
             <scripting:transformer>
                 <scripting:script engine="Groovy"
 file="scripts/productTransformer.groovy"/>
-                <!--<co id="appf-product-service-9_cor"/>-->
-            </scripting:transformer>
-            <transactional action="ALWAYS_BEGIN"><!--<co id="appf-product-service-10_cor"/>-->
-                <jpa:upsert config-ref="Java_Persistence_API"
-                            entity-ref="#[payload]"
-                            id-ref="#[payload.id]"
-                            fields="name,description,price,shippingCost"
-                            flush="true"
-                        />
+              <!--<co id="appf-product-service-9_cor"/>-->
+          </scripting:transformer>
+          <transactional action="ALWAYS_BEGIN"><!--<co id="appf-product-service-10_cor"/>-->
+              <jpa:upsert config-ref="Java_Persistence_API"
+                          entity-ref="#[payload]"
+                          id-ref="#[payload.id]"
+                          fields="name,description,price,shippingCost"
+                          flush="true"
+                      />
             </transactional>
         </foreach>
         <expression-transformer
