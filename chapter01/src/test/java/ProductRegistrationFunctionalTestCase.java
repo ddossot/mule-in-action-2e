@@ -19,8 +19,8 @@ public class ProductRegistrationFunctionalTestCase
     public void productservice() throws Exception {
         MuleClient client = muleContext.getClient();
 
-        String productAsJson = "{'name':'Widget', 'price': 9.99, " + 
-                "'weight': 1.0, 'sku': 'abcd-12345'}"; //<co id="lis_02_product_test-1"/>
+        String productAsJson = "{\"name\":\"Widget\", \"price\": 9.99, \"weight\": 1.0, \"sku\":\"abcd-12345\"}";
+        //<co id="lis_02_product_test-1"/>
 
         client.dispatch("http://localhost:8080/products", 
                     productAsJson, null); //<co id="lis_02_product_test-2"/>

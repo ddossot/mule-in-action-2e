@@ -8,7 +8,7 @@ Book home page: http://www.manning.com/dossot2/
 
 Requirements:
 
-- JDK 1.6 with unlimited JCE cryptography,
+- Oracle JDK 1.6 with unlimited JCE cryptography,
 - Maven 3.
 
 Tests in the examples will open ports while they run, like 8080, 5555 and 52525, so watch out for potential conflicts. 
